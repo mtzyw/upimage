@@ -58,6 +58,123 @@ export type Database = {
           },
         ]
       }
+      freepik_api_keys: {
+        Row: {
+          created_at: string | null
+          daily_limit: number | null
+          id: string
+          is_active: boolean | null
+          key: string
+          last_reset_date: string | null
+          name: string | null
+          updated_at: string | null
+          used_today: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          daily_limit?: number | null
+          id?: string
+          is_active?: boolean | null
+          key: string
+          last_reset_date?: string | null
+          name?: string | null
+          updated_at?: string | null
+          used_today?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          daily_limit?: number | null
+          id?: string
+          is_active?: boolean | null
+          key?: string
+          last_reset_date?: string | null
+          name?: string | null
+          updated_at?: string | null
+          used_today?: number | null
+        }
+        Relationships: []
+      }
+      image_enhancement_tasks: {
+        Row: {
+          api_key_id: string | null
+          cdn_url: string | null
+          completed_at: string | null
+          created_at: string | null
+          creativity: number | null
+          credits_consumed: number
+          engine: string | null
+          error_message: string | null
+          fractality: number | null
+          hdr: number | null
+          id: string
+          optimized_for: string | null
+          prompt: string | null
+          r2_optimized_key: string | null
+          r2_original_key: string
+          resemblance: number | null
+          scale_factor: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          api_key_id?: string | null
+          cdn_url?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          creativity?: number | null
+          credits_consumed: number
+          engine?: string | null
+          error_message?: string | null
+          fractality?: number | null
+          hdr?: number | null
+          id: string
+          optimized_for?: string | null
+          prompt?: string | null
+          r2_optimized_key?: string | null
+          r2_original_key: string
+          resemblance?: number | null
+          scale_factor: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          api_key_id?: string | null
+          cdn_url?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          creativity?: number | null
+          credits_consumed?: number
+          engine?: string | null
+          error_message?: string | null
+          fractality?: number | null
+          hdr?: number | null
+          id?: string
+          optimized_for?: string | null
+          prompt?: string | null
+          r2_optimized_key?: string | null
+          r2_original_key?: string
+          resemblance?: number | null
+          scale_factor?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "image_enhancement_tasks_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "freepik_api_keys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "image_enhancement_tasks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           amount_discount: number | null

@@ -1,7 +1,6 @@
 "use client";
 
 import { PricingCardDisplay } from "@/components/home/PricingCardDisplay";
-import FeatureBadge from "@/components/shared/FeatureBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DEFAULT_LOCALE } from "@/i18n/routing";
 import { PricingPlan } from "@/types/pricing";
@@ -92,11 +91,6 @@ export default function ClientPricing({ initialPlans = [] }: ClientPricingProps)
     <section id="pricing" className="py-20 bg-slate-800/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <FeatureBadge
-            label={t("badge.label")}
-            text={t("badge.text")}
-            className="mb-8"
-          />
           <h2 className="text-center z-10 text-3xl md:text-5xl font-bold mb-4">
             <span className="text-white">
               {t("title")}

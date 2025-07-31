@@ -35,7 +35,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Log in to Pollo AI">
+    <Modal isOpen={isOpen} onClose={onClose} title="Log in to ImgEnhancer.ai">
       <div className="space-y-6">
         {/* Google Login Button */}
         <Button

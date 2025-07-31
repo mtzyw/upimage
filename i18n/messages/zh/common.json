@@ -134,9 +134,9 @@
     }
   },
   "Home": {
-    "title": "Nexty.dev",
-    "tagLine": "多场景 Next.js 全栈 SaaS 开发模板",
-    "description": "Nexty 是一个功能齐全的 Next.js SaaS 全栈模板，让你能够快速构建各种商业网站，无论是内容站、工具站还是集成 AI 能力的付费网站。"
+    "title": "ImgEnhancer.ai",
+    "tagLine": "AI 驱动的图像增强平台",
+    "description": "使用先进的 AI 技术改变您的图像。提升质量，放大分辨率，使用专业级图像增强工具创造出色的视觉效果。"
   },
   "Login": {
     "title": "欢迎回来",

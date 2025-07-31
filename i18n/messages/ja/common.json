@@ -134,9 +134,9 @@
     }
   },
   "Home": {
-    "title": "Nexty.dev",
-    "tagLine": "最新の Next.js フルスタック SaaS テンプレート",
-    "description": "Next.js と Supabase を活用した本格的な SaaS 開発キット。コンテンツ配信、AI ツール、サブスクリプションサービスを迅速に構築できます。"
+    "title": "ImgEnhancer.ai",
+    "tagLine": "AI駆動の画像強化プラットフォーム",
+    "description": "先進的なAI技術で画像を変換します。品質の向上、解像度のアップスケール、プロ仕様の画像強化ツールで素晴らしいビジュアルを作成しましょう。"
   },
   "Login": {
     "title": "おかえりなさい",

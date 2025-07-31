@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, Wand2, Download, Sparkles } from "lucide-react";
+import { Wand2, Download, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import ImageUploader from "@/components/upload/ImageUploader";
 
 export default function ImageProcessor() {
   const t = useTranslations("Landing.Hero");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedImageKey, setUploadedImageKey] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [creativity, setCreativity] = useState([75]);
@@ -19,16 +21,10 @@ export default function ImageProcessor() {
   const [resemblance, setResemblance] = useState([85]);
   const [prompt, setPrompt] = useState("");
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setUploadedImage(e.target?.result as string);
-        setProcessedImage(null); // 清除之前的结果
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleUploadSuccess = (url: string, key: string) => {
+    setUploadedImage(url);
+    setUploadedImageKey(key);
+    setProcessedImage(null); // 清除之前的结果
   };
 
   const handleProcess = async () => {
@@ -62,49 +58,14 @@ export default function ImageProcessor() {
         <div className="space-y-6">
           {/* 图像上传区域 */}
           <Card className="bg-black/40 border-gray-600 p-8">
-            <div className="text-center">
-              <h3 className="text-xl font-semibold text-white mb-4">上传图像</h3>
-              
-              {!uploadedImage ? (
-                <div className="border-2 border-dashed border-gray-600 rounded-lg p-12 hover:border-pink-400 transition-colors">
-                  <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <p className="text-gray-300 mb-4">点击上传或拖拽图像到此处</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    id="image-upload"
-                  />
-                  <label htmlFor="image-upload">
-                    <Button className="bg-pink-500 hover:bg-pink-600 text-white cursor-pointer">
-                      选择图像
-                    </Button>
-                  </label>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="relative w-full h-64 rounded-lg overflow-hidden">
-                    <Image
-                      src={uploadedImage}
-                      alt="Uploaded image"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <Button
-                    onClick={() => {
-                      setUploadedImage(null);
-                      setProcessedImage(null);
-                    }}
-                    variant="outline"
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                  >
-                    重新上传
-                  </Button>
-                </div>
-              )}
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-white">上传图像</h3>
             </div>
+            <ImageUploader
+              onUploadSuccess={handleUploadSuccess}
+              maxSizeMB={10}
+              acceptedTypes={['image/jpeg', 'image/png', 'image/webp']}
+            />
           </Card>
 
           {/* 参数控制区域 */}

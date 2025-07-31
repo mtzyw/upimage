@@ -1,15 +1,11 @@
 'use client'
 
-import FeatureBadge from "@/components/shared/FeatureBadge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import Image from "next/image";
-import { siteConfig } from "@/config/site";
 import { MousePointerClick, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { SiDiscord } from "react-icons/si";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { useState } from "react";
 
@@ -24,11 +20,6 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8">
-            <FeatureBadge
-              label={t("badge.label")}
-              text={t("badge.text")}
-              href={t("badge.href")}
-            />
             <div className="space-y-4">
               <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
                 <span className="text-white">{t("title.part1", { default: "The " })}</span>
@@ -58,26 +49,6 @@ export default function Hero() {
                   <MousePointerClick className="w-4 h-4" />
                   {t("getStarted", { default: "Get Started Now" })}
                 </div>
-              </Button>
-              <Button
-                className="h-14 rounded-lg px-8 py-2 bg-transparent text-cyan-400 hover:text-cyan-300 border-2 border-cyan-400 hover:border-cyan-300"
-                variant="outline"
-                asChild
-              >
-                <Link
-                  href={
-                    siteConfig.socialLinks?.discord ||
-                    "https://discord.com/invite/R7bUxWKRqZ"
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  title="Join Discord"
-                  prefetch={false}
-                  className="flex items-center gap-2"
-                >
-                  <SiDiscord className="w-4 h-4" />
-                  Join Discord
-                </Link>
               </Button>
             </div>
           </div>
