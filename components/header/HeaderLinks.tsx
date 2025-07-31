@@ -17,7 +17,7 @@ const HeaderLinks = () => {
   }
 
   return (
-    <div className="hidden md:flex flex-row items-center gap-x-2 text-sm text-muted-foreground">
+    <div className="hidden md:flex flex-row items-center gap-x-2 text-sm text-white">
       {headerLinks.map((link) => (
         <I18nLink
           key={link.name}
@@ -27,8 +27,8 @@ const HeaderLinks = () => {
           target={link.target || "_self"}
           rel={link.rel || undefined}
           className={cn(
-            "rounded-xl px-4 py-2 flex items-center gap-x-1 hover:bg-accent-foreground/10 hover:text-accent-foreground",
-            pathname === link.href && "font-medium text-accent-foreground"
+            "rounded-xl px-4 py-2 flex items-center gap-x-1 text-white/80 hover:bg-white/10 hover:text-white",
+            pathname === link.href && "font-medium text-white bg-white/10"
           )}
         >
           {link.name}

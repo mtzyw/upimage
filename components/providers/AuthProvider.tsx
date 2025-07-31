@@ -127,28 +127,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
+    const redirectUrl = next || '/home';
     return await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${next}`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${redirectUrl}`,
       },
     });
   };
 
   const signInWithGithub = async () => {
+    const redirectUrl = next || '/home';
     return await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${next}`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${redirectUrl}`,
       },
     });
   };
 
   const signInWithEmail = async (email: string, captchaToken?: string) => {
+    const redirectUrl = next || '/home';
     return await supabase.auth.signInWithOtp({
       email: normalizeEmail(email),
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=${next}`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${redirectUrl}`,
         captchaToken,
       },
     });

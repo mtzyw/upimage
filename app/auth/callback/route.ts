@@ -7,8 +7,8 @@ export async function GET(request: Request) {
 
   const code = searchParams.get('code')
 
-  let next = searchParams.get('next') ?? '/'
-  next = next == 'null' ? '/' : next
+  let next = searchParams.get('next') ?? '/home'
+  next = next == 'null' ? '/home' : next
 
   if (!isValidRedirectUrl(next)) {
     console.error('Invalid redirect URL')

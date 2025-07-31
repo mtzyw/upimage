@@ -9,6 +9,7 @@ import { Github, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -23,8 +24,17 @@ export default function LoginForm({
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | undefined>();
+  const router = useRouter();
 
   const t = useTranslations("Login");
+
+  const handleLoginSuccess = () => {
+    onSuccess?.();
+    // 对于某些登录方式（如邮箱登录），可能需要客户端跳转
+    setTimeout(() => {
+      router.push('/home');
+    }, 1000);
+  };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +45,7 @@ export default function LoginForm({
       toast.success(t("Toast.Email.successTitle"), {
         description: t("Toast.Email.successDescription"),
       });
-      onSuccess?.();
+      handleLoginSuccess();
     } catch (error) {
       toast.error(t("Toast.Email.errorTitle"), {
         description: t("Toast.Email.errorDescription"),
@@ -49,7 +59,7 @@ export default function LoginForm({
     try {
       const { error } = await signInWithGoogle();
       if (error) throw error;
-      onSuccess?.();
+      handleLoginSuccess();
     } catch (error) {
       toast.error(t("Toast.Google.errorTitle"), {
         description: t("Toast.Google.errorDescription"),
@@ -61,7 +71,7 @@ export default function LoginForm({
     try {
       const { error } = await signInWithGithub();
       if (error) throw error;
-      onSuccess?.();
+      handleLoginSuccess();
     } catch (error) {
       toast.error(t("Toast.Github.errorTitle"), {
         description: t("Toast.Github.errorDescription"),

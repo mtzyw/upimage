@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "@/i18n/routing";
-import { handleLogin } from "@/lib/utils";
+import { LoginModal } from "@/components/auth/LoginModal";
 import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
 type Menu = {
   name: string;
@@ -29,8 +29,9 @@ interface UserInfoProps {
 }
 
 export function UserInfo({ mobile = false, renderContainer }: UserInfoProps) {
-  const { user, signOut, showLoginDialog } = useAuth();
+  const { user, signOut } = useAuth();
   const router = useRouter();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const t = useTranslations("Login");
 
@@ -40,15 +41,22 @@ export function UserInfo({ mobile = false, renderContainer }: UserInfoProps) {
 
   if (!user) {
     return (
-      <Button
-        onClick={() => handleLogin(router, showLoginDialog)}
-        variant="outline"
-        className={`highlight-button text-white hover:text-white shadow-lg ${
-          mobile ? "w-full" : ""
-        }`}
-      >
-        {t("Button.signIn")}
-      </Button>
+      <>
+        <Button
+          onClick={() => setIsLoginModalOpen(true)}
+          variant="outline"
+          className={`highlight-button text-white hover:text-white shadow-lg ${
+            mobile ? "w-full" : ""
+          }`}
+        >
+          {t("Button.signIn")}
+        </Button>
+        
+        <LoginModal 
+          isOpen={isLoginModalOpen} 
+          onClose={() => setIsLoginModalOpen(false)} 
+        />
+      </>
     );
   }
 

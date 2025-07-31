@@ -1,3 +1,5 @@
+'use client'
+
 import FeatureBadge from "@/components/shared/FeatureBadge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,9 +10,12 @@ import { MousePointerClick, Info, ChevronLeft, ChevronRight } from "lucide-react
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { SiDiscord } from "react-icons/si";
+import { LoginModal } from "@/components/auth/LoginModal";
+import { useState } from "react";
 
 export default function Hero() {
   const t = useTranslations("Landing.Hero");
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   return (
     <div className="w-full min-h-screen">
@@ -45,14 +50,14 @@ export default function Hero() {
             </div>
 
             <div className="flex flex-row gap-4">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-6 text-lg rounded-lg">
-                <Link
-                  href={t("getStartedLink") || "#"}
-                  className="flex items-center gap-2"
-                >
+              <Button 
+                className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-6 text-lg rounded-lg"
+                onClick={() => setIsLoginModalOpen(true)}
+              >
+                <div className="flex items-center gap-2">
                   <MousePointerClick className="w-4 h-4" />
                   {t("getStarted", { default: "Get Started Now" })}
-                </Link>
+                </div>
               </Button>
               <Button
                 className="h-14 rounded-lg px-8 py-2 bg-transparent text-cyan-400 hover:text-cyan-300 border-2 border-cyan-400 hover:border-cyan-300"
@@ -200,6 +205,12 @@ export default function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+      />
     </div>
   );
 }

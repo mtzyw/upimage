@@ -21,7 +21,7 @@ const Header = () => {
             className="flex items-center space-x-1"
           >
             {/* <Image src="/logo.png" alt="Logo" width={32} height={32} /> */}
-            <span className={cn("text-xl font-semibold highlight-text")}>
+            <span className={cn("text-xl font-semibold text-white")}>
               {t("title")}
             </span>
           </I18nLink>

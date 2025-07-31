@@ -1,5 +1,7 @@
-import HomeComponent from "@/components/home";
+"use client";
+
+import HomePageRouter from "@/components/HomePageRouter";
 
 export default function Home() {
-  return <HomeComponent />;
+  return <HomePageRouter />;
 }
