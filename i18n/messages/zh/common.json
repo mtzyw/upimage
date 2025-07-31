@@ -1,0 +1,294 @@
+{
+  "Shared": {
+    "promoCode": {
+      "copy": "复制",
+      "copied": "已复制!",
+      "limitedTimeOffer": "限时特惠",
+      "save": "立省{discount}",
+      "validUntil": "有效期至",
+      "copyAndScroll": "复制代码并查看价格"
+    }
+  },
+  "LanguageDetection": {
+    "title": "语言建议",
+    "description": "检测到你的浏览器语言和当前语言不一样，你随时都可切换语言 👉",
+    "countdown": "将在 {countdown} 秒后关闭"
+  },
+  "Header": {
+    "links": [
+      {
+        "name": "功能特性",
+        "href": "/#features"
+      },
+      {
+        "id": "pricing",
+        "name": "定价",
+        "href": "/#pricing"
+      },
+      {
+        "name": "AI Demo",
+        "href": "/ai-demo"
+      },
+      {
+        "name": "博客",
+        "href": "/blogs"
+      }
+    ]
+  },
+  "Footer": {
+    "Copyright": "版权所有 © {year} {name} 保留所有权利。",
+    "PrivacyPolicy": "隐私政策",
+    "TermsOfService": "条款与条件",
+    "Newsletter": {
+      "title": "订阅我们的邮件",
+      "description": "获取最新的更新和教程",
+      "subscribe": {
+        "invalidEmail": "请输入有效的邮箱地址",
+        "defaultErrorMessage": "订阅失败，请稍后再试",
+        "successMessage": "订阅成功",
+        "emailSubject": "你已成功订阅 Nexty 邮件通知",
+        "multipleSubmissions": "你已多次提交，请明天再试再试"
+      },
+      "unsubscribe": {
+        "title": "退订邮件通知",
+        "success": "您已成功退订 Nexty 邮件通知。",
+        "emailPrefix": "邮箱：",
+        "regretMessage": "您随时可以重新订阅邮件，获取 Nexty 最新更新和教程。",
+        "errorGeneric": "处理您的退订请求时发生错误",
+        "errorNoToken": "未提供退订令牌",
+        "errorMessage": "请确保您使用了正确的退订链接。如果问题持续存在，请联系我们的客服团队获取帮助。",
+        "contactPrefix": "请发送邮件至：",
+        "contactPrefixSuccess": "如有任何问题，请随时联系我们：",
+        "backToHome": "返回主页",
+        "invalidEmail": "无效的邮箱地址",
+        "notInNewsletter": "该邮箱不在我们的订阅列表中",
+        "confirmTitle": "确认退订",
+        "confirmMessage": "您确定要退订我们的邮件通讯吗？您将不再收到有关新功能和内容的更新。",
+        "confirmButton": "确认退订",
+        "cancelButton": "取消",
+        "processing": "处理中...",
+        "retryButton": "重试",
+        "finalWarning": "此操作无法撤销。您可以随时重新订阅。",
+        "errorInvalidToken": "无效的退订链接。链接可能已损坏或过期。"
+      }
+    },
+    "Links": {
+      "groups": [
+        {
+          "title": "产品",
+          "links": [
+            {
+              "href": "/#features",
+              "name": "功能特性"
+            },
+            {
+              "id": "pricing",
+              "href": "/#pricing",
+              "name": "定价"
+            },
+            {
+              "href": "/blogs",
+              "name": "博客"
+            }
+          ]
+        },
+        {
+          "title": "支持",
+          "links": [
+            {
+              "name": "文档",
+              "href": "https://docs.nexty.dev/zh/docs",
+              "target": "_blank"
+            },
+            {
+              "name": "功能路线图",
+              "href": "/roadmap"
+            },
+            {
+              "href": "mailto:hi@nexty.dev",
+              "name": "联系我们"
+            }
+          ]
+        },
+        {
+          "title": "语言",
+          "links": [
+            {
+              "href": "/en",
+              "name": "English",
+              "useA": true
+            },
+            {
+              "href": "/zh",
+              "name": "中文",
+              "useA": true
+            },
+            {
+              "href": "/ja",
+              "name": "日本語",
+              "useA": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Home": {
+    "title": "Nexty.dev",
+    "tagLine": "多场景 Next.js 全栈 SaaS 开发模板",
+    "description": "Nexty 是一个功能齐全的 Next.js SaaS 全栈模板，让你能够快速构建各种商业网站，无论是内容站、工具站还是集成 AI 能力的付费网站。"
+  },
+  "Login": {
+    "title": "欢迎回来",
+    "description": "你可以通过以下方式登录",
+    "Toast": {
+      "Email": {
+        "successTitle": "邮件已发送",
+        "successDescription": "请检查你的邮箱获取登录链接。",
+        "errorTitle": "错误",
+        "errorDescription": "发送邮件失败，请重试。"
+      },
+      "Google": {
+        "errorTitle": "错误",
+        "errorDescription": "使用 Google 登录失败，请重试。"
+      },
+      "Github": {
+        "errorTitle": "错误",
+        "errorDescription": "使用 GitHub 登录失败，请重试。"
+      }
+    },
+    "signInMethods": {
+      "or": "或者",
+      "signInWithGoogle": "使用 Google 登录",
+      "signInWithGithub": "使用 GitHub 登录",
+      "signInWithEmail": "使用邮箱登录"
+    },
+    "Button": {
+      "signIn": "登录",
+      "signOut": "退出"
+    },
+    "UserMenus": [
+      {
+        "name": "个人设置",
+        "href": "/dashboard/settings"
+      },
+      {
+        "name": "管理订阅",
+        "href": "/dashboard/subscription"
+      },
+      {
+        "name": "积分明细",
+        "href": "/dashboard/credit-history"
+      }
+    ],
+    "AdminMenus": [
+      {
+        "name": "用户管理",
+        "href": "/dashboard/users"
+      },
+      {
+        "name": "定价管理",
+        "href": "/dashboard/prices"
+      },
+      {
+        "name": "博客管理",
+        "href": "/dashboard/blogs"
+      },
+      {
+        "name": "R2资源管理",
+        "href": "/dashboard/r2-resources"
+      }
+    ]
+  },
+  "Blogs": {
+    "title": "博客列表",
+    "description": "分享 Next.js 生态圈和 Nexty.dev 模板动态。",
+    "emptyState": {
+      "title": "暂无博客文章",
+      "description": "我们正在创作精彩内容，敬请期待！"
+    },
+    "loadMorePostsFailed": "加载更多博客失败",
+    "loadMorePosts": "加载更多博客……",
+    "filterPostsFailed": "加载博客失败",
+    "noPostsFoundForThisTag": "暂无此标签的博客文章",
+    "reachedTheEnd": "已加载全部博客文章",
+    "BlogDetail": {
+      "featured": "精选文章",
+      "accessRestricted": "访问受限",
+      "unauthorized": "此文章仅对登录用户开放",
+      "premium": "付费内容",
+      "premiumContent": "此文章仅对订阅用户开放",
+      "signIn": "登录",
+      "upgrade": "升级",
+      "backToBlogs": "返回博客列表",
+      "notFound": "文章未找到"
+    }
+  },
+  "About": {
+    "title": "关于",
+    "description": "关于网站"
+  },
+  "TermsOfService": {
+    "title": "服务条款",
+    "description": "服务条款"
+  },
+  "PrivacyPolicy": {
+    "title": "隐私政策",
+    "description": "隐私政策"
+  },
+  "AIDemo": {
+    "title": "AI 能力演示",
+    "description": "本页面非公开功能，仅用于购买模板的用户学习和测试 AI 模型调用流程。在本地启动模板后，环境变量填写自己的 API Key 即可使用。AI Demo 包括单轮对话、多轮对话、文本转图像、图像转图像、文本/图像转视频的转换，通过 Demo 你可以快速理解 AI 调用流程，以加速你的AI应用构建之旅。",
+    "metaDescription": "本页面提供包括单轮对话、多轮对话、文本转图像、图像转图像、文本/图像转视频等 AI 能力调用展示。"
+  },
+  "ErrorPage": {
+    "403": {
+      "title": "403 - 访问被拒绝",
+      "description": "你没有权限访问此页面。",
+      "button": {
+        "name": "返回首页",
+        "href": "/"
+      }
+    },
+    "RedirectError": {
+      "title": "重定向错误",
+      "description": "认证过程中发生错误。",
+      "goToHome": "返回首页",
+      "goToLogin": "返回登录页面",
+      "invalid_params": {
+        "title": "参数错误",
+        "description": "请求缺少必要参数。"
+      },
+      "invalid_redirect": {
+        "title": "重定向错误",
+        "description": "重定向 URL 无效。"
+      },
+      "token_expired": {
+        "title": "令牌过期",
+        "description": "你的验证令牌已过期。请重新登录。"
+      },
+      "invalid_token": {
+        "title": "令牌错误",
+        "description": "提供的验证令牌无效。"
+      },
+      "invalid_link_or_expired": {
+        "title": "链接错误",
+        "description": "邮箱验证链接无效或已过期。"
+      },
+      "server_error": {
+        "title": "服务器错误",
+        "description": "认证过程中服务器发生意外错误。"
+      },
+      "unknown": {
+        "title": "认证错误",
+        "description": "认证过程中发生未知错误。"
+      }
+    },
+    "StripeError": {
+      "goToHome": "返回首页",
+      "goToDashboard": "返回仪表盘",
+      "title": "Payment Portal Error",
+      "description": "支付信息发生错误。"
+    }
+  }
+}

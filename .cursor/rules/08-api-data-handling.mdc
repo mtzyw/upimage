@@ -1,0 +1,91 @@
+# API and Data Handling Guidelines
+
+This project uses a combination of Next.js Route Handlers, Server Actions, and Supabase for data management.
+
+## API Routes
+
+- API endpoints are implemented as Route Handlers in the `app/api/` directory
+- Use appropriate HTTP methods (GET, POST, PUT, DELETE) for each endpoint
+- Structure API responses consistently:
+  ```typescript
+  // Success response
+  return NextResponse.json({ data: result })
+  
+  // Error response
+  return NextResponse.json(
+    { error: "Descriptive error message" },
+    { status: appropriate_status_code }
+  )
+  ```
+- Use proper error handling with meaningful HTTP status codes
+- Implement rate limiting for public-facing APIs using Upstash or similar tools
+
+## Server Actions
+
+- Use Server Actions for form submissions and data mutations
+- Implement proper validation using Zod schemas
+- Handle errors gracefully and return appropriate success/error responses
+- Example pattern:
+  ```typescript
+  'use server'
+  
+  import { z } from 'zod'
+  
+  const schema = z.object({ /* ... */ })
+  
+  export async function myAction(formData: FormData) {
+    const validatedData = schema.safeParse(Object.fromEntries(formData))
+    if (!validatedData.success) {
+      return { error: "Validation failed", details: validatedData.error }
+    }
+    
+    try {
+      // Perform action
+      return { success: true, data: result }
+    } catch (error) {
+      return { error: "Action failed", details: error }
+    }
+  }
+  ```
+
+## Supabase Data Access
+
+- Use the Supabase client for database operations
+- For server components, use the server client:
+  ```typescript
+  import { createClient } from '@/lib/supabase/server'
+  const supabase = await createClient()
+  ```
+- For client components, use the client-side client:
+  ```typescript
+  import { createClient } from '@/lib/supabase/client'
+  const supabase = createClient()
+  ```
+- Use proper TypeScript types for database tables
+- Implement proper error handling for database operations
+- Consider using RLS (Row Level Security) for sensitive data
+
+## Data Fetching Patterns
+
+- In server components, use `fetch` with appropriate caching strategies:
+  ```typescript
+  // No cache (refetch on every request)
+  fetch(url, { cache: 'no-store' })
+  
+  // Cache until manually revalidated
+  fetch(url, { cache: 'force-cache' })
+  
+  // Cache with periodic revalidation
+  fetch(url, { next: { revalidate: 3600 } })
+  ```
+- In client components, use SWR or React Query for data fetching with caching
+- Implement proper loading states during data fetching
+- Use error boundaries or try/catch for handling data fetching errors
+
+## External Services
+
+- S3/R2: Used for file storage, accessed through AWS SDK
+- Stripe: Used for payment processing
+- Resend: Used for email sending
+
+When integrating with external services, ensure proper error handling and fallback mechanisms. 

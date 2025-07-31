@@ -1,0 +1,294 @@
+{
+  "Shared": {
+    "promoCode": {
+      "copy": "Copy",
+      "copied": "Copied!",
+      "limitedTimeOffer": "Limited Time Offer",
+      "save": "Save {discount}",
+      "validUntil": "Valid until",
+      "copyAndScroll": "Copy code and view pricing"
+    }
+  },
+  "LanguageDetection": {
+    "title": "Language Suggestion",
+    "description": "We noticed your browser language differs from the current site language. You can switch languages anytime 👉",
+    "countdown": "Closing in {countdown} seconds"
+  },
+  "Header": {
+    "links": [
+      {
+        "name": "Features",
+        "href": "/#features"
+      },
+      {
+        "id": "pricing",
+        "name": "Pricing",
+        "href": "/#pricing"
+      },
+      {
+        "name": "AI Demo",
+        "href": "/ai-demo"
+      },
+      {
+        "name": "Blogs",
+        "href": "/blogs"
+      }
+    ]
+  },
+  "Footer": {
+    "Copyright": "Copyright © {year} {name} All rights reserved.",
+    "PrivacyPolicy": "Privacy Policy",
+    "TermsOfService": "Terms of Service",
+    "Newsletter": {
+      "title": "Subscribe to our newsletter",
+      "description": "Stay up to date with our latest news.",
+      "subscribe": {
+        "invalidEmail": "Please enter a valid email address",
+        "defaultErrorMessage": "Subscription failed. Please try again later",
+        "successMessage": "Successfully subscribed!",
+        "emailSubject": "Welcome to Nexty Newsletter!",
+        "multipleSubmissions": "Too many requests. Please try again tomorrow"
+      },
+      "unsubscribe": {
+        "title": "Newsletter Unsubscription",
+        "success": "You have successfully unsubscribed from Nexty newsletters.",
+        "emailPrefix": "Email:",
+        "regretMessage": "You can resubscribe anytime to receive the latest Nexty updates and tutorials.",
+        "errorGeneric": "An error occurred while processing your unsubscribe request",
+        "errorNoToken": "No unsubscribe token provided",
+        "errorMessage": "Please make sure you're using the correct unsubscribe link. If the problem persists, contact our support team for assistance.",
+        "contactPrefix": "Contact us at:",
+        "contactPrefixSuccess": "If you have any questions, feel free to contact us at:",
+        "backToHome": "Back to Home",
+        "invalidEmail": "Invalid email address",
+        "notInNewsletter": "This email is not in our subscription list",
+        "confirmTitle": "Confirm Unsubscription",
+        "confirmMessage": "Are you sure you want to unsubscribe from our newsletter? You won't receive updates about new features and content anymore.",
+        "confirmButton": "Yes, Unsubscribe",
+        "cancelButton": "Cancel",
+        "processing": "Processing...",
+        "retryButton": "Try Again",
+        "finalWarning": "This action cannot be undone. You can always resubscribe later.",
+        "errorInvalidToken": "Invalid unsubscribe link. The link may be corrupted or expired."
+      }
+    },
+    "Links": {
+      "groups": [
+        {
+          "title": "Products",
+          "links": [
+            {
+              "href": "/#features",
+              "name": "Features"
+            },
+            {
+              "id": "pricing",
+              "href": "/#pricing",
+              "name": "Pricing"
+            },
+            {
+              "href": "/blogs",
+              "name": "Blogs"
+            }
+          ]
+        },
+        {
+          "title": "Support",
+          "links": [
+            {
+              "name": "Docs",
+              "href": "https://docs.nexty.dev/docs",
+              "target": "_blank"
+            },
+            {
+              "name": "Roadmap",
+              "href": "/roadmap"
+            },
+            {
+              "href": "mailto:hi@nexty.dev",
+              "name": "Contact Us"
+            }
+          ]
+        },
+        {
+          "title": "Languages",
+          "links": [
+            {
+              "href": "/en",
+              "name": "English",
+              "useA": true
+            },
+            {
+              "href": "/zh",
+              "name": "中文",
+              "useA": true
+            },
+            {
+              "href": "/ja",
+              "name": "日本語",
+              "useA": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Home": {
+    "title": "Nexty.dev",
+    "tagLine": "A Modern Next.js Full-Stack SaaS Template",
+    "description": "A production-ready Next.js and Supabase starter template for building modern SaaS applications. Launch your content, AI, or subscription service faster."
+  },
+  "Login": {
+    "title": "Welcome back",
+    "description": "Sign in with the following methods",
+    "Toast": {
+      "Email": {
+        "successTitle": "Magic link sent!",
+        "successDescription": "Please check your email for the login link.",
+        "errorTitle": "Error",
+        "errorDescription": "Failed to send magic link. Please try again."
+      },
+      "Google": {
+        "errorTitle": "Error",
+        "errorDescription": "Failed to sign in with Google. Please try again."
+      },
+      "Github": {
+        "errorTitle": "Error",
+        "errorDescription": "Failed to sign in with Github. Please try again."
+      }
+    },
+    "signInMethods": {
+      "or": "Or continue with",
+      "signInWithGoogle": "Continue with Google",
+      "signInWithGithub": "Continue with Github",
+      "signInWithEmail": "Continue with Email"
+    },
+    "Button": {
+      "signIn": "Sign In",
+      "signOut": "Sign Out"
+    },
+    "UserMenus": [
+      {
+        "name": "Settings",
+        "href": "/dashboard/settings"
+      },
+      {
+        "name": "Subscription",
+        "href": "/dashboard/subscription"
+      },
+      {
+        "name": "Credit History",
+        "href": "/dashboard/credit-history"
+      }
+    ],
+    "AdminMenus": [
+      {
+        "name": "Users",
+        "href": "/dashboard/users"
+      },
+      {
+        "name": "Prices",
+        "href": "/dashboard/prices"
+      },
+      {
+        "name": "Blogs",
+        "href": "/dashboard/blogs"
+      },
+      {
+        "name": "R2 Files",
+        "href": "/dashboard/r2-resources"
+      }
+    ]
+  },
+  "Blogs": {
+    "title": "Blog Posts",
+    "description": "Insights on Next.js ecosystem and Nexty.dev template updates.",
+    "emptyState": {
+      "title": "No blog posts",
+      "description": "We are creating exciting content, please stay tuned!"
+    },
+    "loadMorePostsFailed": "Failed to load more posts",
+    "loadMorePosts": "Loading more posts...",
+    "filterPostsFailed": "Failed to load posts",
+    "noPostsFoundForThisTag": "No posts found with this tag",
+    "reachedTheEnd": "You've reached the end of all posts",
+    "BlogDetail": {
+      "featured": "Featured Post",
+      "accessRestricted": "Access Restricted",
+      "unauthorized": "This article is only available to logged-in users",
+      "premium": "Premium Content",
+      "premiumContent": "This article is exclusive to subscribers",
+      "signIn": "Sign In",
+      "upgrade": "Upgrade",
+      "backToBlogs": "Back to Blog List",
+      "notFound": "Article Not Found"
+    }
+  },
+  "About": {
+    "title": "About",
+    "description": "About the site"
+  },
+  "TermsOfService": {
+    "title": "Terms of Service",
+    "description": "Terms of Service"
+  },
+  "PrivacyPolicy": {
+    "title": "Privacy Policy",
+    "description": "Privacy Policy"
+  },
+  "AIDemo": {
+    "title": "AI Capabilities Demo",
+    "description": "This page showcases non-public features and is exclusively for users who have purchased the template. It's designed for learning and testing the AI model invocation process. To use it, simply launch the template locally and input your API key in the environment variables. The AI demo includes functionalities like single-turn and multi-turn conversations, text-to-image, image-to-image, and text/image-to-video conversions. Through this demo, you can quickly grasp the AI invocation workflow, accelerating your journey in building AI applications.",
+    "metaDescription": "This page showcases AI capabilities including single-turn and multi-turn conversations, text-to-image, image-to-image, and text/image-to-video conversions."
+  },
+  "ErrorPage": {
+    "403": {
+      "title": "403 - Access Denied",
+      "description": "You don't have permission to access this page.",
+      "button": {
+        "name": "Back to homepage",
+        "href": "/"
+      }
+    },
+    "RedirectError": {
+      "title": "Redirect Error",
+      "description": "An error occurred during the authentication process.",
+      "goToHome": "Go to Home",
+      "goToLogin": "Go to Login",
+      "invalid_params": {
+        "title": "Invalid Parameters",
+        "description": "Required parameters are missing in the request."
+      },
+      "invalid_redirect": {
+        "title": "Invalid Redirect URL",
+        "description": "The redirect URL provided is not allowed."
+      },
+      "token_expired": {
+        "title": "Token Expired",
+        "description": "Your verification token has expired. Please try logging in again."
+      },
+      "invalid_token": {
+        "title": "Invalid Token",
+        "description": "The verification token provided is invalid."
+      },
+      "invalid_link_or_expired": {
+        "title": "Invalid or Expired Link",
+        "description": "The email verification link is invalid or has expired."
+      },
+      "server_error": {
+        "title": "Server Error",
+        "description": "An unexpected error occurred on the server during authentication."
+      },
+      "unknown": {
+        "title": "Authentication Error",
+        "description": "An unknown error occurred during the authentication process."
+      }
+    },
+    "StripeError": {
+      "title": "Payment Portal Error",
+      "description": "An error occurred with your payment information.",
+      "goToHome": "Go to Home",
+      "goToDashboard": "Go to Dashboard"
+    }
+  }
+}

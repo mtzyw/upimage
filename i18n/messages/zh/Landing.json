@@ -1,0 +1,423 @@
+{
+  "Hero": {
+    "badge": {
+      "label": "最新",
+      "text": "AI 智能图像增强技术",
+      "href": "https://nexty.dev/#pricing"
+    },
+    "title": {
+      "part1": "图像 ",
+      "part2": "放大器",
+      "part3": "变换器",
+      "part4": "与生成器",
+      "part5": "宛如",
+      "part6": "魔法"
+    },
+    "feature1": {
+      "title": "让 Magnific",
+      "subtitle": "自由想象"
+    },
+    "feature2": {
+      "title": "强力驱动",
+      "subtitle": "生成式 AI"
+    },
+    "feature3": {
+      "title": "效果",
+      "subtitle": "如魔法般神奇"
+    },
+    "slider1": {
+      "label": "创造力"
+    },
+    "slider2": {
+      "label": "HDR"
+    },
+    "slider3": {
+      "label": "相似度"
+    },
+    "description": "最先进的 AI 技术实现超高分辨率图像放大。不仅仅是放大，还能增强、变换和生成！Magnific 可以根据你的提示和参数重新想象出你希望的任何细节！",
+    "getStarted": "放大、变换或生成图片",
+    "getStartedLink": "https://nexty.dev/#pricing",
+    "viewDocs": "查看文档",
+    "viewDocsLink": "https://nexty.dev/docs"
+  },
+  "Features": {
+    "badge": {
+      "label": "核心功能",
+      "text": "生产级 SaaS 开发套件"
+    },
+    "title": "覆盖完整 SaaS 开发场景的功能套件",
+    "description": "Nexty 提供现代 SaaS 应用所需的全部核心功能，让你专注于核心业务逻辑，快速实现从 0 到 1 的突破。",
+    "moreFeatures": {
+      "title": "探索更多功能特性",
+      "description": "查看完整功能路线图，详细技术文档，以及即将推出的新功能，助力你的 SaaS 开发之旅。",
+      "button": "查看功能路线图"
+    },
+    "items": [
+      {
+        "title": "用户认证系统",
+        "description": "基于 Supabase 的企业级认证方案，支持社交登录、邮箱验证和机器人防护，让用户注册登录更安全便捷。",
+        "details": [
+          {
+            "title": "社交账号登录",
+            "description": "支持 Google、GitHub 等主流平台一键登录。"
+          },
+          {
+            "title": "邮箱魔法链接",
+            "description": "免密码登录验证，提升用户体验。"
+          },
+          {
+            "title": "机器人防护",
+            "description": "集成 Cloudflare Turnstile 防止恶意注册。"
+          }
+        ],
+        "images": [
+          "/images/features/login.png"
+        ]
+      },
+      {
+        "title": "支付收费系统",
+        "description": "完整的 Stripe 支付解决方案，支持订阅制、一次性付费和用量计费，轻松实现商业变现。",
+        "details": [
+          {
+            "title": "全支付场景支持",
+            "description": "Nexty 支持月付、年付订阅和一次性购买等多种收费模式。"
+          },
+          {
+            "title": "用量计费系统",
+            "description": "Nexty 支持基于使用量的灵活计费，适合 AI 工具等按量付费场景。"
+          },
+          {
+            "title": "可视化定价管理",
+            "description": "Nexty 通过管理后台可视化管理定价方案，绑定 Stripe 价格 ID，安全便捷且支持实时预览。"
+          }
+        ],
+        "images": [
+          "/images/features/payment-1.png",
+          "/images/features/payment-2.png"
+        ]
+      },
+      {
+        "title": "AI 集成能力",
+        "description": "全栈 AI 开发工具包，提供交互式演示、多厂商支持，还赠送完整的 AI 生图网站模板。",
+        "details": [
+          {
+            "title": "AI 功能演示中心",
+            "description": "Nexty 内置对话、文生图、图生图、视频生成等演示，帮助开发者快速学习 AI 调用流程和测试模型。"
+          },
+          {
+            "title": "全平台 AI 接入",
+            "description": "Nexty 支持 GPT、Claude、Gemini、DeepSeek、Grok、OpenRouter、Replicate 等主流 AI 平台。"
+          },
+          {
+            "title": "额外赠送：AI 绘图网站模板",
+            "description": "Nexty 付费用户可获得完整的 Flux Kontext AI 绘图网站模板，快速部署 AI 艺术创作平台。"
+          }
+        ],
+        "images": [
+          "/images/features/ai-1.png",
+          "/images/features/ai-2.png"
+        ]
+      },
+      {
+        "title": "内容管理系统",
+        "description": "进阶版 CMS 超越基础内容管理，支持付费墙保护、AI 翻译和多场景发布能力。",
+        "details": [
+          {
+            "title": "内容访问控制",
+            "description": "Nexty CMS 支持公开、登录用户、付费订阅等多层级内容访问控制，实现内容变现。"
+          },
+          {
+            "title": "AI 智能翻译",
+            "description": "Nexty CMS 内置 AI 翻译功能支持多语言内容创作，还有复制功能提高内容生产效率。"
+          },
+          {
+            "title": "多场景内容发布",
+            "description": "Nexty CMS 既能做免费博客站，也能做付费内容平台，支持草稿、发布、归档等状态管理。"
+          }
+        ],
+        "images": [
+          "/images/features/cms-1.png",
+          "/images/features/admin-3.png",
+          "/images/features/cms-3.png",
+          "/images/features/cms-4.png",
+          "/images/features/cms-5.png"
+        ]
+      },
+      {
+        "title": "文件存储管理",
+        "description": "基于 Cloudflare R2 的企业级文件管理，管理后台可视化操作，全球 CDN 加速，优化上传体验。",
+        "details": [
+          {
+            "title": "后台文件管理",
+            "description": "Nexty 提供专门的管理后台，支持文件上传、删除、整理等全方位文件管理功能。"
+          },
+          {
+            "title": "Cloudflare R2 集成",
+            "description": "Nexty 采用 Cloudflare R2 存储方案，成本低廉、性能卓越，全球 CDN 自动分发。"
+          },
+          {
+            "title": "优化上传体验",
+            "description": "Nexty 支持拖拽上传、预览功能和自动文件处理，提供无缝的用户体验。"
+          }
+        ],
+        "images": [
+          "/images/features/admin-4.png"
+        ]
+      },
+      {
+        "title": "可视化定价管理",
+        "description": "Nexty 首创后台定价管理模式，安全便捷，更新定价无需修改代码。",
+        "details": [
+          {
+            "title": "实时预览功能",
+            "description": "Nexty 定价卡片编辑器支持实时预览，让你在保存前就能看到定价卡片的显示效果。"
+          },
+          {
+            "title": "Stripe 数据同步",
+            "description": "Nexty 一键验证并获取 Stripe 定价数据，确保计费设置准确无误。"
+          },
+          {
+            "title": "多语言智能翻译",
+            "description": "Nexty 支持 AI 驱动的定价卡片翻译，轻松管理多语言定价内容。"
+          }
+        ],
+        "images": [
+          "/images/features/admin-2.png",
+          "/images/features/prices-1.png",
+          "/images/features/prices-2.png",
+          "/images/features/prices-3.png",
+          "/images/features/prices-4.png",
+          "/images/features/prices-5.png"
+        ]
+      },
+      {
+        "title": "邮件营销系统",
+        "description": "完整邮件解决方案，Cloudflare 域名邮箱 + Resend 营销集成，专业沟通和订阅管理一步到位。",
+        "details": [
+          {
+            "title": "专业域名邮箱",
+            "description": "Nexty 通过 Cloudflare 实现域名邮箱，让你的品牌更专业，提升用户信任度。"
+          },
+          {
+            "title": "高级邮件营销",
+            "description": "Nexty 集成 Resend 订阅管理和邮件营销功能，页脚内置订阅模块。"
+          },
+          {
+            "title": "内置邮件自动化",
+            "description": "Nexty 包含订阅欢迎邮件、支付失败通知等预构建模板，覆盖核心用户沟通场景。"
+          }
+        ],
+        "images": [
+          "/images/features/email-2.png",
+          "/images/features/email-1.png"
+        ]
+      },
+      {
+        "title": "用户管理中心",
+        "description": "完整的用户管理中心，为用户提供流畅的使用体验。",
+        "details": [
+          {
+            "title": "个人资料管理",
+            "description": "Nexty 提供完善的个人设置功能。"
+          },
+          {
+            "title": "订阅管理",
+            "description": "Nexty 通过 Stripe 集成提供订阅管理和计费历史查询功能。"
+          },
+          {
+            "title": "积分历史记录",
+            "description": "Nexty 跟踪积分发放和使用情况，支持一次性积分和订阅制积分双重模式。"
+          }
+        ],
+        "images": [
+          "/images/features/user-1.png",
+          "/images/features/user-2.png",
+          "/images/features/user-3.png"
+        ]
+      },
+      {
+        "title": "管理员后台",
+        "description": "全方位管理后台，提供用户、定价、内容、文件等完整 SaaS 管理能力。",
+        "details": [
+          {
+            "title": "用户管理",
+            "description": "Nexty 提供完整用户管理功能，包括角色控制、Stripe 客户集成和账户管理。"
+          },
+          {
+            "title": "定价管理",
+            "description": "Nexty 提供可视化定价方案管理，环境隔离、Stripe 集成、实时预览。"
+          },
+          {
+            "title": "内容文件管理",
+            "description": "Nexty 包含博客管理（多语言支持、访问控制）和 R2 文件管理（预览功能）。"
+          }
+        ],
+        "images": [
+          "/images/features/admin-1.png",
+          "/images/features/admin-2.png",
+          "/images/features/admin-3.png",
+          "/images/features/admin-4.png"
+        ]
+      },
+      {
+        "title": "营销增长工具",
+        "description": "完整营销增长工具包，国际化、数据分析、广告投放、SEO 优化，助力全球化业务成功。",
+        "details": [
+          {
+            "title": "国际化多语言",
+            "description": "Nexty 开箱即用多语言支持，轻松扩展全球市场覆盖。"
+          },
+          {
+            "title": "数据分析变现",
+            "description": "Nexty 集成 Google Analytics、Plausible 数据分析和 AdSense 广告变现。"
+          },
+          {
+            "title": "SEO 搜索优化",
+            "description": "Nexty 提供全面 SEO 优化，meta 标签、站点地图等提升搜索排名。"
+          }
+        ],
+        "images": [
+          "/images/features/other-1.png",
+          "/images/features/other-2.png",
+          "/images/features/other-3.png"
+        ]
+      }
+    ]
+  },
+  "UseCases": {
+    "badge": {
+      "label": "应用场景",
+      "text": "多场景解决方案"
+    },
+    "title": "一套模板，多场景应用",
+    "description": "Nexty 适用于开发不同场景的网站，从内容站到 AI 工具，从免费服务到付费订阅，都可快速开发上线。",
+    "cases": [
+      {
+        "title": "AI 付费工具站",
+        "description": "几天内上线生产级 AI 应用，不再需要数月开发。内置 OpenRouter、Replicate 等主流 AI 平台接入，智能用量跟踪、自动计费扣费，专为 AI 变现而生。",
+        "image": "/placeholder.webp",
+        "icon": "Bot"
+      },
+      {
+        "title": "内容博客平台",
+        "description": "快速搭建 SEO 优化的内容网站，高级 CMS 功能完备。支持 Markdown 编辑、多语言、付费墙保护、AI 翻译、AdSense 集成。适合做付费内容平台、newsletter 或内容驱动的 SaaS。",
+        "image": "/placeholder.webp",
+        "icon": "FileText"
+      },
+      {
+        "title": "订阅会员平台",
+        "description": "构建稳定的订阅收入业务，自动化计费、客户管理、支付处理一应俱全。包含订阅管理、用量计费、客户门户、数据分析。适合 SaaS 市场、订阅服务或付费工具平台。",
+        "image": "/placeholder.webp",
+        "icon": "CreditCard"
+      },
+      {
+        "title": "免费工具引流站",
+        "description": "创建快速传播的免费工具，带来大量自然流量。极速性能和 SEO 优化，助你快速打造下一个爆款工具，获取潜在客户。",
+        "image": "/placeholder.webp",
+        "icon": "Wrench"
+      }
+    ]
+  },
+  "Testimonials": {
+    "badge": {
+      "label": "用户评价"
+    },
+    "title": "用户如何评价",
+    "description": "看看 Magnific 如何改变创意工作流程",
+    "items": [
+      {
+        "content": "Magnific 完全改变了我的摄影工作流程！现在我可以将人像放大到令人难以置信的细节水平。AI 增强功能为图像添加了以前无法实现的深度和清晰度。这个工具对专业摄影师来说就是纯粹的魔法。",
+        "author": {
+          "name": "陈莎拉",
+          "position": "专业摄影师",
+          "avatar": "/images/users/user1.jpeg"
+        },
+        "rating": "5.0"
+      },
+      {
+        "content": "作为一名数字艺术家，Magnific 彻底改变了我处理 AI 生成图像的方式。我可以先创建低分辨率的作品，然后放大到令人惊叹的细节水平。创造力控制让我能够精确添加恰到好处的增强效果。",
+        "author": {
+          "name": "罗德里格斯·迈克尔",
+          "position": "数字艺术家",
+          "avatar": "/images/users/user2.jpeg"
+        },
+        "rating": "4.9"
+      },
+      {
+        "content": "我们设计工作室一直在为客户项目使用 Magnific，效果非常惊人。我们可以交付超高分辨率的艺术作品，客户非常喜欢。它已经成为我们创意流程中不可或缺的工具。",
+        "author": {
+          "name": "汤普森·艾玛",
+          "position": "创意总监",
+          "avatar": "/images/users/user3.png"
+        },
+        "rating": "5.0"
+      }
+    ]
+  },
+  "FAQ": {
+    "title": "常见问题解答",
+    "description": "关于AI图像增强技术的常见问题以及如何变革您的图像",
+    "items": [
+      {
+        "question": "Magnific的AI放大器和增强器是如何工作的？",
+        "answer": "您会感觉就像拥有一根魔法棒！Magnific会将您选择的任何图像转换为更高分辨率的版本，添加您想要的任何细节。您可以通过描述和各种控制来指导放大过程，比如'创造力'控制，它允许您控制AI生成的幻觉（因此新细节）的水平。"
+      },
+      {
+        "question": "Magnific适合初学者使用吗？",
+        "answer": "Magnific.ai的设计旨在为所有背景和技能水平的创作者提供易于访问和用户友好的体验。它的直观界面、深入教程和社区都可以在您的创作之旅中为您提供支持。"
+      },
+      {
+        "question": "谁可以通过Magnific放大器增强他们的工作流程和创作过程？",
+        "answer": "Magnific专为广泛的用户群体而设计，包括摄影、平面设计、数字艺术和插画领域的专业人士和爱好者，他们需要高分辨率图像和精细的细节增强。它还服务于AI艺术家和创作者，他们用AI生成图像并希望放大它们以获得更多分辨率和深度。"
+      },
+      {
+        "question": "Magnific AI的费用是多少？",
+        "answer": "Magnific AI的适用价格是购买时在我们定价页面上显示的价格。在可能的情况下，价格以您的本地货币显示。请注意，根据您的地区，最终价格可能会加上增值税和/或地方税。当您选择年度订阅时，您可以免费获得两个月。"
+      },
+      {
+        "question": "放大的图像会有伪影吗？",
+        "answer": "有时会有。但在大多数情况下，可以通过创造力、HDR和相似度滑块以及通过文本提示的自然语言来控制它们。大多数伪影只有在创造力或HDR值设置过高，或相似度配置不当时才会出现。"
+      },
+      {
+        "question": "支付服务安全吗？",
+        "answer": "是的，我们的支付服务100%安全。财务处理由Stripe处理，我们不会在我们这边保留任何卡片详细信息。Stripe维持与银行相当的安全标准。"
+      },
+      {
+        "question": "你们接受哪些支付方式？",
+        "answer": "我们接受通过信用卡或借记卡付款，包括VISA、MasterCard、American Express、iDeal、SOFORT、Bancontact、Przelewy24、Giropay、EPS、GrabPay、AliPay等等。目前，我们不接受PayPal或加密货币。"
+      },
+      {
+        "question": "我可以获得退款吗？",
+        "answer": "很遗憾，由于与AI驱动的放大过程相关的巨大费用，我们无法提供退款。我们的成本很高，特别是放大您的图像所需的GPU处理时间。在注册时，您同意因此放弃退款权利。"
+      },
+      {
+        "question": "如何取消我的订阅？",
+        "answer": "您可以随时取消订阅。登录后，转到Magnific AI的顶部并点击账单，您将被重定向到Stripe的账单门户，在那里您可以下载发票、切换计划和取消订阅。"
+      }
+    ]
+  },
+  "CTA": {
+    "title": "快速上线，抢占先机",
+    "description": "无需从零开始！使用 Nexty 模板，让你专注于核心创意，快速构建、验证并开始赚钱。",
+    "button": "立即获取模板",
+    "trustText": "受到全球开发者信赖",
+    "features": {
+      "deploy": "🚀 快速部署",
+      "production": "🔧 生产就绪",
+      "updates": "💎 终身更新",
+      "i18n": "🌍 国际化"
+    }
+  },
+  "Pricing": {
+    "badge": {
+      "label": "定价",
+      "text": "一次付费，永久更新"
+    },
+    "title": "我们数月打磨，让你能够快速发布",
+    "description": "使用我们经过验证的 SaaS 模板，你将专注于用户真正需要的功能",
+    "annual": "年付",
+    "monthly": "月付",
+    "onetime": "一次性",
+    "saveTip": "节省 20%"
+  }
+}

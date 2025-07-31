@@ -1,0 +1,62 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Supabase Authentication Guidelines
+
+This project uses Supabase for authentication and user management.
+
+## Authentication Setup
+
+- Authentication is primarily handled through:
+  - `components/providers/AuthProvider.tsx`: Client-side provider
+  - `lib/supabase/middleware.ts`: Server-side authentication in middleware
+  - `lib/supabase/server.ts` & `lib/supabase/client.ts`: Supabase client initialization
+
+## Authentication Flow
+
+- The project supports multiple authentication methods:
+  - Social logins (Google, GitHub)
+  - Email magic link (OTP)
+- Authentication callbacks are handled in `app/auth/callback/route.ts`
+- Email verification is handled in `app/auth/confirm/route.ts`
+
+## User Roles and Authorization
+
+- User roles (`admin` or `user`) are stored in the Supabase `users` table
+- Role-based access control is implemented in `lib/supabase/middleware.ts`
+- Protected routes:
+  - Basic protection for `/dashboard` routes (authenticated users only)
+  - Role-specific protection for admin routes (e.g., `/dashboard/users`)
+
+## Working with Auth in Components
+
+- Use the `useAuth()` hook from `components/providers/AuthProvider` to access auth functionality in client components:
+  - `user`: The current user object with role information
+  - `loading`: Authentication loading state
+  - `signInWithGoogle`, `signInWithGithub`, `signInWithEmail`: Login methods
+  - `signOut`: Logout function
+  - `refreshUser`: Force refresh user data
+
+## Server-Side Auth
+
+- For server components, use the Supabase server client:
+  ```typescript
+  import { createClient } from '@/lib/supabase/server'
+  
+  // In a Server Component or Route Handler
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  ```
+
+## Auth Error Handling
+
+- Authentication errors are handled and redirected to `/redirect-error` with appropriate error codes
+- Error messages are internationalized in the i18n message files
+
+## Auth Session Management
+
+- Session management is handled automatically by Supabase
+- The middleware preserves the authentication state across requests
+- Custom logic in `middleware.ts` handles redirects for unauthenticated users 

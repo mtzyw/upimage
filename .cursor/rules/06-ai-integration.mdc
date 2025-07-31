@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# AI Integration Guidelines
+
+This project integrates with various AI providers for text completion, chat, and media generation capabilities.
+
+## Model Configuration
+
+- AI models are configured in `lib/ai/models.ts`. When adding new models, follow the existing patterns.
+- The project supports multiple AI providers (OpenAI, Anthropic, Google, DeepSeek, XAI, Replicate).
+
+## Client-Side Integration
+
+- For AI functionality, use the `@ai-sdk/react` hooks (`useCompletion`, `useChat`).
+- See examples in the `components/ai-demo/` directory.
+
+## API Routes and Error Handling
+
+- AI endpoints are implemented as Route Handlers in the `app/api/` directory.
+- Use appropriate error handling for API limits, token limits, and provider outages.
+- Provider API keys are configured in environment variables.
+
+## Performance Considerations
+
+- Be mindful of token limits and costs when designing AI features.
+- Consider implementing caching for common AI responses where appropriate.
+- For streaming responses, use the streaming patterns provided by the AI SDK.
+
+## AI Component Patterns
+
+- Separate AI logic from UI components when possible.
+- Provide appropriate loading states during AI processing.
+- Implement stopping/cancellation for long-running AI tasks.

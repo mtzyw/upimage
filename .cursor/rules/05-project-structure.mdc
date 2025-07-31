@@ -1,0 +1,46 @@
+# Project Structure Guidelines
+
+This is a Next.js project with TypeScript, Tailwind CSS, Supabase auth, and AI integration.
+Key directories and files:
+
+## Core Directories
+- `app/`: App Router architecture with nested routes, layouts, and pages.
+  - `[locale]/`: Routes wrapped in locale context
+  - `api/`: API endpoints using Next.js Route Handlers
+  - `auth/`: Authentication routes for callbacks and verification
+- `components/`: Reusable React components organized by feature and functionality
+  - `ui/`: Shadcn UI components and base UI elements
+  - `providers/`: Context providers including AuthProvider
+  - `ai-demo/`: Components related to AI functionality
+- `lib/`: Utility functions, helpers, and configurations
+  - `supabase/`: Supabase client/server configuration
+  - `ai/`: AI model and provider configuration
+- `i18n/`: Internationalization configuration and message files
+  - `messages/`: Translation JSON files by language
+  - `routing.ts`: Locale routing configuration
+- `public/`: Static assets like images, fonts, and files
+- `styles/`: Global CSS styles and Tailwind configuration
+- `types/`: TypeScript type definitions and interfaces
+- `stores/`: Zustand state management stores
+
+## Content and Config
+- `blogs/`: Blog content with markdown files
+- `content/`: General content for the site
+- `config/`: Configuration files for various features
+- `emails/`: Email templates for transactional emails
+
+## Configuration Files
+- `next.config.mjs`: Next.js configuration
+- `tailwind.config.ts`: Tailwind CSS configuration
+- `tsconfig.json`: TypeScript configuration
+- `middleware.ts`: Next.js middleware for auth and i18n routing
+- `.env.local`: Environment variables (credentials not in version control)
+- `.env.example`: Example environment variables template
+
+## Feature Guide
+- **Authentication**: Uses Supabase Auth with Google, GitHub, and email providers.
+- **Internationalization**: Uses next-intl for translations in English, Japanese, and Chinese.
+- **AI Integration**: Multiple AI providers (OpenAI, Anthropic, Google, etc.) configured for chat and completion.
+- **UI Framework**: Uses Shadcn UI components with Tailwind CSS for styling.
+- **State Management**: Uses Zustand for global state management.
+- **Database**: Uses Supabase for PostgreSQL database access. 

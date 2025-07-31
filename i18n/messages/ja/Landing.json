@@ -1,0 +1,423 @@
+{
+  "Hero": {
+    "badge": {
+      "label": "新機能",
+      "text": "AI 画像高品質化技術",
+      "href": "https://nexty.dev/#pricing"
+    },
+    "title": {
+      "part1": "画像 ",
+      "part2": "アップスケーラー",
+      "part3": "トランスフォーマー",
+      "part4": "＆ジェネレーター",
+      "part5": "まるで",
+      "part6": "魔法"
+    },
+    "feature1": {
+      "title": "Magnific に",
+      "subtitle": "想像させよう"
+    },
+    "feature2": {
+      "title": "強力な",
+      "subtitle": "生成 AI"
+    },
+    "feature3": {
+      "title": "魔法と",
+      "subtitle": "見分けがつかない"
+    },
+    "slider1": {
+      "label": "創造性"
+    },
+    "slider2": {
+      "label": "HDR"
+    },
+    "slider3": {
+      "label": "類似度"
+    },
+    "description": "超高解像度アップスケーリングを実現する最先端の AI 技術。単なるアップスケールだけでなく、画像の強化、変換、生成も可能！Magnific は、あなたのプロンプトとパラメータに従って、望む限りの詳細を再構築できます！",
+    "getStarted": "画像をアップスケール、変換、生成",
+    "getStartedLink": "https://nexty.dev/#pricing",
+    "viewDocs": "ドキュメントを見る",
+    "viewDocsLink": "https://nexty.dev/docs"
+  },
+  "Features": {
+    "badge": {
+      "label": "機能特徴",
+      "text": "プロダクション対応 SaaS 開発キット"
+    },
+    "title": "完全なSaaS開発シナリオをカバーする機能スイート",
+    "description": "Nextyは現代のSaaSアプリケーションに必要な全てのコア機能を提供し、コアビジネスロジックに集中して、0から1への突破を迅速に実現できます。",
+    "moreFeatures": {
+      "title": "より多くの機能特性を探索",
+      "description": "完全な機能ロードマップ、詳細な技術ドキュメント、および今後リリース予定の新機能をご確認いただき、SaaS開発の道のりをサポートします。",
+      "button": "機能ロードマップを確認"
+    },
+    "items": [
+      {
+        "title": "ユーザー認証システム",
+        "description": "Supabaseベースのエンタープライズグレード認証ソリューション。ソーシャルログイン、メール認証、ボット保護機能により、より安全で便利なユーザー登録・ログインを実現。",
+        "details": [
+          {
+            "title": "ソーシャルアカウントログイン",
+            "description": "Google、GitHubなどの主要プラットフォームでのワンクリックログインに対応。"
+          },
+          {
+            "title": "メールマジックリンク",
+            "description": "パスワード不要のログイン認証でユーザー体験を向上。"
+          },
+          {
+            "title": "ボット保護機能",
+            "description": "Cloudflare Turnstileを統合し悪意のある登録を防止。"
+          }
+        ],
+        "images": [
+          "/images/features/login.png"
+        ]
+      },
+      {
+        "title": "決済システム",
+        "description": "完全なStripe決済ソリューション。サブスクリプション、一回限りの支払い、使用量ベース課金に対応し、ビジネス収益化を容易に実現。",
+        "details": [
+          {
+            "title": "全決済シナリオ対応",
+            "description": "Nextyは月額・年額サブスクリプション、一括購入など多様な課金モデルをサポート。"
+          },
+          {
+            "title": "使用量ベース課金システム",
+            "description": "Nextyは使用量に基づく柔軟な課金に対応し、AIツールなど従量課金シナリオに最適。"
+          },
+          {
+            "title": "ビジュアル価格管理",
+            "description": "Nexty管理画面で価格プランを視覚的に管理、Stripe価格IDと連携し、安全で便利かつリアルタイムプレビュー対応。"
+          }
+        ],
+        "images": [
+          "/images/features/payment-1.png",
+          "/images/features/payment-2.png"
+        ]
+      },
+      {
+        "title": "AI統合機能",
+        "description": "フルスタックAI開発ツールキット。インタラクティブデモ、マルチベンダーサポート、完全なAI画像生成サイトテンプレートも付属。",
+        "details": [
+          {
+            "title": "AI機能デモセンター",
+            "description": "Nextyは対話、テキスト→画像、画像→画像、動画生成などのデモを内蔵し、開発者のAI呼び出しフロー学習とモデルテストを支援。"
+          },
+          {
+            "title": "全プラットフォームAI接続",
+            "description": "NextyはGPT、Claude、Gemini、DeepSeek、Grok、OpenRouter、Replicateなど主要AIプラットフォームをサポート。"
+          },
+          {
+            "title": "特典：AI画像生成サイトテンプレート",
+            "description": "Nexty有料ユーザーは完全なFlux Kontext AI画像生成サイトテンプレートを取得し、AIアート制作プラットフォームを迅速にデプロイ可能。"
+          }
+        ],
+        "images": [
+          "/images/features/ai-1.png",
+          "/images/features/ai-2.png"
+        ]
+      },
+      {
+        "title": "コンテンツ管理システム",
+        "description": "基本的なコンテンツ管理を超えた高度なCMS。ペイウォール保護、AI翻訳、マルチシナリオ公開機能をサポート。",
+        "details": [
+          {
+            "title": "コンテンツアクセス制御",
+            "description": "Nexty CMSは公開、ログインユーザー、有料購読者などマルチレベルコンテンツアクセス制御で収益化を実現。"
+          },
+          {
+            "title": "AIスマート翻訳",
+            "description": "Nexty CMS内蔵のAI翻訳機能で多言語コンテンツ作成をサポート、複製機能でコンテンツ制作効率を向上。"
+          },
+          {
+            "title": "マルチシナリオコンテンツ公開",
+            "description": "Nexty CMSは無料ブログサイトと有料コンテンツプラットフォーム両方に対応、下書き・公開・アーカイブなどステータス管理をサポート。"
+          }
+        ],
+        "images": [
+          "/images/features/cms-1.png",
+          "/images/features/admin-3.png",
+          "/images/features/cms-3.png",
+          "/images/features/cms-4.png",
+          "/images/features/cms-5.png"
+        ]
+      },
+      {
+        "title": "ファイルストレージ管理",
+        "description": "Cloudflare R2ベースのエンタープライズグレードファイル管理。管理画面での視覚的操作、グローバルCDN加速、最適化されたアップロード体験を提供。",
+        "details": [
+          {
+            "title": "バックエンドファイル管理",
+            "description": "Nextyは専用管理画面を提供し、ファイルアップロード・削除・整理など全方位ファイル管理機能をサポート。"
+          },
+          {
+            "title": "Cloudflare R2統合",
+            "description": "NextyはCloudflare R2ストレージソリューションを採用、低コスト・高性能でグローバルCDN自動配信。"
+          },
+          {
+            "title": "最適化されたアップロード体験",
+            "description": "Nextyはドラッグ&ドロップアップロード、プレビュー機能、自動ファイル処理でシームレスなユーザー体験を提供。"
+          }
+        ],
+        "images": [
+          "/images/features/admin-4.png"
+        ]
+      },
+      {
+        "title": "ビジュアル価格管理",
+        "description": "Nexty革新のダッシュボード価格管理モード。安全で便利、価格更新時のコード修正が不要。",
+        "details": [
+          {
+            "title": "リアルタイムプレビュー機能",
+            "description": "Nexty価格カードエディターはリアルタイムプレビューをサポートし、保存前に価格カードの表示効果を確認可能。"
+          },
+          {
+            "title": "Stripeデータ同期",
+            "description": "Nextyワンクリック検証でStripe価格データを取得し、課金設定の正確性を保証。"
+          },
+          {
+            "title": "多言語スマート翻訳",
+            "description": "NextyはAI駆動の価格カード翻訳をサポートし、多言語価格コンテンツを簡単に管理。"
+          }
+        ],
+        "images": [
+          "/images/features/admin-2.png",
+          "/images/features/prices-1.png",
+          "/images/features/prices-2.png",
+          "/images/features/prices-3.png",
+          "/images/features/prices-4.png",
+          "/images/features/prices-5.png"
+        ]
+      },
+      {
+        "title": "メールマーケティングシステム",
+        "description": "完全なメールソリューション。Cloudflareドメインメール + Resendマーケティング統合で、プロフェッショナルなコミュニケーションと購読管理をワンストップで実現。",
+        "details": [
+          {
+            "title": "プロフェッショナルドメインメール",
+            "description": "NextyはCloudflareでドメインメールを実現し、ブランドをより専門的に見せ、ユーザーの信頼度を向上。"
+          },
+          {
+            "title": "高度なメールマーケティング",
+            "description": "NextyはResend購読管理とメールマーケティング機能を統合、フッターに購読モジュールを内蔵。"
+          },
+          {
+            "title": "内蔵メール自動化",
+            "description": "Nextyは購読歓迎メール、支払い失敗通知など事前構築テンプレートを含み、コアユーザーコミュニケーションシナリオをカバー。"
+          }
+        ],
+        "images": [
+          "/images/features/email-2.png",
+          "/images/features/email-1.png"
+        ]
+      },
+      {
+        "title": "ユーザー管理センター",
+        "description": "完全なユーザー管理センター。ユーザーにスムーズな利用体験を提供。",
+        "details": [
+          {
+            "title": "プロフィール管理",
+            "description": "Nextyは充実した個人設定機能を提供。"
+          },
+          {
+            "title": "サブスクリプション管理",
+            "description": "NextyはStripe統合を通じてサブスクリプション管理と課金履歴照会機能を提供。"
+          },
+          {
+            "title": "クレジット履歴記録",
+            "description": "Nextyはクレジット付与と使用状況を追跡し、一回限りクレジットとサブスクリプション制クレジットの二重モードをサポート。"
+          }
+        ],
+        "images": [
+          "/images/features/user-1.png",
+          "/images/features/user-2.png",
+          "/images/features/user-3.png"
+        ]
+      },
+      {
+        "title": "管理者ダッシュボード",
+        "description": "全方位管理ダッシュボード。ユーザー、価格、コンテンツ、ファイルなど完全なSaaS管理機能を提供。",
+        "details": [
+          {
+            "title": "ユーザー管理",
+            "description": "Nextyは完全なユーザー管理機能を提供、ロール制御、Stripe顧客統合、アカウント管理を含む。"
+          },
+          {
+            "title": "価格管理",
+            "description": "Nextyはビジュアル価格プラン管理を提供、環境分離・Stripe統合・リアルタイムプレビュー対応。"
+          },
+          {
+            "title": "コンテンツファイル管理",
+            "description": "Nextyはブログ管理（多言語サポート・アクセス制御）とR2ファイル管理（プレビュー機能）を含む。"
+          }
+        ],
+        "images": [
+          "/images/features/admin-1.png",
+          "/images/features/admin-2.png",
+          "/images/features/admin-3.png",
+          "/images/features/admin-4.png"
+        ]
+      },
+      {
+        "title": "マーケティング成長ツール",
+        "description": "完全なマーケティング成長ツールキット。国際化、データ分析、広告配信、SEO最適化でグローバルビジネス成功を支援。",
+        "details": [
+          {
+            "title": "国際化多言語",
+            "description": "Nextyは開封即利用の多言語サポートで、グローバル市場カバレッジを簡単に拡張。"
+          },
+          {
+            "title": "データ分析収益化",
+            "description": "NextyはGoogle Analytics、Plausibleデータ分析とAdSense広告収益化を統合。"
+          },
+          {
+            "title": "SEO検索最適化",
+            "description": "Nextyは包括的SEO最適化を提供、metaタグ・サイトマップなどで検索ランキングを向上。"
+          }
+        ],
+        "images": [
+          "/images/features/other-1.png",
+          "/images/features/other-2.png",
+          "/images/features/other-3.png"
+        ]
+      }
+    ]
+  },
+  "UseCases": {
+    "badge": {
+      "label": "活用シナリオ",
+      "text": "多様な用途に対応"
+    },
+    "title": "1つのテンプレートで、あらゆるビジネスシーンに対応",
+    "description": "Nextyは、コンテンツサイトからAIツール、無料サービスから有料サブスクリプションまで、さまざまなWebサービスを短期間で構築・運営できる万能テンプレートです。",
+    "cases": [
+      {
+        "title": "収益化AIツールプラットフォーム",
+        "description": "数日でプロダクション対応のAIアプリケーションを立ち上げることができます。OpenRouter、Replicateなど主要AIプラットフォームとの連携、使用量自動トラッキング、従量課金システムを標準搭載。AI収益化に最適化された構成です。",
+        "image": "/placeholder.webp",
+        "icon": "Bot"
+      },
+      {
+        "title": "プロフェッショナルCMSサイト",
+        "description": "SEO最適化されたコンテンツサイトを素早く構築できます。高機能CMS、Markdown対応、多言語サポート、ペイウォール、AI翻訳、AdSense統合など充実した機能で、有料メディア・ニュースレター・コンテンツ型SaaSの運営が可能です。",
+        "image": "/placeholder.webp",
+        "icon": "FileText"
+      },
+      {
+        "title": "サブスクリプション型ビジネス",
+        "description": "安定した月額収益モデルを構築できます。自動決済処理、顧客管理、使用量ベース課金、カスタマーポータル、詳細な分析機能を完備。SaaSプラットフォーム、定期サービス、プレミアムツールの運営に最適です。",
+        "image": "/placeholder.webp",
+        "icon": "CreditCard"
+      },
+      {
+        "title": "バイラル系無料ツールサイト",
+        "description": "拡散力の高い無料ツールで大量のオーガニックトラフィックを獲得できます。高速パフォーマンスとSEO最適化により、次のバズるツールを迅速に開発し、見込み顧客の獲得につなげることができます。",
+        "image": "/placeholder.webp",
+        "icon": "Wrench"
+      }
+    ]
+  },
+  "Testimonials": {
+    "badge": {
+      "label": "お客様の声"
+    },
+    "title": "クリエイターからの評価",
+    "description": "Magnific がクリエイティブワークフローをどのように変革するかをご覧ください",
+    "items": [
+      {
+        "content": "Magnificは私の写真ワークフローを完全に変えました！ポートレートを信じられないほどの細部レベルまでアップスケールできるようになりました。AIエンハンス機能は、以前は不可能だった深みと鮮明さを画像に加えてくれます。プロの写真家にとって、このツールは純粋な魔法です。",
+        "author": {
+          "name": "サラ・チェン",
+          "position": "プロフェッショナルフォトグラファー",
+          "avatar": "/images/users/user1.jpeg"
+        },
+        "rating": "5.0"
+      },
+      {
+        "content": "デジタルアーティストとして、MagnificはAI生成画像の作業方法を革命的に変えました。低解像度で作品を作成し、その後素晴らしい細部でアップスケールできます。クリエイティビティコントロールで、まさに適切な量のエンハンスを追加できます。",
+        "author": {
+          "name": "マイケル・ロドリゲス",
+          "position": "デジタルアーティスト",
+          "avatar": "/images/users/user2.jpeg"
+        },
+        "rating": "4.9"
+      },
+      {
+        "content": "私たちのデザインスタジオではクライアントプロジェクトでMagnificを使用しており、その結果は絶品です。クライアントが絶対に気に入る超高解像度のアートワークを提供できます。これは私たちのクリエイティブプロセスにおいて不可欠なツールになっています。",
+        "author": {
+          "name": "エマ・トンプソン",
+          "position": "クリエイティブディレクター",
+          "avatar": "/images/users/user3.png"
+        },
+        "rating": "5.0"
+      }
+    ]
+  },
+  "FAQ": {
+    "title": "よくある質問",
+    "description": "AI画像増強技術に関するよくある質問と、画像を変革する方法について",
+    "items": [
+      {
+        "question": "MagnificのAIアップスケーラーとエンハンサーはどのように動作しますか？",
+        "answer": "まるで魔法の杖を持っているような感覚です！Magnificはあなたが選んだ任意の画像を、お望みの細部を追加しながら高解像度版に変換します。アップスケールプロセスは、説明文や『創造性』などの様々なコントロールで方向付けることができ、AIが生成する幻想（つまり新しい細部）のレベルをコントロールできます。"
+      },
+      {
+        "question": "Magnificは初心者に適していますか？",
+        "answer": "Magnific.aiはあらゆる背景やスキルレベルのクリエイターにとってアクセシブルでユーザーフレンドリーになるよう設計されています。直観的なインターフェース、詳細なチュートリアル、コミュニティはすべてあなたのクリエイティブな旅をサポートします。"
+      },
+      {
+        "question": "Magnificアップスケーラーでワークフローやクリエイティブプロセスを向上させることができるのは誰ですか？",
+        "answer": "Magnificは写真、グラフィックデザイン、デジタルアート、イラストレーションの分野のプロフェッショナルや愛好家を含む幅幅いユーザーに向けて設計されており、高解像度の画像や細かいディテールの強化を必要としています。まPBで画像を生成し、より高い解像度や深みを求めてアップスケールしたいAIアーティストやクリエイターにも対応しています。"
+      },
+      {
+        "question": "Magnific AIの料金はいくらですか？",
+        "answer": "Magnific AIの適用料金は、購入時に料金ページに表示される料金です。可能な場合は、料金は現地通貨で表示されます。お住まいの地域によって、最終料金にVATや地方税が加算される場合がありますのでご注意ください。年間サブスクリプションを選択すると、2ヶ月分が無料になります。"
+      },
+      {
+        "question": "アップスケールされた画像にアーティファクトはありますか？",
+        "answer": "時々ありますが、ほとんどの場合、創造性、HDR、類似性スライダー、およびテキストプロンプトでの自然言語を使用してコントロールできます。ほとんどのアーティファクトは、創造性やHDRの値が高すぎるか、類似性が適切に設定されていない場合にのみ発生します。"
+      },
+      {
+        "question": "支付サービスは安全ですか？",
+        "answer": "はい、私たちの支付サービスは100%安全です。金融処理はStripeが手がけ、私たちの側でカード情報を保持することはありません。Stripeは銀行と同等のセキュリティ基準を維持しています。"
+      },
+      {
+        "question": "どのような支付方法を受け付けていますか？",
+        "answer": "VISA、MasterCard、American Express、iDeal、SOFORT、Bancontact、Przelewy24、Giropay、EPS、GrabPay、AliPayなど、クレジットカードやデビットカードでの支付を受け付けています。現在、PayPalや暗号通貨は受け付けていません。"
+      },
+      {
+        "question": "返金を受けられますか？",
+        "answer": "申し訳ありませんが、AI駆動のアップスケーリングプロセスに関連する巨額な費用のため、返金を提供することはできません。特にあなたの画像をアップスケールするために必要なGPU処理時間において、私たちのコストは非常に高額です。サインアップ時に、この理由で返金権を放棄することに同意していただきます。"
+      },
+      {
+        "question": "サブスクリプションをキャンセルするにはどうすればよいですか？",
+        "answer": "いつでもサブスクリプションをキャンセルできます。ログインし、Magnific AIの上部にある請求書をクリックすると、Stripeの請求ポータルにリダイレクトされ、そこで請求書のダウンロード、プランの切り替え、サブスクリプションのキャンセルができます。"
+      }
+    ]
+  },
+  "CTA": {
+    "title": "今すぐ画像の可能性を解き放とう",
+    "description": "あなたの画像を次のレベルへ。AI の魔法で、驚くほど鮮明で詳細な画像に変身させましょう。",
+    "button": "無料で始める",
+    "trustText": "世界中のクリエイターに信頼されています",
+    "features": {
+      "deploy": "🚀 即座に処理開始",
+      "production": "🔧 プロ仕様の品質",
+      "updates": "💎 継続的な改善",
+      "i18n": "🌍 グローバル対応"
+    }
+  },
+  "Pricing": {
+    "badge": {
+      "label": "価格",
+      "text": "今すぐ画像を変革"
+    },
+    "title": "AI 画像増強の魔法を体験",
+    "description": "あなたのクリエイティブニーズに最適なプランをお選びください。趣味から本格的なスタジオ作業まで、あらゆる用途に対応した最適なソリューションをご用意しています。",
+    "annual": "年額",
+    "monthly": "月額",
+    "onetime": "クレジット",
+    "saveTip": "20% 節約"
+  }
+}

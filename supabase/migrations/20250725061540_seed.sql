@@ -1,0 +1,50 @@
+INSERT INTO public.pricing_plans (
+    id, created_at, updated_at, environment, card_title, card_description,
+    stripe_price_id, stripe_product_id, stripe_coupon_id, enable_manual_input_coupon,
+    payment_type, recurring_interval, trial_period_days, price, currency,
+    display_price, original_price, price_suffix, features, is_highlighted,
+    highlight_text, button_text, button_link, display_order, is_active,
+    lang_jsonb, benefits_jsonb
+) VALUES 
+(
+        'b45736f3-226a-452b-9d0c-d01e45c0eda6', '2025-07-29T00:00:00+00', '2025-07-29T00:00:00+00', 'test', 'Starter', 'Perfect for beginners with 100 credits/month and core AI tools.',
+        NULL, NULL, NULL, false, 'recurring', 'month', NULL, 3.9, 'usd',
+        '$3.90', '$6.90', 'per month', '[{''bold'': True, ''included'': True, ''description'': ''100 credits/month''}, {''bold'': False, ''included'': True, ''description'': ''Credits roll up''}, {''bold'': False, ''included'': True, ''description'': ''Email Support''}, {''bold'': False, ''included'': True, ''description'': ''Reimagine AI''}, {''bold'': False, ''included'': True, ''description'': ''Batch Processing''}, {''bold'': False, ''included'': True, ''description'': ''No Ads''}, {''bold'': False, ''included'': True, ''description'': ''Pay with PayPro''}]',
+        true, 'Best for Starters', 'Subscribe Starter', NULL,
+        1, true, '{}', '{''monthly_credits'': 100, ''rollover_credits'': True, ''email_support'': True, ''reimagine_ai'': True, ''batch_processing'': True, ''no_ads'': True, ''paypro_enabled'': True}'
+    ),
+(
+        '41f780fe-8619-457a-8004-1c5915c42515', '2025-07-29T00:00:00+00', '2025-07-29T00:00:00+00', 'test', 'Premium', 'Best value plan with 500 credits/month and full AI features.',
+        NULL, NULL, NULL, false, 'recurring', 'month', NULL, 6.9, 'usd',
+        '$6.90', '$11.50', 'per month', '[{''bold'': True, ''included'': True, ''description'': ''500 credits/month''}, {''bold'': False, ''included'': True, ''description'': ''Credits roll up''}, {''bold'': False, ''included'': True, ''description'': ''Email Support''}, {''bold'': False, ''included'': True, ''description'': ''Reimagine AI''}, {''bold'': False, ''included'': True, ''description'': ''Batch Processing''}, {''bold'': False, ''included'': True, ''description'': ''No Ads''}]',
+        true, 'Most Popular', 'Subscribe Premium', NULL,
+        2, true, '{}', '{''monthly_credits'': 500, ''rollover_credits'': True, ''email_support'': True, ''reimagine_ai'': True, ''batch_processing'': True, ''no_ads'': True}'
+    ),
+(
+        'd64d029a-7001-4d98-a229-e455e8e5facc', '2025-07-29T00:00:00+00', '2025-07-29T00:00:00+00', 'test', 'Business', 'Unlimited credits, full AI features, and 8-image batch support.',
+        NULL, NULL, NULL, false, 'recurring', 'month', NULL, 19.0, 'usd',
+        '$19.00', '$29.00', 'per month', '[{''bold'': True, ''included'': True, ''description'': ''Unlimited credits''}, {''bold'': False, ''included'': True, ''description'': ''Email Support''}, {''bold'': False, ''included'': True, ''description'': ''Single Processing''}, {''bold'': False, ''included'': True, ''description'': ''Reimagine AI''}, {''bold'': False, ''included'': True, ''description'': ''Batch Processing''}, {''bold'': False, ''included'': True, ''description'': ''Up to 8 images per batch''}, {''bold'': False, ''included'': True, ''description'': ''No Ads''}]',
+        false, '', 'Subscribe Business', NULL,
+        3, true, '{}', '{''unlimited_credits'': True, ''email_support'': True, ''reimagine_ai'': True, ''batch_processing'': True, ''single_processing'': True, ''max_images_per_batch'': 8, ''no_ads'': True}'
+    ),
+(
+        '4f53d276-68f1-4350-b610-62ebe9e8e614', '2025-07-29T00:00:00+00', '2025-07-29T00:00:00+00', 'test', 'Starter (Year)', 'Perfect for beginners with 100 credits/month and core AI tools.',
+        NULL, NULL, NULL, false, 'recurring', 'year', NULL, 46.8, 'usd',
+        '$46.80', '$93.60', 'per year', '[{''bold'': True, ''included'': True, ''description'': ''100 credits/month''}, {''bold'': False, ''included'': True, ''description'': ''Credits roll up''}, {''bold'': False, ''included'': True, ''description'': ''Email Support''}, {''bold'': False, ''included'': True, ''description'': ''Reimagine AI''}, {''bold'': False, ''included'': True, ''description'': ''Batch Processing''}, {''bold'': False, ''included'': True, ''description'': ''No Ads''}, {''bold'': False, ''included'': True, ''description'': ''Pay with PayPro''}]',
+        true, 'Best for Starters', 'Subscribe Starter', NULL,
+        1, true, '{}', '{''monthly_credits'': 100, ''rollover_credits'': True, ''email_support'': True, ''reimagine_ai'': True, ''batch_processing'': True, ''no_ads'': True, ''paypro_enabled'': True}'
+    ),
+(
+        '68b3d8ea-fcdc-42c2-abed-c92d555216b5', '2025-07-29T00:00:00+00', '2025-07-29T00:00:00+00', 'test', 'Premium (Year)', 'Best value plan with 500 credits/month and full AI features.',
+        NULL, NULL, NULL, false, 'recurring', 'year', NULL, 82.80000000000001, 'usd',
+        '$82.80', '$165.60', 'per year', '[{''bold'': True, ''included'': True, ''description'': ''500 credits/month''}, {''bold'': False, ''included'': True, ''description'': ''Credits roll up''}, {''bold'': False, ''included'': True, ''description'': ''Email Support''}, {''bold'': False, ''included'': True, ''description'': ''Reimagine AI''}, {''bold'': False, ''included'': True, ''description'': ''Batch Processing''}, {''bold'': False, ''included'': True, ''description'': ''No Ads''}]',
+        true, 'Most Popular', 'Subscribe Premium', NULL,
+        2, true, '{}', '{''monthly_credits'': 500, ''rollover_credits'': True, ''email_support'': True, ''reimagine_ai'': True, ''batch_processing'': True, ''no_ads'': True}'
+    ),
+(
+        'a248b17a-e9b1-4222-8086-dc10d2a7e4e9', '2025-07-29T00:00:00+00', '2025-07-29T00:00:00+00', 'test', 'Business (Year)', 'Unlimited credits, full AI features, and 8-image batch support.',
+        NULL, NULL, NULL, false, 'recurring', 'year', NULL, 228.0, 'usd',
+        '$228.00', '$456.00', 'per year', '[{''bold'': True, ''included'': True, ''description'': ''Unlimited credits''}, {''bold'': False, ''included'': True, ''description'': ''Email Support''}, {''bold'': False, ''included'': True, ''description'': ''Single Processing''}, {''bold'': False, ''included'': True, ''description'': ''Reimagine AI''}, {''bold'': False, ''included'': True, ''description'': ''Batch Processing''}, {''bold'': False, ''included'': True, ''description'': ''Up to 8 images per batch''}, {''bold'': False, ''included'': True, ''description'': ''No Ads''}]',
+        false, '', 'Subscribe Business', NULL,
+        3, true, '{}', '{''unlimited_credits'': True, ''email_support'': True, ''reimagine_ai'': True, ''batch_processing'': True, ''single_processing'': True, ''max_images_per_batch'': 8, ''no_ads'': True}'
+    );
