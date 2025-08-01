@@ -608,6 +608,13 @@ export type Database = {
         Args: { p_user_id: string; p_deduct_amount: number; p_notes: string }
         Returns: boolean
       }
+      get_available_freepik_api_key: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          key: string
+        }[]
+      }
       grant_one_time_credits_and_log: {
         Args: {
           p_user_id: string
@@ -623,6 +630,10 @@ export type Database = {
           p_related_order_id?: string
         }
         Returns: undefined
+      }
+      grant_welcome_bonus_manually: {
+        Args: { p_user_id: string }
+        Returns: boolean
       }
       initialize_or_reset_yearly_allocation: {
         Args: {

@@ -13,5 +13,6 @@
   "type_subscription_grant": "サブスク付与",
   "type_feature_usage": "機能使用",
   "type_refund_revoke": "返金取消",
-  "type_subscription_cancel_revoke": "サブスクリプションクレジット期限切れ"
+  "type_subscription_cancel_revoke": "サブスクリプションクレジット期限切れ",
+  "type_welcome_bonus": "新規登録ボーナス"
 }

@@ -197,6 +197,10 @@
       {
         "name": "R2リソース",
         "href": "/dashboard/r2-resources"
+      },
+      {
+        "name": "Freepik APIキー",
+        "href": "/dashboard/freepik-keys"
       }
     ]
   },

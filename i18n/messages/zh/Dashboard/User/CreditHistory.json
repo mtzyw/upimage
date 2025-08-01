@@ -13,5 +13,6 @@
   "type_subscription_grant": "订阅授予",
   "type_feature_usage": "功能使用",
   "type_refund_revoke": "退款回收",
-  "type_subscription_cancel_revoke": "订阅积分过期"
+  "type_subscription_cancel_revoke": "订阅积分过期",
+  "type_welcome_bonus": "新用户奖励"
 }

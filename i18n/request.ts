@@ -25,6 +25,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       DashboardBlogs: (await import(`./messages/${locale}/Dashboard/Admin/Blogs.json`)).default,
       R2Files: (await import(`./messages/${locale}/Dashboard/Admin/R2Files.json`)).default,
       Prices: (await import(`./messages/${locale}/Dashboard/Admin/Prices.json`)).default,
+      FreepikKeys: (await import(`./messages/${locale}/Dashboard/Admin/FreepikKeys.json`)).default,
 
       // common
       ...common

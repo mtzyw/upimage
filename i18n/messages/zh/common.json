@@ -197,6 +197,10 @@
       {
         "name": "R2资源管理",
         "href": "/dashboard/r2-resources"
+      },
+      {
+        "name": "Freepik API 密钥",
+        "href": "/dashboard/freepik-keys"
       }
     ]
   },
@@ -240,6 +244,86 @@
     "title": "AI 能力演示",
     "description": "本页面非公开功能，仅用于购买模板的用户学习和测试 AI 模型调用流程。在本地启动模板后，环境变量填写自己的 API Key 即可使用。AI Demo 包括单轮对话、多轮对话、文本转图像、图像转图像、文本/图像转视频的转换，通过 Demo 你可以快速理解 AI 调用流程，以加速你的AI应用构建之旅。",
     "metaDescription": "本页面提供包括单轮对话、多轮对话、文本转图像、图像转图像、文本/图像转视频等 AI 能力调用展示。"
+  },
+  "Enhance": {
+    "title": "AI 图像增强",
+    "description": "使用先进的 AI 技术放大并增强您的图像",
+    "upload": {
+      "title": "上传图片",
+      "description": "选择要增强的图片，支持 JPG、PNG、WebP 格式",
+      "dragDrop": "拖拽图片到这里",
+      "clickSelect": "点击选择文件",
+      "supportedFormats": "支持 JPG、PNG、WebP 格式，最大 {size}MB",
+      "selectImage": "选择图片",
+      "dropToUpload": "放开以上传图片",
+      "invalidFormat": "只支持 JPG、PNG、WebP 格式的图片",
+      "fileTooLarge": "图片大小不能超过 {size}MB"
+    },
+    "settings": {
+      "scaleFactor": "放大倍数",
+      "scaleDescription": "选择图像放大的倍数，倍数越高质量越好但消耗积分更多",
+      "optimization": "优化类型",
+      "optimizationDescription": "根据图像内容选择合适的优化类型可以获得更好的效果",
+      "prompt": "增强提示词（可选）",
+      "promptDescription": "描述你希望如何增强图像，可以提高处理效果",
+      "promptPlaceholder": "例如：增强细节，提高清晰度，保持自然色彩...",
+      "advanced": "高级设置",
+      "advancedDescription": "精细调节增强参数，需要一定的图像处理经验",
+      "engine": "处理引擎",
+      "creativity": "创意度",
+      "creativityDescription": "控制AI的创造性，负值更保守，正值更创新",
+      "hdr": "HDR强度",
+      "hdrDescription": "调节细节和清晰度级别",
+      "resemblance": "相似度", 
+      "resemblanceDescription": "控制与原图的相似程度",
+      "fractality": "分形度",
+      "fractalityDescription": "控制提示词强度和像素复杂度"
+    },
+    "status": {
+      "processing": "处理中",
+      "completed": "已完成",
+      "failed": "处理失败",
+      "waiting": "等待开始处理",
+      "progress": "处理进度",
+      "estimatedTime": "预计还需 {time}",
+      "originalImage": "原图",
+      "enhancedImage": "增强后",
+      "downloadImage": "下载图片",
+      "viewOriginal": "查看原图",
+      "copyLink": "复制链接",
+      "retry": "重新处理",
+      "refresh": "刷新状态"
+    },
+    "credits": {
+      "required": "需要 {credits} 积分",
+      "insufficient": "积分不足",
+      "consumed": "消耗 {credits} 积分"
+    },
+    "history": {
+      "title": "增强历史",
+      "description": "查看您的图像增强历史记录",
+      "empty": "暂无历史记录",
+      "emptyDescription": "您还没有使用过图像增强功能",
+      "startUsing": "开始使用",
+      "totalTasks": "总任务数",
+      "totalCreditsUsed": "总积分消耗",
+      "processingTime": "处理时间: {time}秒",
+      "download": "下载",
+      "filter": "筛选",
+      "all": "全部"
+    },
+    "messages": {
+      "loginRequired": "需要登录",
+      "loginDescription": "请先登录才能使用图像增强功能",
+      "selectImageFirst": "请先选择图片",
+      "processingStarted": "图像处理已开始",
+      "processingComplete": "图像增强完成！",
+      "downloadSuccess": "图片下载成功",
+      "downloadFailed": "下载失败，请重试",
+      "copySuccess": "链接已复制到剪贴板",
+      "copyFailed": "复制失败",
+      "networkError": "网络错误，请重试"
+    }
   },
   "ErrorPage": {
     "403": {

@@ -9,6 +9,7 @@ import Image from "next/image"
 
 interface ImageUploaderProps {
   onUploadSuccess?: (url: string, key: string) => void
+  onFileSelected?: (file: File) => void
   maxSizeMB?: number
   acceptedTypes?: string[]
   className?: string
@@ -16,6 +17,7 @@ interface ImageUploaderProps {
 
 export default function ImageUploader({
   onUploadSuccess,
+  onFileSelected,
   maxSizeMB = 10,
   acceptedTypes = ['image/jpeg', 'image/png', 'image/webp'],
   className = ""
@@ -44,6 +46,14 @@ export default function ImageUploader({
     const validation = validateFile(file)
     if (validation) {
       toast.error(validation)
+      return
+    }
+
+    // 如果有文件选择回调，直接调用不上传
+    if (onFileSelected) {
+      const previewUrl = URL.createObjectURL(file)
+      setUploadedImage({ url: previewUrl, key: file.name })
+      onFileSelected(file)
       return
     }
 
