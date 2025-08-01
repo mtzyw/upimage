@@ -205,7 +205,20 @@ export default function ImageProcessor() {
 
   const handleDownload = async (url: string) => {
     try {
-      const response = await fetch(url);
+      if (!currentTaskId) {
+        toast.error('任务ID缺失，无法下载');
+        return;
+      }
+      
+      // 使用后端代理API下载图片，避免CORS问题
+      const proxyUrl = `/api/enhance/download?url=${encodeURIComponent(url)}&taskId=${currentTaskId}`;
+      const response = await fetch(proxyUrl);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || '下载失败');
+      }
+      
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -218,7 +231,8 @@ export default function ImageProcessor() {
       
       toast.success('图片下载成功');
     } catch (error) {
-      toast.error('下载失败，请重试');
+      console.error('Download error:', error);
+      toast.error(error instanceof Error ? error.message : '下载失败，请重试');
     }
   };
 

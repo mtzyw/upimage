@@ -2,7 +2,7 @@
 
 import { Database } from "@/lib/supabase/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { formatDistance } from "date-fns";
+import dayjs from "dayjs";
 import { Badge } from "@/components/ui/badge";
 import { KeyActions } from "./KeyActions";
 
@@ -67,7 +67,7 @@ export const columns: ColumnDef<FreepikApiKey>[] = [
     cell: ({ row }) => {
       const date = row.getValue("last_reset_date") as string;
       if (!date) return "-";
-      return formatDistance(new Date(date), new Date(), { addSuffix: true });
+      return dayjs(date).fromNow();
     },
   },
   {
@@ -76,7 +76,7 @@ export const columns: ColumnDef<FreepikApiKey>[] = [
     cell: ({ row }) => {
       const date = row.getValue("created_at") as string;
       if (!date) return "-";
-      return formatDistance(new Date(date), new Date(), { addSuffix: true });
+      return dayjs(date).fromNow();
     },
   },
   {

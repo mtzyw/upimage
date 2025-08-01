@@ -20,6 +20,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### 分析工具
 - `npm run analyze` - 分析构建产物大小
 
+### 数据库登录和链接
+- `npm run db:login` - 登录 Supabase CLI
+- `npm run db:link` - 链接本地项目到 Supabase 项目
+
 ## 项目架构
 
 ### 核心技术栈
@@ -90,6 +94,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 图片上传到 Cloudflare R2 存储
 - 管理员可以通过仪表板管理内容
 
+#### 图片增强功能
+- 集成 Freepik API 进行图片增强处理
+- 支持异步任务状态跟踪（`app/api/enhance/` 相关 API）
+- R2 存储用于处理后的图片文件管理
+
 ### 开发注意事项
 
 #### TypeScript 规范
@@ -125,6 +134,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 所有新功能应遵循现有的文件组织结构
 - 数据库更改需要创建迁移文件
 - 项目目前没有配置测试框架
+
+#### 中间件和路由
+- 使用 `middleware.ts` 处理国际化路由和 Supabase 认证
+- 支持路径：`/`、`/(en|zh|ja)/:path*`
+- 自动重定向到合适的语言版本
+- 排除 API 路由、静态资源等不需要处理的路径
 
 ## 环境配置
 

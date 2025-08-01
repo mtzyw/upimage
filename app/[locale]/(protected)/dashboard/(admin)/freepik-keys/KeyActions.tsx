@@ -122,7 +122,7 @@ export function KeyActions({ apiKey }: KeyActionsProps) {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the API
-              key "{apiKey.name || apiKey.key}".
+              key &quot;{apiKey.name || apiKey.key}&quot;.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
