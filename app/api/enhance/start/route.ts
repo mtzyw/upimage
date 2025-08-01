@@ -352,7 +352,13 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ENHANCE START] Freepik任务创建成功: ${freepikTaskId}`);
 
-    // 10. 立即清除 Redis 并触发异步原图上传
+    // 10. 保存临时ID到正式ID的映射关系到Redis（用于webhook匹配）
+    if (redis) {
+      await redis.set(`temp:${temporaryTaskId}`, freepikTaskId, { ex: 3600 });
+      console.log('✅ [ENHANCE START] ID映射关系已保存到Redis');
+    }
+
+    // 11. 立即清除 Redis 临时图片数据并触发异步原图上传
     if (redis) {
       await redis.del(`tmp:img:${temporaryTaskId}`);
       console.log('✅ [ENHANCE START] Redis 临时数据已清除');
@@ -361,8 +367,8 @@ export async function POST(req: NextRequest) {
     // 异步上传原图到 R2（不阻塞响应）
     uploadOriginalImageAsync(base64Image, freepikTaskId, user.id);
 
-    // 11. 用Freepik的task_id创建正式记录，删除临时记录
-    console.log('💾 [ENHANCE START] 步骤11: 创建正式任务记录...');
+    // 12. 用Freepik的task_id创建正式记录，删除临时记录
+    console.log('💾 [ENHANCE START] 步骤12: 创建正式任务记录...');
     
     // 获取临时记录的数据
     const { data: tempTask, error: fetchError } = await supabaseAdmin
@@ -423,13 +429,13 @@ export async function POST(req: NextRequest) {
       console.log('✅ [ENHANCE START] Redis缓存保存完成');
     }
 
-    // 11. 设置初始状态
-    console.log('📊 [ENHANCE START] 步骤11: 设置任务初始状态...');
+    // 13. 设置初始状态
+    console.log('📊 [ENHANCE START] 步骤13: 设置任务初始状态...');
     await setTaskStatus(freepikTaskId, 'processing');
     console.log('✅ [ENHANCE START] 任务状态设置完成');
 
-    // 12. 返回成功响应
-    console.log('🎉 [ENHANCE START] 步骤12: 准备返回成功响应...');
+    // 14. 返回成功响应
+    console.log('🎉 [ENHANCE START] 步骤14: 准备返回成功响应...');
     const updatedBenefits = await import('@/actions/usage/benefits')
       .then(m => m.getUserBenefits(user.id));
     

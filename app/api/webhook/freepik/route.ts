@@ -101,7 +101,66 @@ async function getTaskInfo(taskId: string) {
     console.log(`[getTaskInfo] Database query result:`, { taskData, error });
 
     if (error || !taskData) {
-      console.error(`Task not found in database: ${taskId}`, error);
+      console.log(`[getTaskInfo] Task not found in database, checking Redis mapping...`);
+      
+      // 如果数据库中找不到，尝试通过Redis映射查找临时记录
+      if (redis) {
+        // 查找所有可能的临时ID映射
+        const tempKeys = await redis.keys(`temp:*`);
+        console.log(`[getTaskInfo] Found temp keys:`, tempKeys);
+        
+        let temporaryTaskId = null;
+        for (const tempKey of tempKeys) {
+          const mappedTaskId = await redis.get(tempKey);
+          if (mappedTaskId === taskId) {
+            temporaryTaskId = tempKey.replace('temp:', '');
+            console.log(`[getTaskInfo] Found mapping: ${temporaryTaskId} → ${taskId}`);
+            break;
+          }
+        }
+        
+        if (temporaryTaskId) {
+          // 使用临时ID查询数据库
+          const { data: tempTaskData, error: tempError } = await supabaseAdmin
+            .from('image_enhancement_tasks')
+            .select('*')
+            .eq('id', temporaryTaskId)
+            .single();
+          
+          console.log(`[getTaskInfo] Temp task query result:`, { tempTaskData, tempError });
+          
+          if (!tempError && tempTaskData) {
+            // 找到临时记录，更新ID为正式ID
+            console.log(`[getTaskInfo] Updating temp record ${temporaryTaskId} to ${taskId}`);
+            
+            const { error: updateError } = await supabaseAdmin
+              .from('image_enhancement_tasks')
+              .update({ id: taskId })
+              .eq('id', temporaryTaskId);
+            
+            if (updateError) {
+              console.error(`[getTaskInfo] Failed to update task ID:`, updateError);
+            } else {
+              console.log(`[getTaskInfo] Successfully updated task ID to ${taskId}`);
+              // 清理Redis映射
+              await redis.del(`temp:${temporaryTaskId}`);
+            }
+            
+            // 使用临时记录数据，但使用正式ID
+            return {
+              taskId,
+              userId: userId || tempTaskData.user_id,
+              apiKeyId: apiKeyId || tempTaskData.api_key_id,
+              r2Key: r2Key || tempTaskData.r2_original_key,
+              scaleFactor: tempTaskData.scale_factor,
+              creditsConsumed: tempTaskData.credits_consumed,
+              taskData: { ...tempTaskData, id: taskId }
+            };
+          }
+        }
+      }
+      
+      console.error(`Task not found in database or Redis mapping: ${taskId}`, error);
       return null;
     }
 
