@@ -1,4 +1,4 @@
-import { serverUploadFile } from '@/lib/cloudflare/r2';
+import { serverUploadFile, serverUploadStream } from '@/lib/cloudflare/r2';
 import { redis } from '@/lib/upstash';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
@@ -87,6 +87,51 @@ export async function uploadOptimizedImageToR2(
   } catch (error) {
     console.error('Error uploading optimized image to R2:', error);
     throw new Error(`Failed to upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * 流式上传优化后的图片到 R2（直接从Response流上传，节省内存）
+ * @param imageResponse Fetch Response 对象
+ * @param userId 用户ID
+ * @param taskId 任务ID
+ * @param originalExtension 原图扩展名
+ * @returns 上传结果
+ */
+export async function uploadOptimizedImageStreamToR2(
+  imageResponse: Response,
+  userId: string, 
+  taskId: string,
+  originalExtension: string = 'png'
+): Promise<{ key: string; url: string }> {
+  try {
+    const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
+    
+    // 获取文件大小
+    const contentLength = parseInt(imageResponse.headers.get('content-length') || '0');
+    if (contentLength === 0) {
+      throw new Error('无法获取图片文件大小');
+    }
+    
+    // 确保Response body存在
+    if (!imageResponse.body) {
+      throw new Error('Response body为空');
+    }
+    
+    console.log(`🚀 Stream uploading optimized image to R2: ${key} (${contentLength} bytes)`);
+    
+    const result = await serverUploadStream({
+      stream: imageResponse.body,
+      contentLength,
+      contentType: `image/${originalExtension}`,
+      key: key
+    });
+    
+    console.log(`✅ Stream upload completed: ${result.url}`);
+    return result;
+  } catch (error) {
+    console.error('Error stream uploading optimized image to R2:', error);
+    throw new Error(`Failed to stream upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 

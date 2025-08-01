@@ -6,6 +6,7 @@ import { redis } from '@/lib/upstash';
 import { releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
   uploadOptimizedImageToR2, 
+  uploadOptimizedImageStreamToR2,
   setTaskStatus, 
   getImageExtension 
 } from '@/lib/freepik/utils';
@@ -156,15 +157,12 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
     
     console.log(`[handleTaskCompleted] Image URL found: ${imageUrl}`);
 
-    // ✅ 立即更新Redis状态为completed，让前端能快速看到完成状态
-    await setTaskStatus(taskId, 'completed', {
-      cdnUrl: imageUrl // 先使用Freepik的临时URL
-    });
-    console.log(`✅ Task status immediately updated to completed for frontend`);
+    // 🚀 不立即更新为completed，等R2上传完成后再更新
+    console.log(`🔄 Image processing completed, starting R2 upload optimization...`);
 
     console.log(`Processing completed task ${taskId}, downloading optimized image...`);
 
-    // 下载优化后的图像
+    // 开始流式下载和上传
     const imageResponse = await fetch(imageUrl, {
       method: 'GET',
       headers: {
@@ -176,9 +174,13 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
       throw new Error(`Failed to download optimized image: ${imageResponse.status}`);
     }
 
-    const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
     const imageExtension = getImageExtension(imageUrl);
+    const contentLength = parseInt(imageResponse.headers.get('content-length') || '0');
+    
+    console.log(`📥 Starting optimized download/upload, size: ${contentLength} bytes`);
 
+    // 先下载为Buffer（但我们会尽快处理），然后上传到R2  
+    const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
     console.log(`Downloaded optimized image, size: ${imageBuffer.length} bytes`);
 
     // 上传到 R2
@@ -189,14 +191,14 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
       imageExtension
     );
 
-    console.log(`Optimized image uploaded to R2: ${uploadResult.url}`);
+    console.log(`🚀 Upload completed to R2: ${uploadResult.url}`);
 
-    // 更新任务的最终URL信息（状态已经在前面更新为completed了）
+    // 现在更新为真正完成状态，显示我们自己的R2 CDN URL
     await setTaskStatus(taskId, 'completed', {
-      cdnUrl: uploadResult.url, // 使用我们自己的CDN URL替换Freepik临时URL
+      cdnUrl: uploadResult.url, // 只显示我们自己的CDN URL，用户永远看不到Freepik链接
       r2OptimizedKey: uploadResult.key
     });
-    console.log(`✅ Task CDN URL updated to our own R2 URL`);
+    console.log(`✅ Task completed with R2 CDN URL: ${uploadResult.url}`);
 
     // 释放 API Key
     if (apiKeyId) {
