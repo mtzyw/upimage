@@ -24,8 +24,9 @@ const supabaseAdmin = createAdminClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 请求参数验证 schema (支持 FormData)
+// 请求参数验证 schema (JSON 格式)
 const enhanceRequestSchema = z.object({
+  image: z.string().min(1, 'base64 图片数据不能为空'),
   scaleFactor: z.enum(['2x', '4x', '8x', '16x'], {
     errorMap: () => ({ message: '放大倍数必须是 2x, 4x, 8x 或 16x' })
   }),
@@ -41,10 +42,10 @@ const enhanceRequestSchema = z.object({
     'science_fiction_n_horror'
   ]).default('standard'),
   prompt: z.string().max(500, '提示词不能超过500个字符').optional(),
-  creativity: z.string().transform(val => parseInt(val) || 0).pipe(z.number().int().min(-10).max(10)),
-  hdr: z.string().transform(val => parseInt(val) || 0).pipe(z.number().int().min(-10).max(10)),
-  resemblance: z.string().transform(val => parseInt(val) || 0).pipe(z.number().int().min(-10).max(10)),
-  fractality: z.string().transform(val => parseInt(val) || 0).pipe(z.number().int().min(-10).max(10)),
+  creativity: z.number().int().min(-10).max(10).default(0),
+  hdr: z.number().int().min(-10).max(10).default(0),
+  resemblance: z.number().int().min(-10).max(10).default(0),
+  fractality: z.number().int().min(-10).max(10).default(0),
   engine: z.enum(['automatic', 'magnific_illusio', 'magnific_sharpy', 'magnific_sparkle']).default('automatic')
 });
 
@@ -59,6 +60,8 @@ const RATE_LIMIT_CONFIG = {
 
 export async function POST(req: NextRequest) {
   console.log('🚀 [ENHANCE START] ===== 收到图像增强请求 =====');
+  
+  let temporaryTaskId: string | undefined;
   
   try {
     // 1. 用户认证
@@ -80,47 +83,26 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ENHANCE START] 用户认证成功: ${user.id}`);
 
-    // 2. 解析FormData
-    console.log('📝 [ENHANCE START] 步骤2: 解析FormData...');
-    const formData = await req.formData();
-    const imageFile = formData.get('image') as File;
+    // 2. 解析JSON请求
+    console.log('📝 [ENHANCE START] 步骤2: 解析JSON请求...');
+    const body = await req.json();
     
-    console.log('📝 [ENHANCE START] FormData内容:', {
-      hasImageFile: !!imageFile,
-      imageFileName: imageFile?.name,
-      imageFileSize: imageFile?.size,
-      imageFileType: imageFile?.type,
-      scaleFactor: formData.get('scaleFactor'),
-      optimizedFor: formData.get('optimizedFor'),
-      engine: formData.get('engine'),
-      creativity: formData.get('creativity'),
-      hdr: formData.get('hdr'),
-      resemblance: formData.get('resemblance'),
-      fractality: formData.get('fractality'),
-      prompt: formData.get('prompt')
+    console.log('📝 [ENHANCE START] 请求内容:', {
+      hasImage: !!body.image,
+      imageLength: body.image?.length || 0,
+      scaleFactor: body.scaleFactor,
+      optimizedFor: body.optimizedFor,
+      engine: body.engine,
+      creativity: body.creativity,
+      hdr: body.hdr,
+      resemblance: body.resemblance,
+      fractality: body.fractality,
+      hasPrompt: !!body.prompt
     });
-
-    if (!imageFile) {
-      console.log('❌ [ENHANCE START] 未找到图片文件');
-      return apiResponse.badRequest('请上传图片文件');
-    }
 
     // 3. 验证参数
     console.log('🔍 [ENHANCE START] 步骤3: 验证请求参数...');
-    const params = {
-      scaleFactor: formData.get('scaleFactor') as string,
-      optimizedFor: formData.get('optimizedFor') as string || 'standard',
-      engine: formData.get('engine') as string || 'automatic',
-      creativity: formData.get('creativity') as string || '0',
-      hdr: formData.get('hdr') as string || '0',
-      resemblance: formData.get('resemblance') as string || '0',
-      fractality: formData.get('fractality') as string || '0',
-      prompt: formData.get('prompt') as string || ''
-    };
-
-    console.log('🔍 [ENHANCE START] 解析后的参数:', params);
-
-    const validationResult = enhanceRequestSchema.safeParse(params);
+    const validationResult = enhanceRequestSchema.safeParse(body);
 
     if (!validationResult.success) {
       const errors = validationResult.error.flatten().fieldErrors;
@@ -128,8 +110,11 @@ export async function POST(req: NextRequest) {
       return apiResponse.badRequest(`参数验证失败: ${JSON.stringify(errors)}`);
     }
 
-    const validatedParams: EnhanceRequest = validationResult.data;
-    console.log('✅ [ENHANCE START] 参数验证成功:', validatedParams);
+    const { image: base64Image, ...validatedParams } = validationResult.data;
+    console.log('✅ [ENHANCE START] 参数验证成功:', {
+      ...validatedParams,
+      imageLength: base64Image.length
+    });
 
     // 4. 限流检查
     console.log('⏱️ [ENHANCE START] 步骤4: 检查限流...');
@@ -164,39 +149,9 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ENHANCE START] 使用API密钥: ${apiKey.name} (剩余 ${apiKey.remaining} 次)`);
 
-    // 7. 上传图片到 R2
-    console.log('☁️ [ENHANCE START] 步骤7: 上传图片到R2存储...');
-    const { uploadToR2 } = await import('@/lib/r2');
-    let r2Key: string;
-    let base64Image: string;
-    
-    try {
-      // 生成唯一的R2 key
-      const timestamp = Date.now();
-      const randomString = Math.random().toString(36).substring(2, 15);
-      const fileExtension = imageFile.name.split('.').pop() || 'jpg';
-      r2Key = `enhance/${user.id}/${timestamp}-${randomString}.${fileExtension}`;
-      
-      console.log('☁️ [ENHANCE START] 准备上传到R2:', { r2Key, fileSize: imageFile.size });
-      
-      // 上传到 R2
-      const uploadResult = await uploadToR2(imageFile, r2Key);
-      console.log('☁️ [ENHANCE START] R2上传结果:', uploadResult);
-      
-      // 将图片转换为 base64
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      base64Image = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
-      
-      console.log('✅ [ENHANCE START] 图片上传和转换完成');
-    } catch (error) {
-      console.error('❌ [ENHANCE START] 图片上传失败:', error);
-      return apiResponse.error('图片上传失败，请重试');
-    }
-
-    // 8. 生成临时任务ID并创建数据库记录
-    console.log('🆔 [ENHANCE START] 步骤8: 生成临时任务ID并创建数据库记录...');
-    const temporaryTaskId = generateTaskIdentifier(user.id, r2Key);
+    // 7. 生成临时任务ID并创建数据库记录
+    console.log('🆔 [ENHANCE START] 步骤7: 生成临时任务ID并创建数据库记录...');
+    temporaryTaskId = generateTaskIdentifier(user.id, '');
     console.log(`🆔 [ENHANCE START] 临时任务ID: ${temporaryTaskId}`);
 
     // 先创建数据库记录（使用临时ID）
@@ -206,7 +161,7 @@ export async function POST(req: NextRequest) {
         id: temporaryTaskId,
         user_id: user.id,
         status: 'processing',
-        r2_original_key: r2Key,
+        r2_original_key: null, // 稍后异步上传
         scale_factor: validatedParams.scaleFactor,
         optimized_for: validatedParams.optimizedFor,
         prompt: validatedParams.prompt || null,
@@ -224,6 +179,12 @@ export async function POST(req: NextRequest) {
       return apiResponse.error('任务创建失败，请重试');
     }
     console.log('✅ [ENHANCE START] 临时数据库记录创建成功');
+
+    // 8. 暂存 base64 到 Redis（15分钟TTL）
+    if (redis) {
+      await redis.set(`tmp:img:${temporaryTaskId}`, base64Image, { ex: 900 });
+      console.log('✅ [ENHANCE START] base64 已暂存到 Redis');
+    }
 
     // 9. 扣减积分
     console.log('💰 [ENHANCE START] 步骤9: 扣减用户积分...');
@@ -256,7 +217,7 @@ export async function POST(req: NextRequest) {
     }
     
     const freepikPayload = {
-      image: base64Image,
+      image: base64Image, // 直接使用前端传来的 base64
       scale_factor: validatedParams.scaleFactor,
       optimized_for: validatedParams.optimizedFor,
       webhook_url: webhookUrl,
@@ -310,20 +271,17 @@ export async function POST(req: NextRequest) {
           })
           .eq('id', temporaryTaskId);
         
-        // 设置Redis缓存（使用临时ID）
+        // 设置Redis缓存（使用临时ID）- 不包含 r2_key 因为还未上传
         if (redis) {
           await Promise.all([
             redis.set(`task:${temporaryTaskId}:user_id`, user.id, { ex: 3600 }),
-            redis.set(`task:${temporaryTaskId}:api_key_id`, apiKey.id, { ex: 3600 }),
-            redis.set(`task:${temporaryTaskId}:r2_key`, r2Key, { ex: 3600 })
+            redis.set(`task:${temporaryTaskId}:api_key_id`, apiKey.id, { ex: 3600 })
           ]);
         }
         
         // 返回临时任务ID，让前端可以轮询状态
         const updatedBenefits = await import('@/actions/usage/benefits')
           .then(m => m.getUserBenefits(user.id));
-        
-        const originalUrl = `${process.env.R2_PUBLIC_URL}/${r2Key}`;
         
         return apiResponse.success({
           taskId: temporaryTaskId,
@@ -334,7 +292,6 @@ export async function POST(req: NextRequest) {
                            validatedParams.scaleFactor === '4x' ? '1-2分钟' : 
                            validatedParams.scaleFactor === '8x' ? '2-5分钟' : 
                            '5-10分钟'}`,
-          originalUrl,
           message: '请求已提交，正在等待处理结果...'
         });
       }
@@ -395,6 +352,15 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ENHANCE START] Freepik任务创建成功: ${freepikTaskId}`);
 
+    // 10. 立即清除 Redis 并触发异步原图上传
+    if (redis) {
+      await redis.del(`tmp:img:${temporaryTaskId}`);
+      console.log('✅ [ENHANCE START] Redis 临时数据已清除');
+    }
+    
+    // 异步上传原图到 R2（不阻塞响应）
+    uploadOriginalImageAsync(base64Image, freepikTaskId, user.id);
+
     // 11. 用Freepik的task_id创建正式记录，删除临时记录
     console.log('💾 [ENHANCE START] 步骤11: 创建正式任务记录...');
     
@@ -447,13 +413,12 @@ export async function POST(req: NextRequest) {
       console.log('✅ [ENHANCE START] 临时记录已清理');
     }
     
-    // 设置Redis缓存（使用Freepik的task_id）
+    // 设置Redis缓存（使用Freepik的task_id）- 不包含 r2_key 因为异步上传
     if (redis) {
       console.log('💾 [ENHANCE START] 保存Redis缓存...');
       await Promise.all([
         redis.set(`task:${freepikTaskId}:user_id`, user.id, { ex: 3600 }),
-        redis.set(`task:${freepikTaskId}:api_key_id`, apiKey.id, { ex: 3600 }),
-        redis.set(`task:${freepikTaskId}:r2_key`, r2Key, { ex: 3600 })
+        redis.set(`task:${freepikTaskId}:api_key_id`, apiKey.id, { ex: 3600 })
       ]);
       console.log('✅ [ENHANCE START] Redis缓存保存完成');
     }
@@ -468,8 +433,6 @@ export async function POST(req: NextRequest) {
     const updatedBenefits = await import('@/actions/usage/benefits')
       .then(m => m.getUserBenefits(user.id));
     
-    const originalUrl = `${process.env.R2_PUBLIC_URL}/${r2Key}`;
-
     const response = {
       taskId: freepikTaskId,
       status: 'processing',
@@ -478,8 +441,8 @@ export async function POST(req: NextRequest) {
       estimatedTime: `${validatedParams.scaleFactor === '2x' ? '30-60秒' : 
                        validatedParams.scaleFactor === '4x' ? '1-2分钟' : 
                        validatedParams.scaleFactor === '8x' ? '2-5分钟' : 
-                       '5-10分钟'}`,
-      originalUrl
+                       '5-10分钟'}`
+      // originalUrl 将在异步上传完成后可用
     };
     
     console.log('🎉 [ENHANCE START] 成功响应数据:', response);
@@ -491,6 +454,46 @@ export async function POST(req: NextRequest) {
     console.error('💥 [ENHANCE START] ===== 处理过程中发生异常 =====');
     console.error('💥 [ENHANCE START] 错误详情:', error);
     console.error('💥 [ENHANCE START] 错误堆栈:', error instanceof Error ? error.stack : 'No stack trace');
+    
+    // 清理可能的 Redis 数据
+    if (redis && temporaryTaskId) {
+      await redis.del(`tmp:img:${temporaryTaskId}`);
+    }
+    
     return apiResponse.serverError('图像增强服务内部错误');
+  }
+}
+
+// 异步上传原图函数（复用现有工具）
+async function uploadOriginalImageAsync(base64Image: string, taskId: string, userId: string) {
+  try {
+    const { getDataFromDataUrl, serverUploadFile } = await import('@/lib/cloudflare/r2');
+    
+    // 解析 base64
+    const result = getDataFromDataUrl(base64Image);
+    if (!result) {
+      throw new Error('Invalid base64 format');
+    }
+    
+    // 生成 R2 key
+    const r2Key = `enhance/${userId}/${Date.now()}-${taskId}.jpg`;
+    
+    // 上传到 R2
+    await serverUploadFile({
+      data: result.buffer,
+      contentType: result.contentType,
+      key: r2Key
+    });
+    
+    // 更新数据库记录
+    await supabaseAdmin
+      .from('image_enhancement_tasks')
+      .update({ r2_original_key: r2Key })
+      .eq('id', taskId);
+      
+    console.log(`✅ [ASYNC UPLOAD] 原图异步上传完成: ${taskId}`);
+  } catch (error) {
+    console.error(`❌ [ASYNC UPLOAD] 原图异步上传失败: ${taskId}`, error);
+    // 记录错误但不影响主流程
   }
 }

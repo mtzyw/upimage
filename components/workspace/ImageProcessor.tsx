@@ -154,24 +154,31 @@ export default function ImageProcessor() {
     setIsProcessing(true);
 
     try {
-      // 准备表单数据
-      const formData = new FormData();
-      formData.append('image', uploadedFile);
-      formData.append('scaleFactor', scaleFactor);
-      formData.append('optimizedFor', optimizedFor);
-      formData.append('engine', engine);
-      formData.append('creativity', creativity[0].toString());
-      formData.append('hdr', hdr[0].toString());
-      formData.append('resemblance', resemblance[0].toString());
-      formData.append('fractality', fractality[0].toString());
-      
-      if (prompt) {
-        formData.append('prompt', prompt);
-      }
+      // 将文件转换为 base64
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(uploadedFile);
+      });
 
+      // 发送 JSON 数据
       const response = await fetch('/api/enhance/start', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: base64,
+          scaleFactor,
+          optimizedFor,
+          engine,
+          creativity: creativity[0],
+          hdr: hdr[0],
+          resemblance: resemblance[0],
+          fractality: fractality[0],
+          prompt: prompt || undefined,
+        }),
       });
 
       const result = await response.json();

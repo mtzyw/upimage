@@ -110,7 +110,7 @@ export type Database = {
           optimized_for: string | null
           prompt: string | null
           r2_optimized_key: string | null
-          r2_original_key: string
+          r2_original_key: string | null
           resemblance: number | null
           scale_factor: string
           status: string
@@ -131,7 +131,7 @@ export type Database = {
           optimized_for?: string | null
           prompt?: string | null
           r2_optimized_key?: string | null
-          r2_original_key: string
+          r2_original_key?: string | null
           resemblance?: number | null
           scale_factor: string
           status?: string
@@ -152,7 +152,7 @@ export type Database = {
           optimized_for?: string | null
           prompt?: string | null
           r2_optimized_key?: string | null
-          r2_original_key?: string
+          r2_original_key?: string | null
           resemblance?: number | null
           scale_factor?: string
           status?: string
