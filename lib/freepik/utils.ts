@@ -198,6 +198,12 @@ export async function setTaskStatus(
 
     console.log(`[setTaskStatus] Task status updated in database: ${taskId} -> ${status}`);
     console.log(`[setTaskStatus] Updated task record:`, updatedTask);
+    
+    // 清除任务信息缓存，下次查询时会重新加载最新数据
+    if (redis) {
+      await redis.del(`task_cache:${taskId}`);
+      console.log(`[setTaskStatus] Task cache cleared: ${taskId}`);
+    }
   } catch (error) {
     console.error('Error setting task status:', error);
     throw error;

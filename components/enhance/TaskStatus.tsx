@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -51,12 +51,13 @@ export function TaskStatus({
   onTaskComplete,
   onRetry,
   autoRefresh = true,
-  refreshInterval = 3000
+  refreshInterval = 2000
 }: TaskStatusProps) {
   const t = useTranslations('Enhance');
   const [taskInfo, setTaskInfo] = useState<TaskInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchTaskStatus = async () => {
     try {
@@ -92,21 +93,44 @@ export function TaskStatus({
     }
   };
 
-  // 初始加载和定期刷新
+  // 清除轮询定时器
+  const clearPolling = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  // 开始轮询
+  const startPolling = () => {
+    if (!autoRefresh) return;
+    
+    clearPolling(); // 先清除现有的定时器
+    
+    intervalRef.current = setInterval(() => {
+      fetchTaskStatus();
+    }, refreshInterval);
+  };
+
+  // 初始加载
   useEffect(() => {
     fetchTaskStatus();
+  }, [taskId]);
 
-    if (autoRefresh) {
-      const interval = setInterval(() => {
-        // 只在处理中时自动刷新
-        if (taskInfo?.status === 'processing') {
-          fetchTaskStatus();
-        }
-      }, refreshInterval);
-
-      return () => clearInterval(interval);
+  // 管理轮询状态
+  useEffect(() => {
+    if (taskInfo?.status === 'processing') {
+      // 任务处理中，开始轮询
+      startPolling();
+    } else if (taskInfo?.status === 'completed' || taskInfo?.status === 'failed') {
+      // 任务完成或失败，停止轮询
+      clearPolling();
+      console.log(`轮询已停止，任务状态: ${taskInfo.status}`);
     }
-  }, [taskId, autoRefresh, refreshInterval, taskInfo?.status]);
+
+    // 清理函数
+    return () => clearPolling();
+  }, [taskInfo?.status, autoRefresh, refreshInterval]);
 
   const handleDownload = async (url: string) => {
     try {

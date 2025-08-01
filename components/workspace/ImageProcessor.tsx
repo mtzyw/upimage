@@ -105,12 +105,12 @@ export default function ImageProcessor() {
     }
   }, [fetchUserBenefits]);
 
-  // 轮询任务状态
+  // 轮询任务状态 - 优化为2秒间隔
   useEffect(() => {
     if (currentTaskId && isProcessing) {
       const interval = setInterval(() => {
         fetchTaskStatus(currentTaskId);
-      }, 3000);
+      }, 2000); // 改为2秒
 
       return () => clearInterval(interval);
     }

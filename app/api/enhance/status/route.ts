@@ -31,16 +31,65 @@ export async function GET(req: NextRequest) {
 
     console.log(`Checking status for task: ${taskId}, user: ${user.id}`);
 
-    // 3. 验证任务所有权
-    const { data: taskData, error: taskError } = await supabaseAdmin
-      .from('image_enhancement_tasks')
-      .select('user_id, status, created_at, completed_at, error_message, r2_original_key, cdn_url, scale_factor, credits_consumed')
-      .eq('id', taskId)
-      .single();
+    // 3. 优先从 Redis 缓存获取任务信息
+    let taskData = null;
+    let fromCache = false;
 
-    if (taskError || !taskData) {
-      console.log(`Task not found: ${taskId}`);
-      return apiResponse.notFound('任务不存在');
+    if (redis) {
+      try {
+        const cachedTask = await redis.get(`task_cache:${taskId}`);
+        if (cachedTask) {
+          console.log(`Raw cached data:`, typeof cachedTask, cachedTask);
+          
+          // Upstash Redis 可能会自动反序列化，检查数据类型
+          if (typeof cachedTask === 'object' && cachedTask !== null) {
+            // 已经是对象，直接使用
+            taskData = cachedTask;
+            fromCache = true;
+            console.log(`Task data loaded from Redis cache (object): ${taskId}`);
+          } else if (typeof cachedTask === 'string') {
+            // 是字符串，尝试解析
+            try {
+              taskData = JSON.parse(cachedTask);
+              fromCache = true;
+              console.log(`Task data loaded from Redis cache (parsed): ${taskId}`);
+            } catch (parseError) {
+              console.error(`Failed to parse cached JSON for ${taskId}:`, parseError);
+              // 清除无效缓存
+              await redis.del(`task_cache:${taskId}`);
+            }
+          }
+        }
+      } catch (redisError) {
+        console.error(`Redis error for ${taskId}:`, redisError);
+      }
+    }
+
+    // 如果缓存中没有，从数据库查询
+    if (!taskData) {
+      const { data: dbTaskData, error: taskError } = await supabaseAdmin
+        .from('image_enhancement_tasks')
+        .select('user_id, status, created_at, completed_at, error_message, r2_original_key, cdn_url, scale_factor, credits_consumed')
+        .eq('id', taskId)
+        .single();
+
+      if (taskError || !dbTaskData) {
+        console.log(`Task not found: ${taskId}`);
+        return apiResponse.notFound('任务不存在');
+      }
+
+      taskData = dbTaskData;
+      
+      // 保存到 Redis 缓存（5分钟有效期）
+      if (redis) {
+        try {
+          // 使用 Upstash Redis，不需要手动 JSON.stringify，让它自动处理
+          await redis.set(`task_cache:${taskId}`, taskData, { ex: 300 });
+          console.log(`Task data cached to Redis: ${taskId}`);
+        } catch (cacheError) {
+          console.error(`Failed to cache task data for ${taskId}:`, cacheError);
+        }
+      }
     }
 
     // 验证任务所有权
