@@ -25,6 +25,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 import { Inter as FontSans } from "next/font/google";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -93,6 +94,11 @@ export default async function LocaleLayout({
   }
   // --- End ---
 
+  // 获取当前路径
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+  const isHomePage = pathname === "/home" || pathname.endsWith("/home");
+
   return (
     <html lang={locale || DEFAULT_LOCALE} suppressHydrationWarning>
       <head>
@@ -126,7 +132,7 @@ export default async function LocaleLayout({
                   {children}
                 </main>
 
-                {messages.Footer && <Footer />}
+                {messages.Footer && !isHomePage && <Footer />}
               </BenefitsProvider>
             </ThemeProvider>
           </AuthProvider>

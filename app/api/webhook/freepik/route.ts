@@ -7,6 +7,8 @@ import { releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
   uploadOptimizedImageToR2, 
   uploadOptimizedImageStreamToR2,
+  uploadOptimizedImageHybridToR2,
+  uploadOptimizedImageLocalToR2,
   setTaskStatus, 
   getImageExtension 
 } from '@/lib/freepik/utils';
@@ -238,13 +240,9 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
     
     console.log(`📥 Starting optimized download/upload, size: ${contentLength} bytes`);
 
-    // 先下载为Buffer（但我们会尽快处理），然后上传到R2  
-    const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-    console.log(`Downloaded optimized image, size: ${imageBuffer.length} bytes`);
-
-    // 上传到 R2
-    const uploadResult = await uploadOptimizedImageToR2(
-      imageBuffer,
+    // 使用本地文件上传方案（最稳定，先下载到本地文件，再上传到R2）
+    const uploadResult = await uploadOptimizedImageLocalToR2(
+      imageResponse,
       userId,
       taskId,
       imageExtension

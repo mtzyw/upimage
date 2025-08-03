@@ -1,18 +1,11 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Wand2, Download, Sparkles, History, Coins, Clock, CheckCircle, XCircle, Loader2, Eye, Copy } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/providers/AuthProvider";
-import Image from "next/image";
-import ImageUploader from "@/components/upload/ImageUploader";
 import { toast } from "sonner";
+import LeftSidebar from "./LeftSidebar";
+import LeftControlPanel from "./LeftControlPanel";
+import ResultDisplayPanel from "./ResultDisplayPanel";
 
 interface UserBenefits {
   credits: number;
@@ -38,7 +31,6 @@ interface TaskStatus {
 }
 
 export default function ImageProcessor() {
-  const t = useTranslations("Landing.Hero");
   const { user } = useAuth();
   
   // 上传和基本状态
@@ -54,12 +46,12 @@ export default function ImageProcessor() {
   // 参数设置
   const [scaleFactor, setScaleFactor] = useState<'2x' | '4x' | '8x' | '16x'>('4x');
   const [optimizedFor, setOptimizedFor] = useState('standard');
-  const [engine, setEngine] = useState('automatic');
   const [creativity, setCreativity] = useState([0]);
   const [hdr, setHdr] = useState([0]);
-  const [resemblance, setResemblance] = useState([0]);
-  const [fractality, setFractality] = useState([0]);
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState('');
+  
+  // 导航状态
+  const [activeTab, setActiveTab] = useState('enhance');
   
   // 用户信息
   const [userBenefits, setUserBenefits] = useState<UserBenefits | null>(null);
@@ -172,11 +164,11 @@ export default function ImageProcessor() {
           image: base64,
           scaleFactor,
           optimizedFor,
-          engine,
+          engine: 'automatic',
           creativity: creativity[0],
           hdr: hdr[0],
-          resemblance: resemblance[0],
-          fractality: fractality[0],
+          resemblance: 0,
+          fractality: 0,
           prompt: prompt || undefined,
         }),
       });
@@ -253,395 +245,52 @@ export default function ImageProcessor() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-16">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-          <span className="text-white">AI </span>
-          <span className="text-pink-400">图像</span>
-          <span className="text-cyan-400">增强</span>
-          <span className="text-white"> 工作台</span>
-        </h1>
-        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-          使用先进的 Freepik AI 技术放大并增强您的图像，支持最高 16x 放大
-        </p>
-      </div>
-
-      {/* 用户信息栏 */}
-      {userBenefits && (
-        <Card className="bg-black/60 border-gray-600 mb-8">
-          <div className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Badge variant={userBenefits.isPro ? 'default' : 'secondary'}>
-                  {userBenefits.isPro ? 'Pro 用户' : '免费用户'}
-                </Badge>
-                <div className="flex items-center gap-2">
-                  <Coins className="h-4 w-4 text-yellow-400" />
-                  <span className="text-white font-medium">{userBenefits.credits} 积分</span>
-                </div>
-                <div className="text-sm text-gray-400">
-                  今日已用: {userBenefits.dailyUsed}/{userBenefits.dailyLimit}
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300">
-                  <History className="h-4 w-4 mr-2" />
-                  历史记录
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Card>
+    <div className="flex h-[calc(100vh-80px)] sm:h-[calc(100vh-100px)] lg:h-[840px] w-full max-h-screen overflow-hidden bg-gray-900/95">
+      {/* 最左侧导航栏 */}
+      <LeftSidebar 
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+      
+      {/* 中间控制面板 */}
+      {activeTab === 'enhance' && (
+        <LeftControlPanel
+          userBenefits={userBenefits}
+          uploadedImage={uploadedImage}
+          scaleFactor={scaleFactor}
+          optimizedFor={optimizedFor}
+          creativity={creativity}
+          hdr={hdr}
+          prompt={prompt}
+          isProcessing={isProcessing}
+          onFileSelected={handleFileSelected}
+          onScaleFactorChange={setScaleFactor}
+          onOptimizedForChange={setOptimizedFor}
+          onCreativityChange={setCreativity}
+          onHdrChange={setHdr}
+          onPromptChange={setPrompt}
+          onProcess={handleProcess}
+          getRequiredCredits={getRequiredCredits}
+        />
       )}
-
-      <div className="grid lg:grid-cols-2 gap-12">
-        {/* 左侧：上传和控制区域 */}
-        <div className="space-y-6">
-          {/* 图像上传区域 */}
-          <Card className="bg-black/40 border-gray-600 p-8">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-white">上传图像</h3>
-            </div>
-            <ImageUploader
-              onFileSelected={handleFileSelected}
-              maxSizeMB={userBenefits?.maxUploadSize || 10}
-              acceptedTypes={['image/jpeg', 'image/png', 'image/webp']}
-            />
-          </Card>
-
-          {/* 参数控制区域 */}
-          {uploadedImage && (
-            <Card className="bg-black/40 border-gray-600 p-6">
-              <h3 className="text-xl font-semibold text-white mb-6">增强设置</h3>
-              
-              <div className="space-y-6">
-                {/* 放大倍数选择 */}
-                <div className="space-y-3">
-                  <label className="text-cyan-400 font-medium">放大倍数</label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {['2x', '4x', '8x', '16x'].map((scale) => {
-                      const credits = getRequiredCredits(scale);
-                      const canAfford = userBenefits ? userBenefits.credits >= credits : true;
-                      const isSelected = scaleFactor === scale;
-                      
-                      return (
-                        <button
-                          key={scale}
-                          onClick={() => canAfford && setScaleFactor(scale as any)}
-                          disabled={!canAfford || isProcessing}
-                          className={`
-                            p-3 rounded border text-center transition-all
-                            ${isSelected 
-                              ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400' 
-                              : canAfford 
-                                ? 'border-gray-600 hover:border-cyan-400/50 text-white' 
-                                : 'border-gray-700 text-gray-500 cursor-not-allowed'
-                            }
-                          `}
-                        >
-                          <div className="font-bold">{scale}</div>
-                          <div className="text-xs">{credits} 积分</div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 优化类型 */}
-                <div className="space-y-3">
-                  <label className="text-yellow-400 font-medium">优化类型</label>
-                  <Select value={optimizedFor} onValueChange={setOptimizedFor} disabled={isProcessing}>
-                    <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="standard">标准</SelectItem>
-                      <SelectItem value="soft_portraits">柔和人像</SelectItem>
-                      <SelectItem value="hard_portraits">锐化人像</SelectItem>
-                      <SelectItem value="art_n_illustration">艺术插画</SelectItem>
-                      <SelectItem value="nature_n_landscapes">自然风景</SelectItem>
-                      <SelectItem value="films_n_photography">电影摄影</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* 创造力滑块 */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-pink-400 font-medium">创意度</label>
-                    <span className="text-white bg-gray-800 px-2 py-1 rounded text-sm">
-                      {creativity[0]}
-                    </span>
-                  </div>
-                  <Slider
-                    value={creativity}
-                    onValueChange={setCreativity}
-                    min={-10}
-                    max={10}
-                    step={1}
-                    disabled={isProcessing}
-                    className="w-full"
-                  />
-                </div>
-
-                {/* HDR滑块 */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-green-400 font-medium">HDR强度</label>
-                    <span className="text-white bg-gray-800 px-2 py-1 rounded text-sm">
-                      {hdr[0]}
-                    </span>
-                  </div>
-                  <Slider
-                    value={hdr}
-                    onValueChange={setHdr}
-                    min={-10}
-                    max={10}
-                    step={1}
-                    disabled={isProcessing}
-                    className="w-full"
-                  />
-                </div>
-
-                {/* 提示词输入 */}
-                <div className="space-y-3">
-                  <label className="text-white font-medium">增强提示词（可选）</label>
-                  <Textarea
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="例如：增强细节，提高清晰度，保持自然色彩..."
-                    className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 resize-none"
-                    rows={3}
-                    disabled={isProcessing}
-                    maxLength={500}
-                  />
-                  <div className="text-xs text-gray-400 text-right">
-                    {prompt.length}/500
-                  </div>
-                </div>
-
-                {/* 处理按钮 */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">消耗积分:</span>
-                    <span className="text-cyan-400 font-medium">
-                      {getRequiredCredits(scaleFactor)} 积分
-                    </span>
-                  </div>
-                  <Button
-                    onClick={handleProcess}
-                    disabled={isProcessing || !userBenefits || userBenefits.credits < getRequiredCredits(scaleFactor)}
-                    className="w-full bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-600 hover:to-cyan-600 text-white py-6 text-lg"
-                  >
-                    {isProcessing ? (
-                      <div className="flex items-center">
-                        <Loader2 className="animate-spin mr-2 h-5 w-5" />
-                        处理中...
-                      </div>
-                    ) : (
-                      <div className="flex items-center">
-                        <Wand2 className="mr-2 h-5 w-5" />
-                        开始增强 ({scaleFactor})
-                      </div>
-                    )}
-                  </Button>
-                  {userBenefits && userBenefits.credits < getRequiredCredits(scaleFactor) && (
-                    <p className="text-destructive text-sm text-center">
-                      积分不足，需要 {getRequiredCredits(scaleFactor)} 积分
-                    </p>
-                  )}
-                </div>
-              </div>
-            </Card>
-          )}
+      
+      {/* 其他功能的占位符 */}
+      {activeTab !== 'enhance' && (
+        <div className="w-full sm:w-[350px] lg:w-[400px] xl:w-[450px] h-full bg-gray-800/50 border-r border-gray-700 flex flex-col items-center justify-center">
+          <div className="text-gray-400 text-center">
+            <div className="text-lg font-medium mb-2">功能开发中</div>
+            <div className="text-sm">该功能正在开发中，敬请期待</div>
+          </div>
         </div>
-
-        {/* 右侧：结果展示区域 */}
-        <div className="space-y-6">
-          <Card className="bg-black/40 border-gray-600 p-8">
-            <h3 className="text-xl font-semibold text-white mb-4 text-center">处理结果</h3>
-            
-            {!taskStatus && !isProcessing ? (
-              <div className="border-2 border-dashed border-gray-600 rounded-lg p-12 text-center">
-                <Sparkles className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-gray-400">上传图像并开始处理</p>
-              </div>
-            ) : isProcessing && !taskStatus ? (
-              <div className="border-2 border-dashed border-gray-600 rounded-lg p-12 text-center">
-                <Sparkles className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-gray-400">AI正在为您的图像增加细节...</p>
-                <div className="mt-4 space-y-2">
-                  <div className="w-full bg-gray-700 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-pink-500 to-cyan-500 h-2 rounded-full animate-pulse"></div>
-                  </div>
-                  <p className="text-sm text-gray-400">正在连接 Freepik AI 服务...</p>
-                </div>
-              </div>
-            ) : taskStatus ? (
-              <div className="space-y-4">
-                {/* 任务状态信息 */}
-                <div className="bg-gray-800/50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      {taskStatus.status === 'processing' && <Loader2 className="h-4 w-4 animate-spin text-blue-400" />}
-                      {taskStatus.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-400" />}
-                      {taskStatus.status === 'failed' && <XCircle className="h-4 w-4 text-red-400" />}
-                      <span className="text-white font-medium">
-                        {taskStatus.status === 'processing' && '处理中'}
-                        {taskStatus.status === 'completed' && '已完成'}
-                        {taskStatus.status === 'failed' && '失败'}
-                      </span>
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {taskStatus.scaleFactor}
-                    </Badge>
-                  </div>
-                  {taskStatus.status !== 'completed' && (
-                    <p className="text-gray-400 text-sm">{taskStatus.message}</p>
-                  )}
-                  
-                  {/* 进度条 */}
-                  {taskStatus.status === 'processing' && taskStatus.progress !== undefined && (
-                    <div className="mt-3 space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-gray-400">进度</span>
-                        <span className="text-cyan-400">{taskStatus.progress}%</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-pink-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${taskStatus.progress}%` }}
-                        />
-                      </div>
-                      {taskStatus.estimatedTimeRemaining && (
-                        <p className="text-xs text-gray-400 text-center">
-                          {taskStatus.estimatedTimeRemaining}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* 图片展示和操作 */}
-                {taskStatus.status === 'completed' && taskStatus.cdnUrl && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* 原图 */}
-                      {taskStatus.originalUrl && (
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-medium text-gray-300">原图</h4>
-                          <div className="relative aspect-square border border-gray-600 rounded-lg overflow-hidden bg-gray-800">
-                            <Image
-                              src={taskStatus.originalUrl}
-                              alt="Original image"
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* 增强后 */}
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-cyan-400">增强后</h4>
-                        <div className="relative aspect-square border border-cyan-400/50 rounded-lg overflow-hidden bg-gray-800">
-                          <Image
-                            src={taskStatus.cdnUrl}
-                            alt="Enhanced image"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* 操作按钮 */}
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={() => handleDownload(taskStatus.cdnUrl!)}
-                        className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                      >
-                        <Download className="mr-2 h-4 w-4" />
-                        下载增强图
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                        onClick={() => window.open(taskStatus.cdnUrl!, '_blank')}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                        onClick={() => handleCopyUrl(taskStatus.cdnUrl!)}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* 错误信息 */}
-                {taskStatus.status === 'failed' && taskStatus.error && (
-                  <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
-                    <div className="flex items-start gap-2">
-                      <XCircle className="h-4 w-4 text-red-400 mt-0.5" />
-                      <div>
-                        <p className="text-red-400 font-medium text-sm">处理失败</p>
-                        <p className="text-red-300 text-sm mt-1">{taskStatus.error}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 任务信息 */}
-                <div className="text-xs text-gray-400 space-y-1">
-                  <div className="flex justify-between">
-                    <span>任务ID:</span>
-                    <span className="font-mono">{taskStatus.taskId.substring(0, 8)}...</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>消耗积分:</span>
-                    <span className="text-cyan-400">{taskStatus.creditsConsumed}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>创建时间:</span>
-                    <span>{new Date(taskStatus.createdAt).toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </Card>
-
-          {/* 操作说明 */}
-          <Card className="bg-black/40 border-gray-600 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">使用说明</h3>
-            <div className="space-y-3 text-sm text-gray-300">
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-400 font-medium">1.</span>
-                <span>上传您要增强的图片</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-400 font-medium">2.</span>
-                <span>选择放大倍数和优化类型</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-400 font-medium">3.</span>
-                <span>调整创意度和HDR强度</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-400 font-medium">4.</span>
-                <span>点击开始增强等待处理完成</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-cyan-400 font-medium">5.</span>
-                <span>下载或分享您的增强图片</span>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
+      )}
+      
+      {/* 右侧结果展示区域 */}
+      <ResultDisplayPanel
+        taskStatus={taskStatus}
+        isProcessing={isProcessing}
+        onDownload={handleDownload}
+        onCopyUrl={handleCopyUrl}
+      />
     </div>
   );
 }

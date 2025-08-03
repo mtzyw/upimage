@@ -3,6 +3,10 @@ import { redis } from '@/lib/upstash';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
+import { Readable } from 'stream';
+import fs from 'fs';
+import path from 'path';
+import { pipeline } from 'stream/promises';
 
 const supabaseAdmin = createAdminClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -132,6 +136,126 @@ export async function uploadOptimizedImageStreamToR2(
   } catch (error) {
     console.error('Error stream uploading optimized image to R2:', error);
     throw new Error(`Failed to stream upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * 混合上传优化后的图片到 R2（Buffer → Readable 方案）
+ * 先缓冲图片数据，然后转换为Readable Stream上传，解决哈希计算问题
+ * @param imageResponse Fetch Response 对象
+ * @param userId 用户ID
+ * @param taskId 任务ID
+ * @param originalExtension 原图扩展名
+ * @returns 上传结果
+ */
+export async function uploadOptimizedImageHybridToR2(
+  imageResponse: Response,
+  userId: string, 
+  taskId: string,
+  originalExtension: string = 'png'
+): Promise<{ key: string; url: string }> {
+  try {
+    const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
+    
+    console.log(`🔄 Hybrid uploading optimized image to R2: ${key}`);
+    
+    // 第一步：先将Response转换为Buffer（缓冲）
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    console.log(`📦 Image buffered: ${buffer.length} bytes`);
+    
+    // 第二步：将Buffer转换为Readable Stream
+    const readableStream = new Readable({
+      read() {
+        this.push(buffer);
+        this.push(null); // 表示流结束
+      }
+    });
+    
+    console.log(`🌊 Buffer converted to Readable Stream`);
+    
+    // 第三步：使用Readable Stream上传
+    const result = await serverUploadStream({
+      stream: readableStream,
+      contentLength: buffer.length,
+      contentType: `image/${originalExtension}`,
+      key: key
+    });
+    
+    console.log(`✅ Hybrid upload completed: ${result.url}`);
+    return result;
+  } catch (error) {
+    console.error('Error hybrid uploading optimized image to R2:', error);
+    throw new Error(`Failed to hybrid upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * 本地文件上传优化后的图片到 R2（先下载到本地文件，然后上传）
+ * 最稳定的方案，避免内存占用和流式连接问题
+ * @param imageResponse Fetch Response 对象
+ * @param userId 用户ID
+ * @param taskId 任务ID
+ * @param originalExtension 原图扩展名
+ * @returns 上传结果
+ */
+export async function uploadOptimizedImageLocalToR2(
+  imageResponse: Response,
+  userId: string, 
+  taskId: string,
+  originalExtension: string = 'png'
+): Promise<{ key: string; url: string }> {
+  let tempFilePath: string | null = null;
+  
+  try {
+    const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
+    
+    console.log(`💾 Local file uploading optimized image to R2: ${key}`);
+    
+    // 第一步：创建临时文件路径
+    const tempDir = '/tmp';
+    const tempFileName = `freepik-${taskId}-${Date.now()}.${originalExtension}`;
+    tempFilePath = path.join(tempDir, tempFileName);
+    
+    console.log(`📁 Temp file path: ${tempFilePath}`);
+    
+    // 第二步：下载图片到本地临时文件
+    if (!imageResponse.body) {
+      throw new Error('Response body为空');
+    }
+    
+    const writeStream = fs.createWriteStream(tempFilePath);
+    await pipeline(Readable.fromWeb(imageResponse.body), writeStream);
+    
+    // 获取文件大小
+    const stats = fs.statSync(tempFilePath);
+    console.log(`📥 Image downloaded to local file: ${stats.size} bytes`);
+    
+    // 第三步：从本地文件读取并上传到R2
+    const fileBuffer = fs.readFileSync(tempFilePath);
+    
+    const result = await serverUploadFile({
+      data: fileBuffer,
+      contentType: `image/${originalExtension}`,
+      key: key
+    });
+    
+    console.log(`✅ Local file upload completed: ${result.url}`);
+    return result;
+  } catch (error) {
+    console.error('Error local file uploading optimized image to R2:', error);
+    throw new Error(`Failed to local file upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  } finally {
+    // 清理临时文件
+    if (tempFilePath && fs.existsSync(tempFilePath)) {
+      try {
+        fs.unlinkSync(tempFilePath);
+        console.log(`🗑️ Temp file cleaned up: ${tempFilePath}`);
+      } catch (cleanupError) {
+        console.warn(`Failed to cleanup temp file: ${tempFilePath}`, cleanupError);
+      }
+    }
   }
 }
 

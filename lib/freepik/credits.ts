@@ -75,6 +75,7 @@ export async function validateUserCredits(
  * @returns 扣减结果
  */
 export async function deductUserCredits(
+  userId: string,
   scaleFactor: string,
   taskId: string
 ): Promise<ActionResult<any>> {

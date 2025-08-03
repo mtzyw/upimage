@@ -16,9 +16,15 @@ const HeaderLinks = () => {
     pricingLink.href = process.env.NEXT_PUBLIC_PRICING_PATH!;
   }
 
+  // 在 /home 页面时只显示 pricing 链接
+  const isHomePage = pathname === "/home";
+  const filteredLinks = isHomePage 
+    ? headerLinks.filter(link => link.id === 'pricing')
+    : headerLinks;
+
   return (
     <div className="hidden md:flex flex-row items-center gap-x-2 text-sm text-white">
-      {headerLinks.map((link) => (
+      {filteredLinks.map((link) => (
         <I18nLink
           key={link.name}
           href={link.href}

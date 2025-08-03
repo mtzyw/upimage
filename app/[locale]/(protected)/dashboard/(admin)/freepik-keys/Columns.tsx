@@ -3,6 +3,9 @@
 import { Database } from "@/lib/supabase/types";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 import { Badge } from "@/components/ui/badge";
 import { KeyActions } from "./KeyActions";
 

@@ -2,7 +2,7 @@ import HeaderLinks from "@/components/header/HeaderLinks";
 import MobileMenu from "@/components/header/MobileMenu";
 import { UserAvatar } from "@/components/header/UserAvatar";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import HeaderCreditsDisplay from "@/components/header/HeaderCreditsDisplay";
 import { Link as I18nLink } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -11,7 +11,7 @@ const Header = () => {
   const t = useTranslations("Home");
 
   return (
-    <header className="py-2 px-6 backdrop-blur-md sticky top-0 z-50">
+    <header className="py-2 px-6 backdrop-blur-md bg-black/20 border-b border-gray-800/50 sticky top-0 z-50">
       <nav className="flex justify-between items-center w-full mx-auto">
         <div className="flex items-center space-x-6 md:space-x-12">
           <I18nLink
@@ -33,7 +33,7 @@ const Header = () => {
           {/* PC */}
           <div className="hidden md:flex items-center gap-x-4">
             <LocaleSwitcher />
-            <ThemeToggle />
+            <HeaderCreditsDisplay />
             <UserAvatar />
           </div>
 

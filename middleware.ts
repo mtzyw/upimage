@@ -20,6 +20,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     intlResponse.cookies.set(name, value, options);
   });
 
+  // 设置路径信息到 header
+  intlResponse.headers.set('x-pathname', request.nextUrl.pathname);
+
   return intlResponse;
 }
 
