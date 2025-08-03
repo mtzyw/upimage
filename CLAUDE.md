@@ -153,6 +153,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **支付系统**：Stripe 配置（密钥、Webhook 密钥）
 - **邮件服务**：Resend API 配置
 - **存储服务**：Cloudflare R2 配置
+- **下载代理**：Cloudflare Worker 配置（用于图片下载中转，提升性能和避免CORS）
 - **分析工具**：Google Analytics、Baidu Tongji、Plausible
 - **限流服务**：Upstash Redis 配置
 

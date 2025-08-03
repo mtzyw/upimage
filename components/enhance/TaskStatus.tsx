@@ -132,28 +132,23 @@ export function TaskStatus({
     return () => clearPolling();
   }, [taskInfo?.status, autoRefresh, refreshInterval]);
 
-  const handleDownload = async (url: string) => {
+  const handleDownload = (url: string) => {
     try {
-      // 使用后端代理API下载图片，避免CORS问题
-      const proxyUrl = `/api/enhance/download?url=${encodeURIComponent(url)}&taskId=${taskId}`;
-      const response = await fetch(proxyUrl);
+      // 使用 Cloudflare Worker 代理下载，避免CORS问题并提升性能
+      const workerUrl = process.env.NEXT_PUBLIC_DOWNLOAD_WORKER_URL;
       
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || '下载失败');
+      if (!workerUrl) {
+        toast.error('下载服务未配置，请联系管理员');
+        return;
       }
       
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = `enhanced-${taskId}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(downloadUrl);
+      const filename = `enhanced-${taskId}.jpg`;
+      const downloadUrl = `${workerUrl}/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}&taskId=${taskId}`;
       
-      toast.success('图片下载成功');
+      // 直接跳转到下载链接，Worker会设置正确的响应头触发下载
+      window.open(downloadUrl, '_blank');
+      
+      toast.success('开始下载图片');
     } catch (error) {
       console.error('Download error:', error);
       toast.error(error instanceof Error ? error.message : '下载失败，请重试');
