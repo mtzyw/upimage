@@ -56,6 +56,7 @@ export default function ImageProcessor() {
   // 用户信息
   const [userBenefits, setUserBenefits] = useState<UserBenefits | null>(null);
 
+
   // 获取用户权益信息
   const fetchUserBenefits = useCallback(async () => {
     if (!user) return;
@@ -87,6 +88,7 @@ export default function ImageProcessor() {
           if (result.data.status === 'completed') {
             toast.success('图像增强完成！');
             fetchUserBenefits(); // 刷新积分信息
+            
           } else {
             toast.error('图像处理失败');
           }

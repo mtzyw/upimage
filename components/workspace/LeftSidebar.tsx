@@ -1,7 +1,8 @@
 "use client";
 
-import { Menu, Sparkles, Zap, Image as ImageIcon, Settings } from "lucide-react";
+import { Menu, Sparkles, History } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@/i18n/routing";
 
 interface LeftSidebarProps {
   activeTab?: string;
@@ -21,19 +22,9 @@ export default function LeftSidebar({
       label: '图像增强',
     },
     {
-      id: 'upscale',
-      icon: Zap,
-      label: '超分辨率',
-    },
-    {
-      id: 'restore',
-      icon: ImageIcon,
-      label: '图像修复',
-    },
-    {
-      id: 'effects',
-      icon: Settings,
-      label: '特效处理',
+      id: 'history',
+      icon: History,
+      label: '历史记录',
     },
   ];
 
@@ -55,10 +46,23 @@ export default function LeftSidebar({
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           
+          const handleItemClick = () => {
+            if (item.id === 'history') {
+              // 跳转到历史记录页面
+              window.location.href = '/history';
+            } else if (item.id === 'enhance') {
+              // 跳转到首页/工作台
+              window.location.href = '/home';
+            } else {
+              // 对于其他选项，调用onTabChange
+              onTabChange?.(item.id);
+            }
+          };
+          
           return (
             <div key={item.id} className="px-3 py-2">
               <button
-                onClick={() => onTabChange?.(item.id)}
+                onClick={handleItemClick}
                 className={`
                   w-full p-3 flex flex-col items-center gap-1.5 text-xs transition-all rounded-xl
                   hover:bg-gray-800/60 relative
@@ -87,6 +91,7 @@ export default function LeftSidebar({
           );
         })}
       </div>
+
     </div>
   );
 }
