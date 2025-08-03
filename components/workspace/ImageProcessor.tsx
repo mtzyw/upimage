@@ -245,7 +245,7 @@ export default function ImageProcessor() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] sm:h-[calc(100vh-100px)] lg:h-[840px] w-full max-h-screen overflow-hidden bg-gray-900/95">
+    <div className="flex h-[calc(100%-80px)] w-full overflow-hidden bg-gray-900/95">
       {/* 最左侧导航栏 */}
       <LeftSidebar 
         activeTab={activeTab}

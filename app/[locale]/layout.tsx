@@ -98,6 +98,7 @@ export default async function LocaleLayout({
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
   const isHomePage = pathname === "/home" || pathname.endsWith("/home");
+  const isWorkspacePage = pathname.includes("/home") || pathname.includes("workspace") || pathname.includes("dashboard") || pathname === "/" || pathname.endsWith("/en") || pathname.endsWith("/zh") || pathname.endsWith("/ja");
 
   return (
     <html lang={locale || DEFAULT_LOCALE} suppressHydrationWarning>
@@ -132,7 +133,7 @@ export default async function LocaleLayout({
                   {children}
                 </main>
 
-                {messages.Footer && !isHomePage && <Footer />}
+                {messages.Footer && !isHomePage && !isWorkspacePage && <Footer />}
               </BenefitsProvider>
             </ThemeProvider>
           </AuthProvider>
