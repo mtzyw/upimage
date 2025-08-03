@@ -98,12 +98,12 @@ export async function GET(req: NextRequest) {
       return apiResponse.forbidden('无权访问此任务');
     }
 
-    // 4. 获取任务详细状态（优先从 Redis，然后从数据库）
-    const taskStatus = await getTaskStatus(taskId);
+    // 4. 直接使用数据库状态，因为它是最权威的
+    // 不再依赖 getTaskStatus 的 Redis 缓存，避免缓存不一致问题
+    const currentStatus = taskData.status;
     
     // 5. 获取进度信息（如果有）
     let progress: number | undefined;
-    const currentStatus = taskStatus?.status || taskData.status;
     if (redis && currentStatus === 'processing') {
       const progressStr = await redis.get(`task:${taskId}:progress`);
       if (progressStr !== null) {
@@ -139,7 +139,7 @@ export async function GET(req: NextRequest) {
         });
 
       case 'completed':
-        const cdnUrl = taskStatus?.cdnUrl || taskData.cdn_url;
+        const cdnUrl = taskData.cdn_url;
         
         if (!cdnUrl) {
           return apiResponse.error('任务已完成但优化图像不可用');
@@ -154,7 +154,7 @@ export async function GET(req: NextRequest) {
         });
 
       case 'failed':
-        const errorMessage = taskStatus?.errorMessage || taskData.error_message || '图像处理失败';
+        const errorMessage = taskData.error_message || '图像处理失败';
         
         return apiResponse.success({
           ...baseResponse,

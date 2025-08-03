@@ -80,24 +80,27 @@ export default function ImageProcessor() {
       const result = await response.json();
       
       if (result.success) {
-        setTaskStatus(result.data);
-        
-        // 如果任务完成，停止轮询
-        if (result.data.status === 'completed' || result.data.status === 'failed') {
-          setIsProcessing(false);
-          if (result.data.status === 'completed') {
-            toast.success('图像增强完成！');
-            fetchUserBenefits(); // 刷新积分信息
-            
-          } else {
-            toast.error('图像处理失败');
+        // 重要：只有当查询的taskId与当前任务ID一致时才更新状态
+        // 这样可以防止旧轮询的结果覆盖新任务的状态
+        if (taskId === currentTaskId) {
+          setTaskStatus(result.data);
+          
+          // 如果任务完成，停止轮询
+          if (result.data.status === 'completed' || result.data.status === 'failed') {
+            setIsProcessing(false);
+            if (result.data.status === 'completed') {
+              fetchUserBenefits(); // 刷新积分信息
+              
+            } else {
+              toast.error('图像处理失败');
+            }
           }
         }
       }
     } catch (error) {
       console.error('Error fetching task status:', error);
     }
-  }, [fetchUserBenefits]);
+  }, [fetchUserBenefits, currentTaskId]);
 
   // 轮询任务状态 - 优化为2秒间隔
   useEffect(() => {
@@ -146,6 +149,8 @@ export default function ImageProcessor() {
     }
 
     setIsProcessing(true);
+    setTaskStatus(null); // 清空旧的任务结果
+    setCurrentTaskId(null); // 立即清空旧的任务ID，防止旧轮询干扰
 
     try {
       // 将文件转换为 base64
@@ -179,7 +184,6 @@ export default function ImageProcessor() {
 
       if (result.success) {
         setCurrentTaskId(result.data.taskId);
-        toast.success('图像处理已开始');
         
         // 更新用户积分（乐观更新）
         setUserBenefits(prev => prev ? {

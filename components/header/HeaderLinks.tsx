@@ -16,9 +16,10 @@ const HeaderLinks = () => {
     pricingLink.href = process.env.NEXT_PUBLIC_PRICING_PATH!;
   }
 
-  // 在 /home 页面时只显示 pricing 链接
+  // 在 /home 或 /history 页面时只显示 pricing 链接
   const isHomePage = pathname === "/home";
-  const filteredLinks = isHomePage 
+  const isHistoryPage = pathname === "/history";
+  const filteredLinks = (isHomePage || isHistoryPage)
     ? headerLinks.filter(link => link.id === 'pricing')
     : headerLinks;
 
