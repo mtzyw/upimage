@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import LeftSidebar from "./LeftSidebar";
 import LeftControlPanel from "./LeftControlPanel";
 import ResultDisplayPanel from "./ResultDisplayPanel";
@@ -32,6 +33,7 @@ interface TaskStatus {
 
 export default function ImageProcessor() {
   const { user } = useAuth();
+  const router = useRouter();
   
   // 上传和基本状态
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -89,7 +91,8 @@ export default function ImageProcessor() {
           if (result.data.status === 'completed' || result.data.status === 'failed') {
             setIsProcessing(false);
             if (result.data.status === 'completed') {
-              fetchUserBenefits(); // 刷新积分信息
+              fetchUserBenefits(); // 刷新本地积分信息
+              router.refresh(); // 触发服务端重新渲染，更新导航栏积分
               
             } else {
               toast.error('图像处理失败');

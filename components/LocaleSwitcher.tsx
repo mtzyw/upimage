@@ -55,8 +55,8 @@ export default function LocaleSwitcher() {
       value={currentLocale}
       onValueChange={onSelectChange}
     >
-      <SelectTrigger className="w-fit" aria-label="Select language">
-        <Globe className="w-4 h-4 mr-1" />
+      <SelectTrigger className="w-fit text-white border-gray-600 hover:bg-white/10" aria-label="Select language">
+        <Globe className="w-4 h-4 mr-1 text-white" />
         <SelectValue placeholder="Language" />
       </SelectTrigger>
       <SelectContent>
