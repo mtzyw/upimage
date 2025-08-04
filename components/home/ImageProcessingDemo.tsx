@@ -149,6 +149,30 @@ export default function ImageProcessingDemo() {
     return () => clearInterval(interval);
   }, [currentTask]);
 
+  // 复用工作台的下载逻辑
+  const handleDownload = (url: string, taskId: string) => {
+    try {
+      // 使用 Cloudflare Worker 代理下载，避免CORS问题并提升性能
+      const workerUrl = process.env.NEXT_PUBLIC_DOWNLOAD_WORKER_URL;
+      
+      if (!workerUrl) {
+        toast.error('下载服务未配置，请联系管理员');
+        return;
+      }
+      
+      const filename = `enhanced-${taskId}.jpg`;
+      const downloadUrl = `${workerUrl}/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}&taskId=${taskId}`;
+      
+      // 直接跳转到下载链接，Worker会设置正确的响应头触发下载
+      window.open(downloadUrl, '_blank');
+      
+      toast.success('开始下载增强图片');
+    } catch (error) {
+      console.error('下载失败:', error);
+      toast.error('下载失败，请重试');
+    }
+  };
+
   const handleGenerate = async () => {
     if (!selectedImage) {
       toast.error('请先选择图片');
@@ -478,10 +502,11 @@ export default function ImageProcessingDemo() {
               <div className="text-center">
                 <Button
                   onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = resultImage;
-                    link.download = 'enhanced-image-4x.jpg';
-                    link.click();
+                    if (resultImage && currentTask?.taskId) {
+                      handleDownload(resultImage, currentTask.taskId);
+                    } else {
+                      toast.error('下载失败，任务信息缺失');
+                    }
                   }}
                   className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
                 >
