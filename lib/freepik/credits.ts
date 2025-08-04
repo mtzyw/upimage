@@ -130,7 +130,7 @@ export async function refundUserCredits(
     const { error: rpcError } = await supabaseAdmin.rpc('grant_one_time_credits_and_log', {
       p_user_id: userId,
       p_credits_to_add: refundCredits,
-      p_related_order_id: null // 没有关联订单，这是退款
+      p_related_order_id: undefined // 没有关联订单，这是退款
     });
 
     if (rpcError) {

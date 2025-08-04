@@ -116,8 +116,8 @@ export default function HistoryViewer() {
           const newItems = result.data.items || [];
           setHistoryItems(prev => {
             // 防止重复添加相同的项目
-            const existingIds = new Set(prev.map(item => item.id));
-            const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+            const existingIds = new Set(prev.map((item: HistoryItem) => item.id));
+            const uniqueNewItems = newItems.filter((item: HistoryItem) => !existingIds.has(item.id));
             return [...prev, ...uniqueNewItems];
           });
           setHasMore(result.data.hasMore || false);

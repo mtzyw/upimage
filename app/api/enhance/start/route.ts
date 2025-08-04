@@ -4,7 +4,7 @@ import { apiResponse } from '@/lib/api-response';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
-import { checkRateLimit } from '@/lib/upstash';
+// 已删除限流检查导入
 import { getAvailableFreepikApiKey, releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
   convertR2ImageToBase64, 
@@ -51,12 +51,7 @@ const enhanceRequestSchema = z.object({
 
 type EnhanceRequest = z.infer<typeof enhanceRequestSchema>;
 
-// 限流配置
-const RATE_LIMIT_CONFIG = {
-  prefix: 'enhance_rate_limit',
-  maxRequests: parseInt(process.env.DAY_MAX_SUBMISSIONS || '10'),
-  window: '1 d' as const
-};
+// 删除限流配置 - 只依赖积分验证
 
 export async function POST(req: NextRequest) {
   console.log('🚀 [ENHANCE START] ===== 收到图像增强请求 =====');
@@ -116,18 +111,11 @@ export async function POST(req: NextRequest) {
       imageLength: base64Image.length
     });
 
-    // 4. 限流检查
-    console.log('⏱️ [ENHANCE START] 步骤4: 检查限流...');
-    const rateLimitSuccess = await checkRateLimit(user.id, RATE_LIMIT_CONFIG);
-    console.log('⏱️ [ENHANCE START] 限流检查结果:', { success: rateLimitSuccess });
-    
-    if (!rateLimitSuccess) {
-      console.log('❌ [ENHANCE START] 请求过于频繁');
-      return apiResponse.error('请求过于频繁，请稍后再试', 429);
-    }
+    // 4. 跳过限流检查 - 只依赖积分验证
+    console.log('⏱️ [ENHANCE START] 步骤4: 跳过限流检查，只依赖积分验证...');
 
-    // 5. 验证积分余额
-    console.log('💰 [ENHANCE START] 步骤5: 验证积分余额...');
+    // 4. 验证积分余额
+    console.log('💰 [ENHANCE START] 步骤4: 验证积分余额...');
     const creditValidation = await validateUserCredits(user.id, validatedParams.scaleFactor);
     console.log('💰 [ENHANCE START] 积分验证结果:', creditValidation);
     
@@ -138,8 +126,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 6. 检查 API Key 可用性
-    console.log('🔑 [ENHANCE START] 步骤6: 获取可用的API密钥...');
+    // 5. 检查 API Key 可用性
+    console.log('🔑 [ENHANCE START] 步骤5: 获取可用的API密钥...');
     const apiKey = await getAvailableFreepikApiKey();
     console.log('🔑 [ENHANCE START] API密钥获取结果:', { hasApiKey: !!apiKey, keyId: apiKey?.id });
     if (!apiKey) {
@@ -149,8 +137,8 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ENHANCE START] 使用API密钥: ${apiKey.name} (剩余 ${apiKey.remaining} 次)`);
 
-    // 7. 生成临时任务ID并创建数据库记录
-    console.log('🆔 [ENHANCE START] 步骤7: 生成临时任务ID并创建数据库记录...');
+    // 6. 生成临时任务ID并创建数据库记录
+    console.log('🆔 [ENHANCE START] 步骤6: 生成临时任务ID并创建数据库记录...');
     temporaryTaskId = generateTaskIdentifier(user.id, '');
     console.log(`🆔 [ENHANCE START] 临时任务ID: ${temporaryTaskId}`);
 
@@ -186,8 +174,8 @@ export async function POST(req: NextRequest) {
       console.log('✅ [ENHANCE START] base64 已暂存到 Redis');
     }
 
-    // 9. 扣减积分
-    console.log('💰 [ENHANCE START] 步骤9: 扣减用户积分...');
+    // 7. 扣减积分
+    console.log('💰 [ENHANCE START] 步骤7: 扣减用户积分...');
     const deductResult = await deductUserCredits(user.id, validatedParams.scaleFactor, temporaryTaskId);
     console.log('💰 [ENHANCE START] 积分扣减结果:', deductResult);
     
@@ -203,8 +191,8 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ENHANCE START] 积分扣减成功，用户: ${user.id}`);
 
-    // 10. 调用 Freepik API
-    console.log('🚀 [ENHANCE START] 步骤10: 调用Freepik API...');
+    // 8. 调用 Freepik API
+    console.log('🚀 [ENHANCE START] 步骤8: 调用Freepik API...');
     
     // 确保 webhook URL 是公开可访问的
     const webhookUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/webhook/freepik`;
@@ -352,13 +340,13 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ENHANCE START] Freepik任务创建成功: ${freepikTaskId}`);
 
-    // 10. 保存临时ID到正式ID的映射关系到Redis（用于webhook匹配）
+    // 9. 保存临时ID到正式ID的映射关系到Redis（用于webhook匹配）
     if (redis) {
       await redis.set(`temp:${temporaryTaskId}`, freepikTaskId, { ex: 3600 });
       console.log('✅ [ENHANCE START] ID映射关系已保存到Redis');
     }
 
-    // 11. 立即清除 Redis 临时图片数据并触发异步原图上传
+    // 10. 立即清除 Redis 临时图片数据并触发异步原图上传
     if (redis) {
       await redis.del(`tmp:img:${temporaryTaskId}`);
       console.log('✅ [ENHANCE START] Redis 临时数据已清除');
@@ -367,8 +355,8 @@ export async function POST(req: NextRequest) {
     // 异步上传原图到 R2（不阻塞响应）
     uploadOriginalImageAsync(base64Image, freepikTaskId, user.id);
 
-    // 12. 用Freepik的task_id创建正式记录，删除临时记录
-    console.log('💾 [ENHANCE START] 步骤12: 创建正式任务记录...');
+    // 11. 用Freepik的task_id创建正式记录，删除临时记录
+    console.log('💾 [ENHANCE START] 步骤11: 创建正式任务记录...');
     
     // 获取临时记录的数据
     const { data: tempTask, error: fetchError } = await supabaseAdmin
@@ -429,13 +417,13 @@ export async function POST(req: NextRequest) {
       console.log('✅ [ENHANCE START] Redis缓存保存完成');
     }
 
-    // 13. 设置初始状态
-    console.log('📊 [ENHANCE START] 步骤13: 设置任务初始状态...');
+    // 12. 设置初始状态
+    console.log('📊 [ENHANCE START] 步骤12: 设置任务初始状态...');
     await setTaskStatus(freepikTaskId, 'processing');
     console.log('✅ [ENHANCE START] 任务状态设置完成');
 
-    // 14. 返回成功响应
-    console.log('🎉 [ENHANCE START] 步骤14: 准备返回成功响应...');
+    // 13. 返回成功响应
+    console.log('🎉 [ENHANCE START] 步骤13: 准备返回成功响应...');
     const updatedBenefits = await import('@/actions/usage/benefits')
       .then(m => m.getUserBenefits(user.id));
     

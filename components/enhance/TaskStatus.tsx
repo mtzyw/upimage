@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+// 移除 Progress 组件依赖
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useTranslations } from 'next-intl';
@@ -261,10 +261,13 @@ export function TaskStatus({
                 <span>{taskInfo.progress}%</span>
               )}
             </div>
-            <Progress 
-              value={taskInfo.progress || 0} 
-              className="w-full"
-            />
+            {/* 简单的进度条替代 */}
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+                style={{ width: `${taskInfo.progress || 0}%` }}
+              />
+            </div>
             {taskInfo.estimatedTimeRemaining && (
               <p className="text-xs text-muted-foreground text-center">
                 {taskInfo.estimatedTimeRemaining}

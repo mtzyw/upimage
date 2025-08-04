@@ -10,10 +10,6 @@ import ResultDisplayPanel from "./ResultDisplayPanel";
 
 interface UserBenefits {
   credits: number;
-  isPro: boolean;
-  maxUploadSize: number;
-  dailyLimit: number;
-  dailyUsed: number;
 }
 
 interface TaskStatus {

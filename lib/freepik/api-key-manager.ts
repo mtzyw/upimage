@@ -127,7 +127,7 @@ export async function releaseApiKey(keyId: string): Promise<void> {
     }
 
     // 减少使用计数（但不能小于0）
-    const newUsedCount = Math.max(0, keyData.used_today - 1);
+    const newUsedCount = Math.max(0, (keyData.used_today || 0) - 1);
 
     const { error: updateError } = await supabaseAdmin
       .from('freepik_api_keys')

@@ -34,13 +34,9 @@ export async function GET(request: NextRequest) {
       return apiResponse.error('无法获取用户权益信息');
     }
 
-    // 构建响应数据
+    // 构建响应数据 - 只保留积分验证
     const responseData = {
-      credits: benefits.totalAvailableCredits || 0,
-      isPro: benefits.isPro || false,
-      maxUploadSize: benefits.isPro ? 50 : 10, // Pro用户50MB，普通用户10MB
-      dailyLimit: benefits.isPro ? 100 : 10,   // Pro用户100次/天，普通用户10次/天
-      dailyUsed: 0 // TODO: 实现每日使用统计
+      credits: benefits.totalAvailableCredits || 0
     };
 
     console.log('✅ [USER BENEFITS] 响应数据:', responseData);

@@ -9,10 +9,6 @@ import ImageUploader from "@/components/upload/ImageUploader";
 
 interface UserBenefits {
   credits: number;
-  isPro: boolean;
-  maxUploadSize: number;
-  dailyLimit: number;
-  dailyUsed: number;
 }
 
 interface LeftControlPanelProps {
@@ -83,7 +79,7 @@ export default function LeftControlPanel({
           <label className="text-white font-medium text-sm">图像</label>
           <ImageUploader
             onFileSelected={onFileSelected}
-            maxSizeMB={userBenefits?.maxUploadSize || 10}
+            maxSizeMB={50}
             acceptedTypes={['image/jpeg', 'image/png', 'image/webp']}
           />
         </div>

@@ -1,12 +1,12 @@
-import { serverUploadFile, serverUploadStream } from '@/lib/cloudflare/r2';
+import { serverUploadFile } from '@/lib/cloudflare/r2';
 import { redis } from '@/lib/upstash';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
-import { Readable } from 'stream';
+// 删除了未使用的 Readable 导入
 import fs from 'fs';
 import path from 'path';
-import { pipeline } from 'stream/promises';
+// 删除了未使用的 pipeline 导入
 
 const supabaseAdmin = createAdminClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -102,94 +102,7 @@ export async function uploadOptimizedImageToR2(
  * @param originalExtension 原图扩展名
  * @returns 上传结果
  */
-export async function uploadOptimizedImageStreamToR2(
-  imageResponse: Response,
-  userId: string, 
-  taskId: string,
-  originalExtension: string = 'png'
-): Promise<{ key: string; url: string }> {
-  try {
-    const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
-    
-    // 获取文件大小
-    const contentLength = parseInt(imageResponse.headers.get('content-length') || '0');
-    if (contentLength === 0) {
-      throw new Error('无法获取图片文件大小');
-    }
-    
-    // 确保Response body存在
-    if (!imageResponse.body) {
-      throw new Error('Response body为空');
-    }
-    
-    console.log(`🚀 Stream uploading optimized image to R2: ${key} (${contentLength} bytes)`);
-    
-    const result = await serverUploadStream({
-      stream: imageResponse.body,
-      contentLength,
-      contentType: `image/${originalExtension}`,
-      key: key
-    });
-    
-    console.log(`✅ Stream upload completed: ${result.url}`);
-    return result;
-  } catch (error) {
-    console.error('Error stream uploading optimized image to R2:', error);
-    throw new Error(`Failed to stream upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
-/**
- * 混合上传优化后的图片到 R2（Buffer → Readable 方案）
- * 先缓冲图片数据，然后转换为Readable Stream上传，解决哈希计算问题
- * @param imageResponse Fetch Response 对象
- * @param userId 用户ID
- * @param taskId 任务ID
- * @param originalExtension 原图扩展名
- * @returns 上传结果
- */
-export async function uploadOptimizedImageHybridToR2(
-  imageResponse: Response,
-  userId: string, 
-  taskId: string,
-  originalExtension: string = 'png'
-): Promise<{ key: string; url: string }> {
-  try {
-    const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
-    
-    console.log(`🔄 Hybrid uploading optimized image to R2: ${key}`);
-    
-    // 第一步：先将Response转换为Buffer（缓冲）
-    const arrayBuffer = await imageResponse.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    
-    console.log(`📦 Image buffered: ${buffer.length} bytes`);
-    
-    // 第二步：将Buffer转换为Readable Stream
-    const readableStream = new Readable({
-      read() {
-        this.push(buffer);
-        this.push(null); // 表示流结束
-      }
-    });
-    
-    console.log(`🌊 Buffer converted to Readable Stream`);
-    
-    // 第三步：使用Readable Stream上传
-    const result = await serverUploadStream({
-      stream: readableStream,
-      contentLength: buffer.length,
-      contentType: `image/${originalExtension}`,
-      key: key
-    });
-    
-    console.log(`✅ Hybrid upload completed: ${result.url}`);
-    return result;
-  } catch (error) {
-    console.error('Error hybrid uploading optimized image to R2:', error);
-    throw new Error(`Failed to hybrid upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
+// 删除了未使用的流式上传函数
 
 /**
  * 本地文件上传优化后的图片到 R2（先下载到本地文件，然后上传）
@@ -221,12 +134,9 @@ export async function uploadOptimizedImageLocalToR2(
     console.log(`📁 Temp file path: ${tempFilePath}`);
     
     // 第二步：下载图片到本地临时文件
-    if (!imageResponse.body) {
-      throw new Error('Response body为空');
-    }
-    
-    const writeStream = fs.createWriteStream(tempFilePath);
-    await pipeline(Readable.fromWeb(imageResponse.body), writeStream);
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    fs.writeFileSync(tempFilePath, buffer);
     
     // 获取文件大小
     const stats = fs.statSync(tempFilePath);
@@ -353,8 +263,8 @@ export async function getTaskStatus(taskId: string): Promise<TaskStatus | null> 
         console.log(`Task status retrieved from Redis: ${taskId} -> ${status}`);
         return {
           status: status as any,
-          cdnUrl: cdnUrl || undefined,
-          errorMessage: errorMessage || undefined
+          cdnUrl: (typeof cdnUrl === 'string' && cdnUrl) ? cdnUrl : undefined,
+          errorMessage: (typeof errorMessage === 'string' && errorMessage) ? errorMessage : undefined
         };
       }
     }

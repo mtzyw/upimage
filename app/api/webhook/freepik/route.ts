@@ -6,8 +6,6 @@ import { redis } from '@/lib/upstash';
 import { releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
   uploadOptimizedImageToR2, 
-  uploadOptimizedImageStreamToR2,
-  uploadOptimizedImageHybridToR2,
   uploadOptimizedImageLocalToR2,
   setTaskStatus, 
   getImageExtension 

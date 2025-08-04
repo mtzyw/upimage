@@ -18,12 +18,7 @@ export interface UploadOptions {
   key: string;
 }
 
-export interface StreamUploadOptions {
-  stream: ReadableStream;
-  contentLength: number;
-  contentType: string;
-  key: string;
-}
+// 删除了未使用的流式上传接口
 export interface UploadResult {
   url: string;
   key: string;
@@ -197,37 +192,4 @@ export const getDataFromDataUrl = (dataUrl: string): { buffer: Buffer; contentTy
  * @param options 流式上传选项
  * @returns 上传结果
  */
-export const serverUploadStream = async ({
-  stream,
-  contentLength,
-  contentType,
-  key,
-}: StreamUploadOptions): Promise<UploadResult> => {
-  if (!process.env.R2_BUCKET_NAME || !process.env.R2_PUBLIC_URL) {
-    throw new Error('R2 configuration is missing');
-  }
-
-  const s3Client = createR2Client();
-
-  try {
-    await s3Client.send(new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
-      Key: key,
-      Body: stream, // 直接使用流，无需缓存到内存
-      ContentType: contentType,
-      ContentLength: contentLength, // 必须提供文件大小
-      // R2特定配置：禁用payload签名
-      Metadata: {
-        'x-amz-content-sha256': 'UNSIGNED-PAYLOAD'
-      }
-    }));
-
-    const url = `${process.env.R2_PUBLIC_URL}/${key}`;
-    console.log(`✅ Stream uploaded to R2: ${key} (${contentLength} bytes)`);
-    
-    return { url, key };
-  } catch (error) {
-    console.error('Failed to stream upload file to R2:', error);
-    throw new Error('Failed to stream upload file to R2');
-  }
-};
+// 删除了未使用的流式上传函数
