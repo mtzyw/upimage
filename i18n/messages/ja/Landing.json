@@ -407,12 +407,14 @@
     "dropHere": "画像をここにドロップ",
     "supportedFormats": "JPEG、PNG、WebP形式をサポート",
     "dragOrClick": "ファイルをここにドラッグまたはクリックして選択",
-    "modeLabel": "モード選択",
+    "modeLabel": "最適化タイプ",
     "modes": {
-      "upscale": "画像アップスケール",
-      "enhance": "画像強化",
-      "transform": "スタイル変換",
-      "generate": "AI生成"
+      "standard": "標準",
+      "soft_portraits": "ソフトポートレート",
+      "hard_portraits": "シャープポートレート",
+      "art_n_illustration": "アート・イラスト",
+      "nature_n_landscapes": "自然・風景",
+      "films_n_photography": "映画・写真"
     },
     "promptLabel": "プロンプト入力",
     "promptPlaceholder": "希望する効果を説明してください。例：詳細を強調、鮮明度向上、自然な色合いを保持...",

@@ -407,12 +407,14 @@
     "dropHere": "拖放图片到这里",
     "supportedFormats": "支持 JPEG, PNG, WebP 格式",
     "dragOrClick": "拖拽文件到此处或点击选择",
-    "modeLabel": "模式选择",
+    "modeLabel": "优化类型",
     "modes": {
-      "upscale": "图像放大",
-      "enhance": "图像增强", 
-      "transform": "风格转换",
-      "generate": "AI 生成"
+      "standard": "标准",
+      "soft_portraits": "柔和人像",
+      "hard_portraits": "锐化人像",
+      "art_n_illustration": "艺术插画",
+      "nature_n_landscapes": "自然风景",
+      "films_n_photography": "电影摄影"
     },
     "promptLabel": "提示词内容输入框",
     "promptPlaceholder": "描述您想要的效果，例如：增强细节，提高清晰度，保持自然色彩...",

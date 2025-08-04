@@ -407,12 +407,14 @@
     "dropHere": "Drop image here",
     "supportedFormats": "Supports JPEG, PNG, WebP formats",
     "dragOrClick": "Drag files here or click to select",
-    "modeLabel": "Mode Selection",
+    "modeLabel": "Optimization Type",
     "modes": {
-      "upscale": "Image Upscale",
-      "enhance": "Image Enhancement",
-      "transform": "Style Transform",
-      "generate": "AI Generate"
+      "standard": "Standard",
+      "soft_portraits": "Soft Portraits",
+      "hard_portraits": "Hard Portraits",
+      "art_n_illustration": "Art & Illustration",
+      "nature_n_landscapes": "Nature & Landscapes",
+      "films_n_photography": "Films & Photography"
     },
     "promptLabel": "Prompt Input",
     "promptPlaceholder": "Describe the effects you want, e.g.: enhance details, improve clarity, maintain natural colors...",

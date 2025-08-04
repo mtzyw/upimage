@@ -12,7 +12,7 @@ export default function ImageProcessingDemo() {
   const t = useTranslations('Landing.ImageProcessing');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [mode, setMode] = useState('upscale');
+  const [mode, setMode] = useState('standard');
   const [prompt, setPrompt] = useState('');
   const [dragActive, setDragActive] = useState(false);
 
@@ -148,25 +148,31 @@ export default function ImageProcessingDemo() {
           
           {/* 模式选择 */}
           <div className="space-y-3" style={{ marginTop: '10px' }}>
-            <label className="text-cyan-400 font-medium">
-              {t('modeLabel', { default: '模式选择' })}
+            <label className="text-yellow-400 font-medium">
+              {t('modeLabel', { default: '优化类型' })}
             </label>
             <Select value={mode} onValueChange={setMode}>
               <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white h-12">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-600">
-                <SelectItem value="upscale" className="text-white hover:bg-gray-700">
-                  {t('modes.upscale', { default: '图像放大' })}
+                <SelectItem value="standard" className="text-white hover:bg-gray-700">
+                  {t('modes.standard', { default: '标准' })}
                 </SelectItem>
-                <SelectItem value="enhance" className="text-white hover:bg-gray-700">
-                  {t('modes.enhance', { default: '图像增强' })}
+                <SelectItem value="soft_portraits" className="text-white hover:bg-gray-700">
+                  {t('modes.soft_portraits', { default: '柔和人像' })}
                 </SelectItem>
-                <SelectItem value="transform" className="text-white hover:bg-gray-700">
-                  {t('modes.transform', { default: '风格转换' })}
+                <SelectItem value="hard_portraits" className="text-white hover:bg-gray-700">
+                  {t('modes.hard_portraits', { default: '锐化人像' })}
                 </SelectItem>
-                <SelectItem value="generate" className="text-white hover:bg-gray-700">
-                  {t('modes.generate', { default: 'AI 生成' })}
+                <SelectItem value="art_n_illustration" className="text-white hover:bg-gray-700">
+                  {t('modes.art_n_illustration', { default: '艺术插画' })}
+                </SelectItem>
+                <SelectItem value="nature_n_landscapes" className="text-white hover:bg-gray-700">
+                  {t('modes.nature_n_landscapes', { default: '自然风景' })}
+                </SelectItem>
+                <SelectItem value="films_n_photography" className="text-white hover:bg-gray-700">
+                  {t('modes.films_n_photography', { default: '电影摄影' })}
                 </SelectItem>
               </SelectContent>
             </Select>
