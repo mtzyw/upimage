@@ -13,27 +13,6 @@
       "part5": "まるで",
       "part6": "魔法"
     },
-    "feature1": {
-      "title": "Magnific に",
-      "subtitle": "想像させよう"
-    },
-    "feature2": {
-      "title": "強力な",
-      "subtitle": "生成 AI"
-    },
-    "feature3": {
-      "title": "魔法と",
-      "subtitle": "見分けがつかない"
-    },
-    "slider1": {
-      "label": "創造性"
-    },
-    "slider2": {
-      "label": "HDR"
-    },
-    "slider3": {
-      "label": "類似度"
-    },
     "description": "超高解像度アップスケーリングを実現する最先端の AI 技術。単なるアップスケールだけでなく、画像の強化、変換、生成も可能！Magnific は、あなたのプロンプトとパラメータに従って、望む限りの詳細を再構築できます！",
     "getStarted": "画像をアップスケール、変換、生成",
     "getStartedLink": "https://nexty.dev/#pricing",
@@ -419,5 +398,24 @@
     "monthly": "月額",
     "onetime": "クレジット",
     "saveTip": "20% 節約"
+  },
+  "ImageProcessing": {
+    "uploadTitle": "画像アップロード",
+    "settingsTitle": "処理設定",
+    "selected": "選択済み",
+    "uploadPrompt": "画像アップロード",
+    "dropHere": "画像をここにドロップ",
+    "supportedFormats": "JPEG、PNG、WebP形式をサポート",
+    "dragOrClick": "ファイルをここにドラッグまたはクリックして選択",
+    "modeLabel": "モード選択",
+    "modes": {
+      "upscale": "画像アップスケール",
+      "enhance": "画像強化",
+      "transform": "スタイル変換",
+      "generate": "AI生成"
+    },
+    "promptLabel": "プロンプト入力",
+    "promptPlaceholder": "希望する効果を説明してください。例：詳細を強調、鮮明度向上、自然な色合いを保持...",
+    "generateButton": "生成"
   }
 }

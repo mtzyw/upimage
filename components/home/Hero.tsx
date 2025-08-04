@@ -1,12 +1,11 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
 import Image from "next/image";
-import { MousePointerClick, Info, ChevronLeft, ChevronRight } from "lucide-react";
+import { MousePointerClick, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LoginModal } from "@/components/auth/LoginModal";
+import ImageProcessingDemo from "./ImageProcessingDemo";
 import { useState } from "react";
 
 export default function Hero() {
@@ -91,91 +90,10 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Features Section */}
-        <div className="grid lg:grid-cols-3 gap-12 mt-24">
-          {/* Feature 1 - Control Panel */}
-          <div className="text-center space-y-6">
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold text-pink-400">{t("feature1.title", { default: "Let Our Platform" })}</h3>
-              <h3 className="text-2xl font-bold text-pink-400">{t("feature1.subtitle", { default: "Innovate" })}</h3>
-            </div>
-
-            <Card className="bg-black/40 border-gray-700 p-6 max-w-sm mx-auto">
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-medium">{t("slider1.label", { default: "Performance" })}</span>
-                      <Info className="w-4 h-4 text-gray-400" />
-                    </div>
-                    <span className="text-white text-sm">9</span>
-                  </div>
-                  <Slider defaultValue={[90]} max={100} step={1} className="w-full" />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-medium">{t("slider2.label", { default: "Scalability" })}</span>
-                      <Info className="w-4 h-4 text-gray-400" />
-                    </div>
-                    <span className="text-white text-sm">8</span>
-                  </div>
-                  <Slider defaultValue={[80]} max={100} step={1} className="w-full" />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-medium">{t("slider3.label", { default: "Innovation" })}</span>
-                      <Info className="w-4 h-4 text-gray-400" />
-                    </div>
-                    <span className="text-white text-sm">10</span>
-                  </div>
-                  <Slider defaultValue={[100]} max={100} step={1} className="w-full" />
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Feature 2 - Generative AI */}
-          <div className="text-center space-y-6">
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold text-cyan-400">{t("feature2.title", { default: "Powered by" })}</h3>
-              <h3 className="text-2xl font-bold text-cyan-400">{t("feature2.subtitle", { default: "Advanced AI" })}</h3>
-            </div>
-
-            <div className="relative max-w-sm mx-auto">
-              <Image
-                src="/placeholder.svg?height=300&width=300"
-                alt="AI generated content"
-                width={300}
-                height={300}
-                className="rounded-lg object-cover w-full"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-red-500/20 rounded-lg"></div>
-            </div>
-          </div>
-
-          {/* Feature 3 - Magic Results */}
-          <div className="text-center space-y-6">
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold text-orange-400">{t("feature3.title", { default: "Results that are" })}</h3>
-              <h3 className="text-2xl font-bold text-orange-400">{t("feature3.subtitle", { default: "Simply Amazing" })}</h3>
-            </div>
-
-            <div className="max-w-sm mx-auto">
-              <Image
-                src="/placeholder.svg?height=300&width=300"
-                alt="High quality results"
-                width={300}
-                height={300}
-                className="rounded-lg object-cover w-full"
-              />
-            </div>
-          </div>
-        </div>
       </div>
+
+      {/* Image Processing Demo Section */}
+      <ImageProcessingDemo />
 
       {/* Login Modal */}
       <LoginModal 

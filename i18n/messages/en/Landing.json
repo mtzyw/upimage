@@ -13,27 +13,6 @@
       "part5": "that feels like ",
       "part6": "Magic"
     },
-    "feature1": {
-      "title": "Let Magnific",
-      "subtitle": "hallucinate"
-    },
-    "feature2": {
-      "title": "Powered by",
-      "subtitle": "Generative AI"
-    },
-    "feature3": {
-      "title": "Indistinguishable",
-      "subtitle": "from magic"
-    },
-    "slider1": {
-      "label": "Creativity"
-    },
-    "slider2": {
-      "label": "HDR"
-    },
-    "slider3": {
-      "label": "Resemblance"
-    },
     "description": "The most advanced AI tech to achieve insanely high-res upscaling. Not only upscale, enhance, transform & generate! Magnific can reimagine as many details as you wish guided by your prompt and parameters!",
     "getStarted": "Upscale, transform or generate an image",
     "getStartedLink": "https://nexty.dev/#pricing",
@@ -419,5 +398,24 @@
     "monthly": "Monthly", 
     "onetime": "Credits",
     "saveTip": "Save 20%"
+  },
+  "ImageProcessing": {
+    "uploadTitle": "Upload Image",
+    "settingsTitle": "Processing Settings",
+    "selected": "Selected",
+    "uploadPrompt": "Upload Image",
+    "dropHere": "Drop image here",
+    "supportedFormats": "Supports JPEG, PNG, WebP formats",
+    "dragOrClick": "Drag files here or click to select",
+    "modeLabel": "Mode Selection",
+    "modes": {
+      "upscale": "Image Upscale",
+      "enhance": "Image Enhancement",
+      "transform": "Style Transform",
+      "generate": "AI Generate"
+    },
+    "promptLabel": "Prompt Input",
+    "promptPlaceholder": "Describe the effects you want, e.g.: enhance details, improve clarity, maintain natural colors...",
+    "generateButton": "Generate"
   }
 }

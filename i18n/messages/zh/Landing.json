@@ -13,27 +13,6 @@
       "part5": "宛如",
       "part6": "魔法"
     },
-    "feature1": {
-      "title": "让 Magnific",
-      "subtitle": "自由想象"
-    },
-    "feature2": {
-      "title": "强力驱动",
-      "subtitle": "生成式 AI"
-    },
-    "feature3": {
-      "title": "效果",
-      "subtitle": "如魔法般神奇"
-    },
-    "slider1": {
-      "label": "创造力"
-    },
-    "slider2": {
-      "label": "HDR"
-    },
-    "slider3": {
-      "label": "相似度"
-    },
     "description": "最先进的 AI 技术实现超高分辨率图像放大。不仅仅是放大，还能增强、变换和生成！Magnific 可以根据你的提示和参数重新想象出你希望的任何细节！",
     "getStarted": "放大、变换或生成图片",
     "getStartedLink": "https://nexty.dev/#pricing",
@@ -419,5 +398,24 @@
     "monthly": "月付",
     "onetime": "一次性",
     "saveTip": "节省 20%"
+  },
+  "ImageProcessing": {
+    "uploadTitle": "上传图片",
+    "settingsTitle": "处理设置",
+    "selected": "已选择",
+    "uploadPrompt": "上传图片",
+    "dropHere": "拖放图片到这里",
+    "supportedFormats": "支持 JPEG, PNG, WebP 格式",
+    "dragOrClick": "拖拽文件到此处或点击选择",
+    "modeLabel": "模式选择",
+    "modes": {
+      "upscale": "图像放大",
+      "enhance": "图像增强", 
+      "transform": "风格转换",
+      "generate": "AI 生成"
+    },
+    "promptLabel": "提示词内容输入框",
+    "promptPlaceholder": "描述您想要的效果，例如：增强细节，提高清晰度，保持自然色彩...",
+    "generateButton": "生成"
   }
 }
