@@ -107,14 +107,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 函数需要显式返回类型，特别是公共 API
 - 导入顺序：React/Next.js → 外部库 → 内部绝对路径 → 相对路径
 - 使用 `import type { ... }` 进行类型导入
-- 避免类型断言，优先使用类型守卫
+- 避免类型断言（`as`），优先使用类型守卫（如 `if ('property' in object)`）
+- 使用判别联合类型进行复杂状态管理（如 `type State = { status: 'loading' } | { status: 'success', data: Data }`）
+- 使用 TypeScript 内置工具类型如 `Partial<T>`、`Pick<T>`、`Omit<T>` 等
 
 #### Next.js 最佳实践
-- 优先使用 React Server Components，仅在需要交互性时使用 Client Components
+- 优先使用 React Server Components，仅在需要交互性时使用 Client Components（`'use client'`）
 - 在 Server Components 中获取数据，使用 `async/await`
+- Client Components 需要数据时考虑：从父 Server Component 传递 props、使用 Server Actions 或使用 React Query/SWR
 - 使用 `next/link` 进行内部导航，`next/image` 进行图像优化
 - 利用 Server Actions 处理表单提交和数据变更
 - 使用内置的错误处理（`error.tsx`）和加载状态（`loading.tsx`）
+- 使用 `next/dynamic` 动态导入非关键组件
+- 关注 Core Web Vitals（LCP、CLS、INP）性能指标
 
 #### 国际化要求
 - 所有用户可见字符串必须国际化，包括错误消息和验证提示
@@ -158,3 +163,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **限流服务**：Upstash Redis 配置
 
 参考 `.env.example` 文件了解完整的环境变量配置。
+
+## 重要配置说明
+
+### 构建和部署
+- 项目使用 Next.js 15 和 React 19
+- 生产环境会自动移除 console 语句（除 error 级别）
+- 支持 Bundle Analyzer：运行 `npm run analyze` 分析构建产物
+
+### 图片优化
+- 通过 `NEXT_PUBLIC_OPTIMIZED_IMAGES` 环境变量控制图片优化
+- R2/Cloudflare 存储的图片已配置为受信任的远程图片源
+
+### 中间件处理顺序
+1. Supabase 认证中间件处理用户会话
+2. next-intl 国际化中间件处理语言路由
+3. 路径信息通过 header 传递给应用
+
+### 路由重定向
+- `/dashboard` 自动重定向到 `/dashboard/settings`
+- 支持所有语言版本的自动重定向

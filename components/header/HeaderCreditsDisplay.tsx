@@ -2,13 +2,16 @@
 
 import { UserBenefits } from "@/actions/usage/benefits";
 import { BenefitsContext } from "@/components/providers/BenefitsProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { Coins } from "lucide-react";
 import { use, useContext } from "react";
 
 export default function HeaderCreditsDisplay() {
+  const { user } = useAuth();
   const benefitsPromise = useContext(BenefitsContext);
 
-  if (!benefitsPromise) {
+  // 只有登录用户才显示积分
+  if (!user || !benefitsPromise) {
     return null;
   }
 

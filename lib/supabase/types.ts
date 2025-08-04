@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      anonymous_tasks: {
+        Row: {
+          browser_fingerprint: string
+          created_at: string
+          freepik_task_id: string
+          result_data: Json | null
+          status: string
+        }
+        Insert: {
+          browser_fingerprint: string
+          created_at?: string
+          freepik_task_id: string
+          result_data?: Json | null
+          status?: string
+        }
+        Update: {
+          browser_fingerprint?: string
+          created_at?: string
+          freepik_task_id?: string
+          result_data?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
       credit_logs: {
         Row: {
           amount: number
@@ -517,6 +541,21 @@ export type Database = {
         }
         Relationships: []
       }
+      trial_usage_records: {
+        Row: {
+          browser_fingerprint: string
+          used_at: string
+        }
+        Insert: {
+          browser_fingerprint: string
+          used_at?: string
+        }
+        Update: {
+          browser_fingerprint?: string
+          used_at?: string
+        }
+        Relationships: []
+      }
       usage: {
         Row: {
           balance_jsonb: Json
@@ -604,9 +643,21 @@ export type Database = {
         }
         Returns: undefined
       }
+      check_anonymous_trial_eligibility: {
+        Args: { p_browser_fingerprint: string }
+        Returns: Json
+      }
+      cleanup_expired_anonymous_tasks: {
+        Args: { p_hours_old?: number }
+        Returns: number
+      }
       deduct_credits_and_log: {
         Args: { p_user_id: string; p_deduct_amount: number; p_notes: string }
         Returns: boolean
+      }
+      get_anonymous_task_status: {
+        Args: { p_freepik_task_id: string }
+        Returns: Json
       }
       get_available_freepik_api_key: {
         Args: Record<PropertyKey, never>
@@ -658,9 +709,21 @@ export type Database = {
         }
         Returns: undefined
       }
+      update_anonymous_task_status: {
+        Args: {
+          p_freepik_task_id: string
+          p_status: string
+          p_result_data?: Json
+        }
+        Returns: boolean
+      }
       update_my_profile: {
         Args: { new_full_name: string; new_avatar_url: string }
         Returns: undefined
+      }
+      use_trial_and_create_task: {
+        Args: { p_browser_fingerprint: string; p_freepik_task_id: string }
+        Returns: Json
       }
     }
     Enums: {
