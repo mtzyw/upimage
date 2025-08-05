@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Clock, Image as ImageIcon, RefreshCw, XCircle } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { CheckCircle, Clock, Image as ImageIcon, RefreshCw, XCircle, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface HistoryItem {
   id: string;
@@ -30,6 +30,7 @@ interface HistoryListPanelProps {
   onItemSelect: (item: HistoryItem) => void;
   onRefresh: () => void;
   onLoadMore: () => void;
+  onDeleteItem: (itemId: string) => Promise<void>;
 }
 
 const StatusIcon = ({ status }: { status: string }) => {
@@ -80,7 +81,11 @@ export default function HistoryListPanel({
   onItemSelect,
   onRefresh,
   onLoadMore,
+  onDeleteItem,
 }: HistoryListPanelProps) {
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString('zh-CN', {
@@ -95,6 +100,32 @@ export default function HistoryListPanel({
     // 从 R2 Key 构建原图链接
     const r2PublicUrl = 'https://cdn.imgenhancer.ai';
     return `${r2PublicUrl}/${r2Key}`;
+  };
+
+  // 处理删除确认
+  const handleDeleteClick = (e: React.MouseEvent, itemId: string) => {
+    e.stopPropagation(); // 防止触发项目选择
+    setConfirmDeleteId(itemId);
+  };
+
+  // 执行删除
+  const handleDeleteConfirm = async () => {
+    if (!confirmDeleteId) return;
+    
+    setDeletingItemId(confirmDeleteId);
+    try {
+      await onDeleteItem(confirmDeleteId);
+    } catch (error) {
+      console.error('删除失败:', error);
+    } finally {
+      setDeletingItemId(null);
+      setConfirmDeleteId(null);
+    }
+  };
+
+  // 取消删除
+  const handleDeleteCancel = () => {
+    setConfirmDeleteId(null);
   };
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -254,15 +285,30 @@ export default function HistoryListPanel({
 
                   {/* 右侧信息区域 */}
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
-                    {/* 顶部：状态和时间 */}
+                    {/* 顶部：状态、时间和删除按钮 */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <StatusIcon status={item.status} />
                         <StatusText status={item.status} />
                       </div>
-                      <span className="text-xs text-gray-500">
-                        {formatDate(item.created_at)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500">
+                          {formatDate(item.created_at)}
+                        </span>
+                        <Button
+                          onClick={(e) => handleDeleteClick(e, item.id)}
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 text-gray-500 hover:text-red-400 hover:bg-red-400/10"
+                          disabled={deletingItemId === item.id}
+                        >
+                          {deletingItemId === item.id ? (
+                            <RefreshCw className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
 
                     {/* 中部：主要参数 - 紧凑布局 */}
@@ -325,6 +371,46 @@ export default function HistoryListPanel({
           </div>
         )}
       </div>
+
+      {/* 删除确认对话框 */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4 border border-gray-700">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                <Trash2 className="h-5 w-5 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold">删除历史记录</h3>
+                <p className="text-gray-400 text-sm">此操作无法撤销</p>
+              </div>
+            </div>
+            <p className="text-gray-300 text-sm mb-6">
+              确定要删除这条历史记录吗？相关的图片文件也将被永久删除。
+            </p>
+            <div className="flex gap-3">
+              <Button
+                onClick={handleDeleteCancel}
+                variant="outline"
+                className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700"
+              >
+                取消
+              </Button>
+              <Button
+                onClick={handleDeleteConfirm}
+                variant="destructive"
+                className="flex-1 bg-red-600 hover:bg-red-700"
+                disabled={!!deletingItemId}
+              >
+                {deletingItemId ? (
+                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                ) : null}
+                删除
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

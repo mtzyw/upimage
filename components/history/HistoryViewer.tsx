@@ -35,6 +35,46 @@ export default function HistoryViewer() {
   // 使用 ref 来跟踪请求状态，防止竞态条件
   const isLoadingMoreRef = useRef(false);
 
+  // 删除历史记录项
+  const handleDeleteItem = async (itemId: string) => {
+    console.log('🗑️ [HISTORY VIEWER] 开始删除历史记录:', itemId);
+    
+    try {
+      const response = await fetch('/api/history/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ taskId: itemId })
+      });
+
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        // 从列表中移除被删除的项目
+        setHistoryItems(prev => prev.filter(item => item.id !== itemId));
+        
+        // 如果删除的是当前选中项，清除选中状态或选择下一个
+        if (selectedItem?.id === itemId) {
+          const currentIndex = historyItems.findIndex(item => item.id === itemId);
+          const nextItem = historyItems[currentIndex + 1] || historyItems[currentIndex - 1] || null;
+          setSelectedItem(nextItem);
+        }
+        
+        // 更新总数
+        setTotalCount(prev => prev ? prev - 1 : null);
+        
+        console.log('✅ [HISTORY VIEWER] 删除成功');
+      } else {
+        console.error('❌ [HISTORY VIEWER] 删除失败:', result);
+        throw new Error(result.message || '删除失败');
+      }
+    } catch (error) {
+      console.error('💥 [HISTORY VIEWER] 删除过程中发生错误:', error);
+      throw error; // 重新抛出错误，让组件处理
+    }
+  };
+
   // 获取历史记录数据（初始加载）
   const fetchHistory = async (reset = true) => {
     if (!user) {
@@ -173,6 +213,7 @@ export default function HistoryViewer() {
         onItemSelect={handleItemSelect}
         onRefresh={() => fetchHistory(true)}
         onLoadMore={loadMoreHistory}
+        onDeleteItem={handleDeleteItem}
       />
       
       {/* 右侧详情展示区域 */}

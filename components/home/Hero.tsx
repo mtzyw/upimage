@@ -5,15 +5,17 @@ import Image from "next/image";
 import { MousePointerClick, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LoginModal } from "@/components/auth/LoginModal";
+import { useAuth } from "@/components/providers/AuthProvider";
 import ImageProcessingDemo from "./ImageProcessingDemo";
 import { useState } from "react";
 
 export default function Hero() {
   const t = useTranslations("Landing.Hero");
+  const { user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   return (
-    <div className="w-full min-h-screen">
+    <div className={`w-full ${!user ? 'min-h-screen' : ''}`}>
       {/* Hero Section */}
       <div className="container mx-auto px-6 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -92,8 +94,8 @@ export default function Hero() {
 
       </div>
 
-      {/* Image Processing Demo Section */}
-      <ImageProcessingDemo />
+      {/* Image Processing Demo Section - 仅对匿名用户显示 */}
+      {!user && <ImageProcessingDemo />}
 
       {/* Login Modal */}
       <LoginModal 
