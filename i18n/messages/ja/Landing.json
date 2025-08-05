@@ -16,6 +16,7 @@
     "description": "超高解像度アップスケーリングを実現する最先端の AI 技術。単なるアップスケールだけでなく、画像の強化、変換、生成も可能！ImgEnhancer は、あなたのプロンプトとパラメータに従って、望む限りの詳細を再構築できます！",
     "getStarted": "画像をアップスケール、変換、生成",
     "getStartedLink": "https://nexty.dev/#pricing",
+    "goToWorkspace": "ワークスペースへ",
     "viewDocs": "ドキュメントを見る",
     "viewDocsLink": "https://nexty.dev/docs"
   },

@@ -1,18 +1,30 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { MousePointerClick, ChevronLeft, ChevronRight } from "lucide-react";
+import { MousePointerClick } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { useAuth } from "@/components/providers/AuthProvider";
 import ImageProcessingDemo from "./ImageProcessingDemo";
+import ImageComparisonSlider from "@/components/workspace/ImageComparisonSlider";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
   const t = useTranslations("Landing.Hero");
   const { user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const router = useRouter();
+
+  const handleGetStartedClick = () => {
+    if (user) {
+      // 已登录用户直接跳转到首页
+      router.push('/home');
+    } else {
+      // 未登录用户打开登录模态框
+      setIsLoginModalOpen(true);
+    }
+  };
 
   return (
     <div className={`w-full ${!user ? 'min-h-screen' : ''}`}>
@@ -44,51 +56,27 @@ export default function Hero() {
             <div className="flex flex-row gap-4">
               <Button 
                 className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-6 text-lg rounded-lg"
-                onClick={() => setIsLoginModalOpen(true)}
+                onClick={handleGetStartedClick}
               >
                 <div className="flex items-center gap-2">
                   <MousePointerClick className="w-4 h-4" />
-                  {t("getStarted", { default: "Get Started Now" })}
+                  {user ? t("goToWorkspace", { default: "Go to Workspace" }) : t("getStarted", { default: "Get Started Now" })}
                 </div>
               </Button>
             </div>
           </div>
 
-          {/* Right Content - Before/After Images */}
-          <div className="relative">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative">
-                <Image
-                  src="/placeholder.svg?height=400&width=300"
-                  alt="Before image"
-                  width={300}
-                  height={400}
-                  className="rounded-lg object-cover w-full h-80"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-white/90 text-black px-3 py-1 rounded-full text-sm font-medium">Before</span>
-                </div>
-                <button className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="relative">
-                <Image
-                  src="/placeholder.svg?height=400&width=300"
-                  alt="After image"
-                  width={300}
-                  height={400}
-                  className="rounded-lg object-cover w-full h-80"
-                />
-                <div className="absolute top-4 right-4">
-                  <span className="bg-white/90 text-black px-3 py-1 rounded-full text-sm font-medium">After</span>
-                </div>
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+          {/* Right Content - Interactive Before/After Comparison */}
+          <div className="space-y-6">
+            <ImageComparisonSlider
+              beforeImage="https://cdn.imgenhancer.ai/enhance/aefcdaf3-2a8c-4dd7-b17e-8f008f5f376c/1754382753378-6cf9cd67-9a33-40b0-b4c7-a2940859c76c.jpg"
+              afterImage="https://cdn.imgenhancer.ai/users/anonymous/image-enhancements/optimized-0b862ff0-4512-4aca-8803-b1e81cd801c2.png"
+              beforeLabel="Before"
+              afterLabel="After"
+              className="max-w-lg mx-auto"
+              aspectRatio={1}
+              initialPosition={50}
+            />
           </div>
         </div>
 

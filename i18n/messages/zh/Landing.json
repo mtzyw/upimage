@@ -16,6 +16,7 @@
     "description": "最先进的 AI 技术实现超高分辨率图像放大。不仅仅是放大，还能增强、变换和生成！ImgEnhancer 可以根据你的提示和参数重新想象出你希望的任何细节！",
     "getStarted": "放大、变换或生成图片",
     "getStartedLink": "https://nexty.dev/#pricing",
+    "goToWorkspace": "进入工作台",
     "viewDocs": "查看文档",
     "viewDocsLink": "https://nexty.dev/docs"
   },
