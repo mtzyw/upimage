@@ -118,8 +118,8 @@ export default function ImageProcessingDemo() {
 
   // 轮询批量任务状态
   useEffect(() => {
-    if (!currentBatch || currentBatch.isAllComplete) {
-      return;
+    if (!currentBatch || currentBatch.isAllComplete || currentBatch.batchId.startsWith('temp_')) {
+      return; // 跳过临时占位符的轮询
     }
 
     const pollBatchStatus = async () => {
@@ -219,7 +219,23 @@ export default function ImageProcessingDemo() {
 
     setIsGenerating(true);
     setResultImages({});
-    setCurrentBatch(null);
+    
+    // 立即显示4个加载框
+    const placeholderBatch = {
+      batchId: `temp_${Date.now()}`,
+      tasks: ['2x', '4x', '8x', '16x'].map(scaleFactor => ({
+        taskId: `temp_${scaleFactor}_${Date.now()}`,
+        scaleFactor: scaleFactor as '2x' | '4x' | '8x' | '16x',
+        status: 'processing' as const,
+        isCompleted: false,
+        isFailed: false
+      })),
+      totalCount: 4,
+      completedCount: 0,
+      failedCount: 0,
+      isAllComplete: false
+    };
+    setCurrentBatch(placeholderBatch);
     
     try {
       // 转换图片为 base64
@@ -245,7 +261,7 @@ export default function ImageProcessingDemo() {
       const data = await response.json();
       
       if (data.success) {
-        // 初始化批量任务状态
+        // 用真实数据更新批量任务状态
         const batchData = data.data;
         setCurrentBatch({
           batchId: batchData.batchId,
@@ -265,6 +281,7 @@ export default function ImageProcessingDemo() {
         toast.success(batchData.message || `免费试用已开始！正在处理 ${batchData.taskCount} 种倍数...`);
       } else {
         setIsGenerating(false);
+        setCurrentBatch(null); // 清除占位符
         toast.error(data.message || '开始批量试用失败');
         
         if (data.message?.includes('已使用过')) {
@@ -277,6 +294,7 @@ export default function ImageProcessingDemo() {
     } catch (error) {
       console.error('开始批量试用失败:', error);
       setIsGenerating(false);
+      setCurrentBatch(null); // 清除占位符
       toast.error('开始批量试用失败，请重试');
     }
   };

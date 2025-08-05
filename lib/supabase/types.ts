@@ -657,6 +657,15 @@ export type Database = {
         Args: { p_hours_old?: number }
         Returns: number
       }
+      create_individual_anonymous_task: {
+        Args: {
+          p_freepik_task_id: string
+          p_browser_fingerprint: string
+          p_batch_id: string
+          p_scale_factor: string
+        }
+        Returns: boolean
+      }
       deduct_credits_and_log: {
         Args: { p_user_id: string; p_deduct_amount: number; p_notes: string }
         Returns: boolean
@@ -749,6 +758,10 @@ export type Database = {
       }
       use_trial_and_create_task: {
         Args: { p_browser_fingerprint: string; p_freepik_task_id: string }
+        Returns: Json
+      }
+      use_trial_for_batch: {
+        Args: { p_browser_fingerprint: string }
         Returns: Json
       }
     }

@@ -124,7 +124,28 @@ export async function POST(req: NextRequest) {
     usedApiKeys.push(apiKey.id);
     console.log(`✅ [ANONYMOUS BATCH TRIAL START] 使用API密钥: ${apiKey.name} (剩余 ${apiKey.remaining} 次)`);
 
-    // 6. 批量创建 Freepik 任务（使用同一个API密钥）
+    // 6. 先检查试用资格
+    console.log('🔍 [ANONYMOUS BATCH TRIAL START] 检查试用资格...');
+    const { data: trialCheckResult, error: trialCheckError } = await supabaseAdmin
+      .rpc('use_trial_for_batch', {
+        p_browser_fingerprint: browserFingerprint
+      });
+
+    if (trialCheckError) {
+      console.error('❌ [ANONYMOUS BATCH TRIAL START] 试用资格检查失败:', trialCheckError);
+      await releaseApiKey(apiKey.id);
+      return apiResponse.error('试用资格检查失败，请重试');
+    }
+
+    if (!trialCheckResult.success) {
+      console.log('❌ [ANONYMOUS BATCH TRIAL START] 试用资格验证失败:', trialCheckResult);
+      await releaseApiKey(apiKey.id);
+      return apiResponse.badRequest(trialCheckResult.message || '试用资格验证失败');
+    }
+
+    console.log('✅ [ANONYMOUS BATCH TRIAL START] 试用资格验证通过');
+
+    // 7. 批量创建 Freepik 任务（使用同一个API密钥）
     console.log('🚀 [ANONYMOUS BATCH TRIAL START] 开始批量创建Freepik任务...');
     const createdTasks: Array<{ task_id: string; scale_factor: string }> = [];
 
@@ -147,8 +168,37 @@ export async function POST(req: NextRequest) {
         };
 
         const taskId = await createFreepikTask(freepikPayload, apiKey);
-        createdTasks.push({ task_id: taskId, scale_factor: scaleFactor });
         console.log(`✅ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务创建成功: ${taskId}`);
+        
+        // 立即插入数据库记录，确保webhook能找到任务
+        console.log(`💾 [ANONYMOUS BATCH TRIAL START] 立即创建 ${scaleFactor} 任务数据库记录...`);
+        const { data: dbResult, error: dbError } = await supabaseAdmin
+          .rpc('create_individual_anonymous_task', {
+            p_freepik_task_id: taskId,
+            p_browser_fingerprint: browserFingerprint,
+            p_batch_id: batchId,
+            p_scale_factor: scaleFactor
+          });
+
+        if (dbError) {
+          console.error(`❌ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务数据库记录创建失败:`, dbError);
+          // 继续处理，不中断整个流程
+        } else {
+          console.log(`✅ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务数据库记录创建成功`);
+        }
+        
+        // 立即保存该任务的Redis缓存，确保webhook能找到信息
+        if (redis) {
+          console.log(`💾 [ANONYMOUS BATCH TRIAL START] 立即保存 ${scaleFactor} 任务Redis缓存...`);
+          await Promise.all([
+            redis.set(`anon_task:${taskId}:fingerprint`, browserFingerprint, { ex: 3600 }),
+            redis.set(`anon_task:${taskId}:batch_id`, batchId, { ex: 3600 }),
+            redis.set(`anon_task:${taskId}:api_key_id`, apiKey.id, { ex: 3600 })
+          ]);
+          console.log(`✅ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务Redis缓存保存完成`);
+        }
+        
+        createdTasks.push({ task_id: taskId, scale_factor: scaleFactor });
         
       } catch (error) {
         console.error(`❌ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务创建失败:`, error);
@@ -165,59 +215,20 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ANONYMOUS BATCH TRIAL START] 成功创建 ${createdTasks.length} 个任务:`, createdTasks);
 
-    // 7. 保存相关信息到 Redis（在数据库操作之前，确保webhook能找到信息）
+    // 7. 保存批量任务信息到Redis（单个任务缓存已在循环中保存）
     if (redis) {
-      console.log('💾 [ANONYMOUS BATCH TRIAL START] 保存Redis缓存...')
-      const redisPromises = []
+      console.log('💾 [ANONYMOUS BATCH TRIAL START] 保存批量任务Redis缓存...')
       
-      // 为每个任务保存缓存信息
-      for (const task of createdTasks) {
-        redisPromises.push(
-          redis.set(`anon_task:${task.task_id}:fingerprint`, browserFingerprint, { ex: 3600 }),
-          redis.set(`anon_task:${task.task_id}:batch_id`, batchId, { ex: 3600 }),
-          redis.set(`anon_task:${task.task_id}:api_key_id`, apiKey.id, { ex: 3600 })
-        )
-      }
-      
-      // 保存批量任务信息
-      redisPromises.push(
+      await Promise.all([
         redis.set(`anon_batch:${batchId}:fingerprint`, browserFingerprint, { ex: 3600 }),
         redis.set(`anon_batch:${batchId}:tasks`, JSON.stringify(createdTasks), { ex: 3600 }),
         redis.set(`anon_batch:${batchId}:api_key_id`, apiKey.id, { ex: 3600 })
-      )
+      ])
       
-      await Promise.all(redisPromises)
-      console.log('✅ [ANONYMOUS BATCH TRIAL START] Redis缓存保存完成')
+      console.log('✅ [ANONYMOUS BATCH TRIAL START] 批量任务Redis缓存保存完成')
     }
 
-    // 8. 调用数据库函数：批量创建试用任务
-    console.log('💾 [ANONYMOUS BATCH TRIAL START] 调用数据库函数创建批量任务...');
-    const { data: trialResult, error: trialError } = await supabaseAdmin
-      .rpc('use_trial_and_create_batch_tasks', {
-        p_browser_fingerprint: browserFingerprint,
-        p_batch_id: batchId,
-        p_freepik_task_ids: createdTasks
-      });
-
-    if (trialError) {
-      console.error('❌ [ANONYMOUS BATCH TRIAL START] 数据库操作失败:', trialError);
-      
-      // 释放API key
-      await releaseApiKey(apiKey.id);
-      
-      return apiResponse.error('批量试用创建失败，请重试');
-    }
-
-    if (!trialResult.success) {
-      console.log('❌ [ANONYMOUS BATCH TRIAL START] 试用资格验证失败:', trialResult);
-      
-      // 释放API key
-      await releaseApiKey(apiKey.id);
-      
-      return apiResponse.badRequest(trialResult.message || '试用资格验证失败');
-    }
-
-    console.log('✅ [ANONYMOUS BATCH TRIAL START] 批量试用和任务创建成功:', trialResult);
+    console.log('✅ [ANONYMOUS BATCH TRIAL START] 所有任务和数据库记录创建完成');
 
     // 9. 返回成功响应
     const response = {
