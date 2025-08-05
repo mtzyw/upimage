@@ -5,9 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PricingPlan } from "@/types/pricing";
 import { Gift } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import { PricingModalCard } from "./PricingModalCard";
 import { DEFAULT_LOCALE } from "@/i18n/routing";
+import { usePricing } from "@/components/providers/PricingProvider";
 
 interface PricingModalProps {
   isOpen: boolean;
@@ -18,32 +18,7 @@ interface PricingModalProps {
 export function PricingModal({ isOpen, onClose, defaultTab = 'annual' }: PricingModalProps) {
   const t = useTranslations("Landing.Pricing");
   const locale = useLocale();
-  const [plans, setPlans] = useState<PricingPlan[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (isOpen && plans.length === 0) {
-      fetchPlans();
-    }
-  }, [isOpen]);
-
-  const fetchPlans = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/pricing/public');
-      const result = await response.json();
-      
-      if (result.success) {
-        setPlans(result.data || []);
-      } else {
-        console.error('Failed to fetch pricing plans:', result.error);
-      }
-    } catch (error) {
-      console.error('Error fetching pricing plans:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { plans, isLoading, error } = usePricing();
 
   const monthlyPlans = plans.filter(
     (plan) =>
@@ -70,6 +45,23 @@ export function PricingModal({ isOpen, onClose, defaultTab = 'annual' }: Pricing
               </div>
             </div>
           ))}
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-red-400 mb-4">加载定价信息失败</p>
+          <p className="text-gray-400 text-sm">{error}</p>
+        </div>
+      );
+    }
+
+    if (planList.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-gray-400">暂无可用的定价方案</p>
         </div>
       );
     }

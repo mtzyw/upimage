@@ -9,6 +9,7 @@ import Header from "@/components/header/Header";
 import { LanguageDetectionAlert } from "@/components/LanguageDetectionAlert";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { BenefitsProvider } from "@/components/providers/BenefitsProvider";
+import { PricingProvider } from "@/components/providers/PricingProvider";
 import { TailwindIndicator } from "@/components/TailwindIndicator";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
@@ -125,15 +126,17 @@ export default async function LocaleLayout({
               enableSystem
             >
               <BenefitsProvider value={benefitsPromise}>
-                {messages.LanguageDetection && <LanguageDetectionAlert />}
+                <PricingProvider>
+                  {messages.LanguageDetection && <LanguageDetectionAlert />}
 
-                {messages.Header && <Header />}
+                  {messages.Header && <Header />}
 
-                <main className="flex-1 flex flex-col items-center">
-                  {children}
-                </main>
+                  <main className="flex-1 flex flex-col items-center">
+                    {children}
+                  </main>
 
-                {messages.Footer && !isHomePage && !isWorkspacePage && <Footer />}
+                  {messages.Footer && !isHomePage && !isWorkspacePage && <Footer />}
+                </PricingProvider>
               </BenefitsProvider>
             </ThemeProvider>
           </AuthProvider>
