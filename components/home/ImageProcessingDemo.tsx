@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Upload, Image as ImageIcon, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Sparkles, Upload, Image as ImageIcon, Loader2, CheckCircle, XCircle, X, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { generateBrowserFingerprint } from "@/lib/browser-fingerprint";
@@ -44,6 +44,7 @@ export default function ImageProcessingDemo() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentBatch, setCurrentBatch] = useState<BatchTaskStatus | null>(null);
   const [resultImages, setResultImages] = useState<Record<string, string>>({});
+  const [modalImage, setModalImage] = useState<{ url: string; scaleFactor: string } | null>(null);
 
   const handleImageSelect = (file: File) => {
     setSelectedImage(file);
@@ -290,6 +291,39 @@ export default function ImageProcessingDemo() {
     });
   };
 
+  // 处理图片点击，显示大图弹窗
+  const handleImageClick = (url: string, scaleFactor: string) => {
+    setModalImage({ url, scaleFactor });
+  };
+
+  // 关闭弹窗
+  const handleCloseModal = () => {
+    setModalImage(null);
+  };
+
+  // 键盘事件处理（ESC关闭弹窗）和防止背景滚动
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && modalImage) {
+        handleCloseModal();
+      }
+    };
+
+    if (modalImage) {
+      // 防止背景滚动
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      // 恢复滚动
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [modalImage]);
+
   return (
     <div className="container mx-auto px-6 py-16">
       {/* 试用状态提示 */}
@@ -525,13 +559,24 @@ export default function ImageProcessingDemo() {
                   
                   <div className="relative bg-gray-800/50 rounded-lg overflow-hidden min-h-[200px] flex items-center justify-center">
                     {resultUrl ? (
-                      <Image
-                        src={resultUrl}
-                        alt={`${scaleFactor} enhanced`}
-                        width={300}
-                        height={200}
-                        className="w-full h-auto object-contain"
-                      />
+                      <div 
+                        className="w-full h-full cursor-pointer group"
+                        onClick={() => handleImageClick(resultUrl, scaleFactor)}
+                      >
+                        <Image
+                          src={resultUrl}
+                          alt={`${scaleFactor} enhanced`}
+                          width={300}
+                          height={200}
+                          className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-200"
+                        />
+                        {/* 悬停提示 */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/70 text-white px-3 py-1 rounded-lg text-sm">
+                            点击查看大图
+                          </div>
+                        </div>
+                      </div>
                     ) : task ? (
                       <div className="text-center p-4">
                         {task.status === 'processing' ? (
@@ -609,6 +654,67 @@ export default function ImageProcessingDemo() {
               </Button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* 图片弹窗 */}
+      {modalImage && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={handleCloseModal}
+        >
+          <div 
+            className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 关闭按钮 */}
+            <Button
+              onClick={handleCloseModal}
+              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full"
+              size="sm"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+            
+            {/* 倍数标签 */}
+            <div className="absolute top-4 left-4 z-10 bg-black/70 text-white px-3 py-1 rounded-lg text-sm font-medium">
+              {modalImage.scaleFactor} 增强
+            </div>
+            
+            {/* 大图显示 */}
+            <div className="relative w-full h-full flex items-center justify-center">
+              <Image
+                src={modalImage.url}
+                alt={`${modalImage.scaleFactor} enhanced large view`}
+                width={1200}
+                height={800}
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                priority
+              />
+            </div>
+            
+            {/* 下载按钮 */}
+            <div className="absolute bottom-4 right-4 z-10">
+              <Button
+                onClick={() => {
+                  // 这里需要找到对应的taskId
+                  const task = currentBatch?.tasks.find(t => t.scaleFactor === modalImage.scaleFactor);
+                  if (task) {
+                    handleDownload(modalImage.url, task.taskId);
+                  }
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                下载 {modalImage.scaleFactor}
+              </Button>
+            </div>
+            
+            {/* 底部提示 */}
+            <div className="absolute bottom-4 left-4 z-10 bg-black/70 text-white px-3 py-1 rounded-lg text-sm">
+              按 ESC 或点击背景关闭
+            </div>
+          </div>
         </div>
       )}
     </div>
