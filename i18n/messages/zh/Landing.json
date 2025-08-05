@@ -398,7 +398,11 @@
     "annual": "年付",
     "monthly": "月付",
     "onetime": "一次性",
-    "saveTip": "节省 20%"
+    "saveTip": "节省 20%",
+    "modal": {
+      "title": "选择您的套餐",
+      "description": "升级您的账户以获得更多积分和高级功能"
+    }
   },
   "ImageProcessing": {
     "uploadTitle": "上传图片",

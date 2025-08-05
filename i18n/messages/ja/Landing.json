@@ -398,7 +398,11 @@
     "annual": "年額",
     "monthly": "月額",
     "onetime": "クレジット",
-    "saveTip": "20% 節約"
+    "saveTip": "20% 節約",
+    "modal": {
+      "title": "プランを選択",
+      "description": "アカウントをアップグレードして、より多くのクレジットとプレミアム機能を利用"
+    }
   },
   "ImageProcessing": {
     "uploadTitle": "画像アップロード",

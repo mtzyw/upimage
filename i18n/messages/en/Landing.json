@@ -398,7 +398,11 @@
     "annual": "Annual",
     "monthly": "Monthly", 
     "onetime": "Credits",
-    "saveTip": "Save 20%"
+    "saveTip": "Save 20%",
+    "modal": {
+      "title": "Choose Your Plan",
+      "description": "Upgrade your account to get more credits and unlock premium features"
+    }
   },
   "ImageProcessing": {
     "uploadTitle": "Upload Image",
