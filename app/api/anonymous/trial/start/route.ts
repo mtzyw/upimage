@@ -165,7 +165,32 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [ANONYMOUS BATCH TRIAL START] 成功创建 ${createdTasks.length} 个任务:`, createdTasks);
 
-    // 7. 调用数据库函数：批量创建试用任务
+    // 7. 保存相关信息到 Redis（在数据库操作之前，确保webhook能找到信息）
+    if (redis) {
+      console.log('💾 [ANONYMOUS BATCH TRIAL START] 保存Redis缓存...')
+      const redisPromises = []
+      
+      // 为每个任务保存缓存信息
+      for (const task of createdTasks) {
+        redisPromises.push(
+          redis.set(`anon_task:${task.task_id}:fingerprint`, browserFingerprint, { ex: 3600 }),
+          redis.set(`anon_task:${task.task_id}:batch_id`, batchId, { ex: 3600 }),
+          redis.set(`anon_task:${task.task_id}:api_key_id`, apiKey.id, { ex: 3600 })
+        )
+      }
+      
+      // 保存批量任务信息
+      redisPromises.push(
+        redis.set(`anon_batch:${batchId}:fingerprint`, browserFingerprint, { ex: 3600 }),
+        redis.set(`anon_batch:${batchId}:tasks`, JSON.stringify(createdTasks), { ex: 3600 }),
+        redis.set(`anon_batch:${batchId}:api_key_id`, apiKey.id, { ex: 3600 })
+      )
+      
+      await Promise.all(redisPromises)
+      console.log('✅ [ANONYMOUS BATCH TRIAL START] Redis缓存保存完成')
+    }
+
+    // 8. 调用数据库函数：批量创建试用任务
     console.log('💾 [ANONYMOUS BATCH TRIAL START] 调用数据库函数创建批量任务...');
     const { data: trialResult, error: trialError } = await supabaseAdmin
       .rpc('use_trial_and_create_batch_tasks', {
@@ -193,31 +218,6 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('✅ [ANONYMOUS BATCH TRIAL START] 批量试用和任务创建成功:', trialResult);
-
-    // 8. 保存相关信息到 Redis（用于 webhook 处理）
-    if (redis) {
-      console.log('💾 [ANONYMOUS BATCH TRIAL START] 保存Redis缓存...');
-      const redisPromises = [];
-      
-      // 为每个任务保存缓存信息
-      for (const task of createdTasks) {
-        redisPromises.push(
-          redis.set(`anon_task:${task.task_id}:fingerprint`, browserFingerprint, { ex: 3600 }),
-          redis.set(`anon_task:${task.task_id}:batch_id`, batchId, { ex: 3600 }),
-          redis.set(`anon_task:${task.task_id}:api_key_id`, apiKey.id, { ex: 3600 })
-        );
-      }
-      
-      // 保存批量任务信息
-      redisPromises.push(
-        redis.set(`anon_batch:${batchId}:fingerprint`, browserFingerprint, { ex: 3600 }),
-        redis.set(`anon_batch:${batchId}:tasks`, JSON.stringify(createdTasks), { ex: 3600 }),
-        redis.set(`anon_batch:${batchId}:api_key_id`, apiKey.id, { ex: 3600 })
-      );
-      
-      await Promise.all(redisPromises);
-      console.log('✅ [ANONYMOUS BATCH TRIAL START] Redis缓存保存完成');
-    }
 
     // 9. 返回成功响应
     const response = {

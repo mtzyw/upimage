@@ -260,7 +260,7 @@ async function updateTaskStatus(
   
   try {
     const { data: result, error } = await supabaseAdmin
-      .rpc('update_anonymous_task_status', {
+      .rpc('update_batch_task_status', {
         p_freepik_task_id: taskId,
         p_status: status,
         p_result_data: data ? JSON.parse(JSON.stringify(data)) : null
