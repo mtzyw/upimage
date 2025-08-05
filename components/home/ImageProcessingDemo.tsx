@@ -533,18 +533,12 @@ export default function ImageProcessingDemo() {
                     正在处理您的图片 ({currentBatch.completedCount}/{currentBatch.totalCount})
                   </span>
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
+                <div className="w-full bg-gray-700 rounded-full h-2">
                   <div 
                     className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${(currentBatch.completedCount / currentBatch.totalCount) * 100}%` }}
                   />
                 </div>
-                <p className="text-gray-300 text-sm">
-                  批量ID: {currentBatch.batchId}
-                </p>
-                <p className="text-gray-400 text-xs mt-1">
-                  预计需要 2-10 分钟，请耐心等待
-                </p>
               </div>
             )}
           </div>
