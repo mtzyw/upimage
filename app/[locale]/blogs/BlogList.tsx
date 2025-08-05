@@ -145,7 +145,7 @@ export function BlogList({
 
       {isLoading && pageIndex === 1 ? (
         <div className="flex justify-center items-center py-16">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <Loader2 className="h-10 w-10 animate-spin text-white" />
         </div>
       ) : (
         <>
@@ -171,9 +171,9 @@ export function BlogList({
           {hasMore && (
             <div ref={ref} className="flex justify-center items-center py-8">
               {isLoading ? (
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <Loader2 className="h-8 w-8 animate-spin text-white" />
               ) : (
-                <span className="text-gray-500">{t("loadMorePosts")}</span>
+                <span className="text-gray-300">{t("loadMorePosts")}</span>
               )}
             </div>
           )}

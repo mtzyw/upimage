@@ -7,6 +7,7 @@ import { TextSearch } from "lucide-react";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { BlogList } from "./BlogList";
+import { BG1 } from "@/components/shared/BGs";
 
 type Params = Promise<{ locale: string }>;
 
@@ -69,16 +70,18 @@ export default async function Page({ params }: { params: Params }) {
     localPosts.length === 0 && initialServerPosts.length === 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-center">{t("title")}</h1>
+    <div className="w-full">
+      <BG1 />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8 text-center text-white">{t("title")}</h1>
 
       {noPostsFound ? (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
           <TextSearch className="h-16 w-16 text-gray-400 mb-4" />
-          <h2 className="text-2xl font-semibold mb-2">
+          <h2 className="text-2xl font-semibold mb-2 text-white">
             {t("emptyState.title") || "No blog posts"}
           </h2>
-          <p className="text-gray-500 max-w-md">
+          <p className="text-gray-300 max-w-md">
             {t("emptyState.description") ||
               "We are creating exciting content, please stay tuned!"}
           </p>
@@ -93,6 +96,7 @@ export default async function Page({ params }: { params: Params }) {
           pageSize={SERVER_POST_PAGE_SIZE}
         />
       )}
+      </div>
     </div>
   );
 }
