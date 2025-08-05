@@ -33,7 +33,10 @@ export default function LeftSidebar({
       {/* 汉堡菜单按钮 */}
       <div className="p-4 flex justify-center">
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            // 跳转到首页根路径
+            window.location.href = '/';
+          }}
           className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
         >
           <Menu className="h-5 w-5" />
@@ -47,12 +50,16 @@ export default function LeftSidebar({
           const isActive = activeTab === item.id;
           
           const handleItemClick = () => {
+            // 获取当前语言环境，保持语言路径一致性
+            const currentPath = window.location.pathname;
+            const locale = currentPath.match(/^\/(en|zh|ja)\//)?.[1] || 'zh';
+            
             if (item.id === 'history') {
               // 跳转到历史记录页面
-              window.location.href = '/history';
+              window.location.href = `/${locale}/history`;
             } else if (item.id === 'enhance') {
               // 跳转到首页/工作台
-              window.location.href = '/home';
+              window.location.href = `/${locale}/home`;
             } else {
               // 对于其他选项，调用onTabChange
               onTabChange?.(item.id);
