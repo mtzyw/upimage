@@ -9,76 +9,85 @@ const supabaseAdmin = createAdminClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 请求参数验证
+// 请求参数验证 - 支持批量查询
 const statusRequestSchema = z.object({
-  taskId: z.string().min(1, '任务ID不能为空')
+  batchId: z.string().min(1, '批量任务ID不能为空')
 });
 
 /**
- * 查询匿名用户任务状态
+ * 查询匿名用户批量任务状态
  * POST /api/anonymous/trial/status
  */
 export async function POST(req: NextRequest) {
-  console.log('📊 [ANONYMOUS TRIAL STATUS] ===== 查询任务状态 =====');
+  console.log('📊 [ANONYMOUS BATCH TRIAL STATUS] ===== 查询批量任务状态 =====');
   
   try {
     // 1. 解析请求参数
     const body = await req.json();
-    console.log('📝 [ANONYMOUS TRIAL STATUS] 请求参数:', { 
-      taskId: body.taskId
+    console.log('📝 [ANONYMOUS BATCH TRIAL STATUS] 请求参数:', { 
+      batchId: body.batchId
     });
 
     // 2. 验证参数
     const validationResult = statusRequestSchema.safeParse(body);
     if (!validationResult.success) {
       const errors = validationResult.error.flatten().fieldErrors;
-      console.log('❌ [ANONYMOUS TRIAL STATUS] 参数验证失败:', errors);
+      console.log('❌ [ANONYMOUS BATCH TRIAL STATUS] 参数验证失败:', errors);
       return apiResponse.badRequest(`参数验证失败: ${JSON.stringify(errors)}`);
     }
 
-    const { taskId } = validationResult.data;
-    console.log('✅ [ANONYMOUS TRIAL STATUS] 参数验证成功:', { taskId });
+    const { batchId } = validationResult.data;
+    console.log('✅ [ANONYMOUS BATCH TRIAL STATUS] 参数验证成功:', { batchId });
 
-    // 3. 调用数据库函数查询任务状态
-    console.log('🔍 [ANONYMOUS TRIAL STATUS] 调用数据库函数查询任务状态...');
+    // 3. 调用数据库函数查询批量任务状态
+    console.log('🔍 [ANONYMOUS BATCH TRIAL STATUS] 调用数据库函数查询批量任务状态...');
     const { data: statusResult, error: statusError } = await supabaseAdmin
-      .rpc('get_anonymous_task_status', {
-        p_freepik_task_id: taskId
+      .rpc('get_batch_tasks_status', {
+        p_batch_id: batchId
       });
 
     if (statusError) {
-      console.error('❌ [ANONYMOUS TRIAL STATUS] 数据库查询失败:', statusError);
-      return apiResponse.error('查询任务状态失败，请重试');
+      console.error('❌ [ANONYMOUS BATCH TRIAL STATUS] 数据库查询失败:', statusError);
+      return apiResponse.error('查询批量任务状态失败，请重试');
     }
 
-    console.log('✅ [ANONYMOUS TRIAL STATUS] 任务状态查询结果:', statusResult);
-    console.log('🔍 [ANONYMOUS TRIAL STATUS] result_data详情:', JSON.stringify(statusResult.result_data, null, 2));
+    console.log('✅ [ANONYMOUS BATCH TRIAL STATUS] 批量任务状态查询结果:', statusResult);
 
     if (!statusResult.found) {
-      console.log('❌ [ANONYMOUS TRIAL STATUS] 任务不存在');
-      return apiResponse.notFound('任务不存在或已过期');
+      console.log('❌ [ANONYMOUS BATCH TRIAL STATUS] 批量任务不存在');
+      return apiResponse.notFound('批量任务不存在或已过期');
     }
 
     // 4. 格式化返回数据
+    const tasks = statusResult.tasks.map((task: any) => ({
+      taskId: task.task_id,
+      scaleFactor: task.scale_factor,
+      status: task.status,
+      result: task.result_data,
+      createdAt: task.created_at,
+      isCompleted: task.status === 'completed',
+      isFailed: task.status === 'failed'
+    }));
+
     const response = {
-      taskId: statusResult.task_id,
-      status: statusResult.status,
-      result: statusResult.result_data,
-      createdAt: statusResult.created_at,
-      isCompleted: statusResult.status === 'completed',
-      isFailed: statusResult.status === 'failed'
+      batchId: statusResult.batch_id,
+      tasks,
+      totalCount: statusResult.total_count,
+      completedCount: statusResult.completed_count,
+      failedCount: statusResult.failed_count,
+      isAllComplete: statusResult.completed_count + statusResult.failed_count >= statusResult.total_count
     };
 
-    console.log('🎉 [ANONYMOUS TRIAL STATUS] 返回结果:', response);
-    console.log('🎉 [ANONYMOUS TRIAL STATUS] ===== 任务状态查询完成 =====');
+    console.log('🎉 [ANONYMOUS BATCH TRIAL STATUS] 返回结果:', response);
+    console.log('🎉 [ANONYMOUS BATCH TRIAL STATUS] ===== 批量任务状态查询完成 =====');
 
     return apiResponse.success(response);
 
   } catch (error) {
-    console.error('💥 [ANONYMOUS TRIAL STATUS] ===== 查询过程中发生异常 =====');
-    console.error('💥 [ANONYMOUS TRIAL STATUS] 错误详情:', error);
-    console.error('💥 [ANONYMOUS TRIAL STATUS] 错误堆栈:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('💥 [ANONYMOUS BATCH TRIAL STATUS] ===== 查询过程中发生异常 =====');
+    console.error('💥 [ANONYMOUS BATCH TRIAL STATUS] 错误详情:', error);
+    console.error('💥 [ANONYMOUS BATCH TRIAL STATUS] 错误堆栈:', error instanceof Error ? error.stack : 'No stack trace');
     
-    return apiResponse.serverError('任务状态查询服务内部错误');
+    return apiResponse.serverError('批量任务状态查询服务内部错误');
   }
 }

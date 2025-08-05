@@ -16,24 +16,30 @@ export type Database = {
     Tables: {
       anonymous_tasks: {
         Row: {
+          batch_id: string | null
           browser_fingerprint: string
           created_at: string
           freepik_task_id: string
           result_data: Json | null
+          scale_factor: string
           status: string
         }
         Insert: {
+          batch_id?: string | null
           browser_fingerprint: string
           created_at?: string
           freepik_task_id: string
           result_data?: Json | null
+          scale_factor?: string
           status?: string
         }
         Update: {
+          batch_id?: string | null
           browser_fingerprint?: string
           created_at?: string
           freepik_task_id?: string
           result_data?: Json | null
+          scale_factor?: string
           status?: string
         }
         Relationships: []
@@ -666,6 +672,10 @@ export type Database = {
           key: string
         }[]
       }
+      get_batch_tasks_status: {
+        Args: { p_batch_id: string }
+        Returns: Json
+      }
       grant_one_time_credits_and_log: {
         Args: {
           p_user_id: string
@@ -717,9 +727,25 @@ export type Database = {
         }
         Returns: boolean
       }
+      update_batch_task_status: {
+        Args: {
+          p_freepik_task_id: string
+          p_status: string
+          p_result_data?: Json
+        }
+        Returns: boolean
+      }
       update_my_profile: {
         Args: { new_full_name: string; new_avatar_url: string }
         Returns: undefined
+      }
+      use_trial_and_create_batch_tasks: {
+        Args: {
+          p_browser_fingerprint: string
+          p_batch_id: string
+          p_freepik_task_ids: Json
+        }
+        Returns: Json
       }
       use_trial_and_create_task: {
         Args: { p_browser_fingerprint: string; p_freepik_task_id: string }

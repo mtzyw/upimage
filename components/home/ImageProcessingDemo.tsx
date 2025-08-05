@@ -10,12 +10,24 @@ import Image from "next/image";
 import { generateBrowserFingerprint } from "@/lib/browser-fingerprint";
 import { toast } from "sonner";
 
-interface TaskStatus {
+// 单个任务状态
+interface SingleTaskStatus {
   taskId: string;
+  scaleFactor: '2x' | '4x' | '8x' | '16x';
   status: 'processing' | 'completed' | 'failed';
   result?: any;
   isCompleted: boolean;
   isFailed: boolean;
+}
+
+// 批量任务状态
+interface BatchTaskStatus {
+  batchId: string;
+  tasks: SingleTaskStatus[];
+  totalCount: number;
+  completedCount: number;
+  failedCount: number;
+  isAllComplete: boolean;
 }
 
 export default function ImageProcessingDemo() {
@@ -26,12 +38,12 @@ export default function ImageProcessingDemo() {
   const [prompt, setPrompt] = useState('');
   const [dragActive, setDragActive] = useState(false);
   
-  // 匿名试用状态
+  // 匿名试用状态 - 批量版本
   const [browserFingerprint, setBrowserFingerprint] = useState<string | null>(null);
   const [trialEligible, setTrialEligible] = useState<boolean | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [currentTask, setCurrentTask] = useState<TaskStatus | null>(null);
-  const [resultImage, setResultImage] = useState<string | null>(null);
+  const [currentBatch, setCurrentBatch] = useState<BatchTaskStatus | null>(null);
+  const [resultImages, setResultImages] = useState<Record<string, string>>({});
 
   const handleImageSelect = (file: File) => {
     setSelectedImage(file);
@@ -103,51 +115,65 @@ export default function ImageProcessingDemo() {
     initFingerprint();
   }, []);
 
-  // 轮询任务状态
+  // 轮询批量任务状态
   useEffect(() => {
-    if (!currentTask || currentTask.isCompleted || currentTask.isFailed) {
+    if (!currentBatch || currentBatch.isAllComplete) {
       return;
     }
 
-    const pollStatus = async () => {
+    const pollBatchStatus = async () => {
       try {
         const response = await fetch('/api/anonymous/trial/status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ taskId: currentTask.taskId })
+          body: JSON.stringify({ batchId: currentBatch.batchId })
         });
         
         const data = await response.json();
         if (data.success) {
-          const taskStatus = data.data;
-          console.log('🎉 [ANONYMOUS TRIAL STATUS] 前端收到任务状态:', JSON.stringify(taskStatus, null, 2));
-          console.log('🎉 [ANONYMOUS TRIAL STATUS] taskStatus.result?.cdnUrl:', taskStatus.result?.cdnUrl);
+          const batchStatus = data.data;
+          console.log('🎉 [ANONYMOUS BATCH TRIAL STATUS] 前端收到批量任务状态:', JSON.stringify(batchStatus, null, 2));
           
-          // 先处理完成状态，再更新任务状态（避免竞态条件）
-          if (taskStatus.isCompleted && taskStatus.result?.cdnUrl) {
-            console.log('🎉 [ANONYMOUS TRIAL STATUS] 任务完成，设置结果图片:', taskStatus.result.cdnUrl);
-            setResultImage(taskStatus.result.cdnUrl);
+          setCurrentBatch(batchStatus);
+
+          // 更新完成的任务结果图片
+          const newResultImages = { ...resultImages };
+          let hasNewResults = false;
+          
+          batchStatus.tasks.forEach((task: SingleTaskStatus) => {
+            if (task.isCompleted && task.result?.cdnUrl && !newResultImages[task.scaleFactor]) {
+              newResultImages[task.scaleFactor] = task.result.cdnUrl;
+              hasNewResults = true;
+              console.log(`✅ [ANONYMOUS BATCH TRIAL STATUS] ${task.scaleFactor} 任务完成:`, task.result.cdnUrl);
+            }
+          });
+          
+          if (hasNewResults) {
+            setResultImages(newResultImages);
+          }
+
+          // 所有任务完成时停止生成状态
+          if (batchStatus.isAllComplete) {
             setIsGenerating(false);
-            setCurrentTask(taskStatus);
-            toast.success('图片处理完成！');
-          } else if (taskStatus.isFailed) {
-            console.log('❌ [ANONYMOUS TRIAL STATUS] 任务失败');
-            setIsGenerating(false);
-            setCurrentTask(taskStatus);
-            toast.error('图片处理失败，请重试');
-          } else {
-            // 只有处理中状态才更新任务状态
-            setCurrentTask(taskStatus);
+            setTrialEligible(false); // 标记试用已使用完毕
+            const completedCount = batchStatus.completedCount;
+            const failedCount = batchStatus.failedCount;
+            
+            if (completedCount > 0) {
+              toast.success(`批量图片处理完成！成功 ${completedCount} 个${failedCount > 0 ? `，失败 ${failedCount} 个` : ''}`);
+            } else {
+              toast.error('所有图片处理失败，请重试');
+            }
           }
         }
       } catch (error) {
-        console.error('查询任务状态失败:', error);
+        console.error('查询批量任务状态失败:', error);
       }
     };
 
-    const interval = setInterval(pollStatus, 3000); // 每3秒轮询一次
+    const interval = setInterval(pollBatchStatus, 3000); // 每3秒轮询一次
     return () => clearInterval(interval);
-  }, [currentTask]);
+  }, [currentBatch, resultImages]);
 
   // 复用工作台的下载逻辑
   const handleDownload = (url: string, taskId: string) => {
@@ -191,7 +217,8 @@ export default function ImageProcessingDemo() {
     }
 
     setIsGenerating(true);
-    setResultImage(null);
+    setResultImages({});
+    setCurrentBatch(null);
     
     try {
       // 转换图片为 base64
@@ -203,7 +230,7 @@ export default function ImageProcessingDemo() {
         body: JSON.stringify({
           browserFingerprint,
           image: base64Image,
-          scaleFactor: '4x', // 固定为4x放大
+          // 移除 scaleFactor，后端会创建 2x/4x/8x/16x 所有倍数
           optimizedFor: mode,
           prompt: prompt || undefined,
           creativity: 0,
@@ -217,29 +244,39 @@ export default function ImageProcessingDemo() {
       const data = await response.json();
       
       if (data.success) {
-        setCurrentTask({
-          taskId: data.data.taskId,
-          status: 'processing',
-          isCompleted: false,
-          isFailed: false
+        // 初始化批量任务状态
+        const batchData = data.data;
+        setCurrentBatch({
+          batchId: batchData.batchId,
+          tasks: batchData.tasks.map((task: any) => ({
+            taskId: task.task_id,
+            scaleFactor: task.scale_factor,
+            status: 'processing',
+            isCompleted: false,
+            isFailed: false
+          })),
+          totalCount: batchData.taskCount,
+          completedCount: 0,
+          failedCount: 0,
+          isAllComplete: false
         });
-        toast.success(data.data.message || '免费试用已开始！');
+        
+        toast.success(batchData.message || `免费试用已开始！正在处理 ${batchData.taskCount} 种倍数...`);
       } else {
         setIsGenerating(false);
-        toast.error(data.message || '开始试用失败');
+        toast.error(data.message || '开始批量试用失败');
         
         if (data.message?.includes('已使用过')) {
           setTrialEligible(false);
-          // 可以跳转到登录页面
           setTimeout(() => {
             window.location.href = '/login';
           }, 2000);
         }
       }
     } catch (error) {
-      console.error('开始试用失败:', error);
+      console.error('开始批量试用失败:', error);
       setIsGenerating(false);
-      toast.error('开始试用失败，请重试');
+      toast.error('开始批量试用失败，请重试');
     }
   };
 
@@ -270,7 +307,7 @@ export default function ImageProcessingDemo() {
         </div>
       )}
 
-      {trialEligible === true && !currentTask && (
+      {trialEligible === true && !currentBatch && (
         <div className="max-w-6xl mx-auto mb-8">
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 text-center">
             <div className="flex items-center justify-center gap-2 text-green-400">
@@ -278,7 +315,7 @@ export default function ImageProcessingDemo() {
               <span>可以使用免费试用</span>
             </div>
             <p className="mt-2 text-gray-300 text-sm">
-              上传图片开始您的免费4x图片增强体验
+              上传图片开始您的免费 2x/4x/8x/16x 图片增强体验
             </p>
           </div>
         </div>
@@ -425,28 +462,36 @@ export default function ImageProcessingDemo() {
               {isGenerating ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  处理中...
+                  处理中 ({currentBatch?.completedCount || 0}/{currentBatch?.totalCount || 4})
                 </>
               ) : (
                 <>
                   <Sparkles className="mr-2 h-5 w-5" />
-                  {trialEligible === false ? '已用完试用' : '免费试用 4x 增强'}
+                  {trialEligible === false ? '免费试用已完成' : '免费试用 2x/4x/8x/16x 增强'}
                 </>
               )}
             </Button>
             
-            {/* 处理状态显示 */}
-            {isGenerating && currentTask && (
+            {/* 批量处理状态显示 */}
+            {isGenerating && currentBatch && (
               <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                 <div className="flex items-center gap-2 text-blue-400 mb-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="font-medium">正在处理您的图片...</span>
+                  <span className="font-medium">
+                    正在处理您的图片 ({currentBatch.completedCount}/{currentBatch.totalCount})
+                  </span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
+                  <div 
+                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${(currentBatch.completedCount / currentBatch.totalCount) * 100}%` }}
+                  />
                 </div>
                 <p className="text-gray-300 text-sm">
-                  任务ID: {currentTask.taskId}
+                  批量ID: {currentBatch.batchId}
                 </p>
-                <p className="text-gray-400 text-xs mt-2">
-                  预计需要 1-2 分钟，请耐心等待
+                <p className="text-gray-400 text-xs mt-1">
+                  预计需要 2-10 分钟，请耐心等待
                 </p>
               </div>
             )}
@@ -454,87 +499,116 @@ export default function ImageProcessingDemo() {
         </div>
       </div>
 
-      {/* 结果展示区域 */}
-      {resultImage && (
-        <div className="max-w-6xl mx-auto mt-16">
+      {/* 4格网格结果展示区域 */}
+      {(currentBatch || Object.keys(resultImages).length > 0) && (
+        <div className="max-w-7xl mx-auto mt-16">
           <div className="text-center mb-8">
-            <h3 className="text-white text-2xl font-bold mb-2">处理结果</h3>
-            <p className="text-gray-400">您的图片已成功增强至 4x 分辨率</p>
+            <h3 className="text-white text-2xl font-bold mb-2">批量处理结果</h3>
+            <p className="text-gray-400">
+              {currentBatch ? 
+                `正在处理 ${currentBatch.totalCount} 种倍数，完成 ${currentBatch.completedCount} 个` : 
+                '您的图片已成功进行多倍数增强'}
+            </p>
           </div>
           
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* 原图 */}
-            <div className="space-y-4">
-              <h4 className="text-white text-lg font-semibold text-center">原图</h4>
-              <div className="relative bg-gray-800/50 rounded-lg overflow-hidden">
-                {preview && (
-                  <Image
-                    src={preview}
-                    alt="Original image"
-                    width={400}
-                    height={300}
-                    className="w-full h-auto object-contain"
-                  />
-                )}
-                <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-sm">
-                  原图
-                </div>
-              </div>
-            </div>
-
-            {/* 增强后的图 */}
-            <div className="space-y-4">
-              <h4 className="text-white text-lg font-semibold text-center">4x 增强结果</h4>
-              <div className="relative bg-gray-800/50 rounded-lg overflow-hidden">
-                <Image
-                  src={resultImage}
-                  alt="Enhanced image"
-                  width={400}
-                  height={300}
-                  className="w-full h-auto object-contain"
-                />
-                <div className="absolute top-2 right-2 bg-pink-500/80 text-white px-2 py-1 rounded text-sm">
-                  4x 增强
-                </div>
-              </div>
+          {/* 4x1 网格布局 */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {(['2x', '4x', '8x', '16x'] as const).map(scaleFactor => {
+              const task = currentBatch?.tasks.find(t => t.scaleFactor === scaleFactor);
+              const resultUrl = resultImages[scaleFactor];
               
-              {/* 下载按钮 */}
-              <div className="text-center">
-                <Button
-                  onClick={() => {
-                    if (resultImage && currentTask?.taskId) {
-                      handleDownload(resultImage, currentTask.taskId);
-                    } else {
-                      toast.error('下载失败，任务信息缺失');
-                    }
-                  }}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
-                >
-                  下载增强图片
-                </Button>
-              </div>
-            </div>
+              return (
+                <div key={scaleFactor} className="space-y-4">
+                  <h4 className="text-white text-lg font-semibold text-center">
+                    {scaleFactor} 增强
+                  </h4>
+                  
+                  <div className="relative bg-gray-800/50 rounded-lg overflow-hidden min-h-[200px] flex items-center justify-center">
+                    {resultUrl ? (
+                      <Image
+                        src={resultUrl}
+                        alt={`${scaleFactor} enhanced`}
+                        width={300}
+                        height={200}
+                        className="w-full h-auto object-contain"
+                      />
+                    ) : task ? (
+                      <div className="text-center p-4">
+                        {task.status === 'processing' ? (
+                          <>
+                            <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-2" />
+                            <p className="text-blue-400 text-sm">处理中...</p>
+                          </>
+                        ) : task.isFailed ? (
+                          <>
+                            <XCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+                            <p className="text-red-400 text-sm">处理失败</p>
+                          </>
+                        ) : (
+                          <>
+                            <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                            <p className="text-gray-400 text-sm">等待处理</p>
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-center p-4">
+                        <ImageIcon className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                        <p className="text-gray-600 text-sm">未开始</p>
+                      </div>
+                    )}
+                    
+                    {/* 状态标签 */}
+                    <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-sm">
+                      {scaleFactor}
+                    </div>
+                    
+                    {/* 完成标记 */}
+                    {resultUrl && (
+                      <div className="absolute top-2 left-2 bg-green-500/80 text-white px-2 py-1 rounded text-sm">
+                        ✓ 完成
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* 下载按钮 */}
+                  {resultUrl && task && (
+                    <div className="text-center">
+                      <Button
+                        onClick={() => handleDownload(resultUrl, task.taskId)}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm w-full"
+                      >
+                        下载 {scaleFactor}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
+          
           
           {/* 试用完成提示 */}
-          <div className="mt-8 text-center p-6 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-            <h4 className="text-yellow-400 font-semibold mb-2">免费试用已完成！</h4>
-            <p className="text-gray-300 mb-4">
-              想要更多高质量图片增强服务吗？登录解锁所有功能：
-            </p>
-            <div className="space-y-2 text-sm text-gray-400">
-              <p>• 2x, 4x, 8x, 16x 多种放大倍数</p>
-              <p>• 专业的人像、风景、艺术优化模式</p>
-              <p>• 自定义提示词和高级参数调节</p>
-              <p>• 无限制的图片处理次数</p>
+          {currentBatch?.isAllComplete && (
+            <div className="mt-8 text-center p-6 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+              <h4 className="text-yellow-400 font-semibold mb-2">免费试用已完成！</h4>
+              <p className="text-gray-300 mb-4">
+                成功处理 {currentBatch.completedCount} 个倍数的图片。想要更多高质量图片增强服务吗？登录解锁所有功能：
+              </p>
+              <div className="space-y-2 text-sm text-gray-400 mb-4">
+                <p>• 无限制的图片处理次数</p>
+                <p>• 专业的人像、风景、艺术优化模式</p>
+                <p>• 自定义提示词和高级参数调节</p>
+                <p>• 更快的处理速度和优先级支持</p>
+              </div>
+              <Button
+                onClick={() => window.location.href = '/login'}
+                className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-2 rounded-lg"
+              >
+                立即登录体验完整功能
+              </Button>
             </div>
-            <Button
-              onClick={() => window.location.href = '/login'}
-              className="mt-4 bg-pink-500 hover:bg-pink-600 text-white px-8 py-2 rounded-lg"
-            >
-              立即登录体验完整功能
-            </Button>
-          </div>
+          )}
         </div>
       )}
     </div>
