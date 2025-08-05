@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sparkles, Upload, Image as ImageIcon, Loader2, CheckCircle, XCircle, X, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import Link from "next/link";
 import { generateBrowserFingerprint } from "@/lib/browser-fingerprint";
 import { toast } from "sonner";
+import { LoginModal } from "@/components/auth/LoginModal";
 
 // 单个任务状态
 interface SingleTaskStatus {
@@ -45,6 +47,7 @@ export default function ImageProcessingDemo() {
   const [currentBatch, setCurrentBatch] = useState<BatchTaskStatus | null>(null);
   const [resultImages, setResultImages] = useState<Record<string, string>>({});
   const [modalImage, setModalImage] = useState<{ url: string; scaleFactor: string } | null>(null);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const handleImageSelect = (file: File) => {
     setSelectedImage(file);
@@ -163,7 +166,7 @@ export default function ImageProcessingDemo() {
             if (completedCount > 0) {
               toast.success(`批量图片处理完成！成功 ${completedCount} 个${failedCount > 0 ? `，失败 ${failedCount} 个` : ''}`);
             } else {
-              toast.error('所有图片处理失败，请重试');
+              toast.error(t('errors.allProcessingFailed', { default: 'All image processing failed, please try again' }));
             }
           }
         }
@@ -174,7 +177,7 @@ export default function ImageProcessingDemo() {
 
     const interval = setInterval(pollBatchStatus, 3000); // 每3秒轮询一次
     return () => clearInterval(interval);
-  }, [currentBatch, resultImages]);
+  }, [currentBatch, resultImages, t]);
 
   // 复用工作台的下载逻辑
   const handleDownload = (url: string, taskId: string) => {
@@ -183,7 +186,7 @@ export default function ImageProcessingDemo() {
       const workerUrl = process.env.NEXT_PUBLIC_DOWNLOAD_WORKER_URL;
       
       if (!workerUrl) {
-        toast.error('下载服务未配置，请联系管理员');
+        toast.error(t('errors.downloadNotConfigured', { default: 'Download service not configured, please contact administrator' }));
         return;
       }
       
@@ -193,27 +196,27 @@ export default function ImageProcessingDemo() {
       // 直接跳转到下载链接，Worker会设置正确的响应头触发下载
       window.open(downloadUrl, '_blank');
       
-      toast.success('开始下载增强图片');
+      toast.success(t('errors.downloadStarted', { default: 'Starting download of enhanced image' }));
     } catch (error) {
       console.error('下载失败:', error);
-      toast.error('下载失败，请重试');
+      toast.error(t('errors.downloadFailed', { default: 'Download failed, please try again' }));
     }
   };
 
   const handleGenerate = async () => {
     if (!selectedImage) {
-      toast.error('请先选择图片');
+      toast.error(t('errors.selectImageFirst', { default: 'Please select an image first' }));
       return;
     }
 
     if (!browserFingerprint) {
-      toast.error('浏览器指纹获取失败，请刷新页面重试');
+      toast.error(t('errors.fingerprintFailed', { default: 'Browser fingerprint failed, please refresh and try again' }));
       return;
     }
 
     if (trialEligible === false) {
-      // 静默跳转到登录页面，不显示弹窗
-      window.location.href = '/login';
+      // 显示登录弹窗
+      setIsLoginModalOpen(true);
       return;
     }
 
@@ -282,12 +285,12 @@ export default function ImageProcessingDemo() {
       } else {
         setIsGenerating(false);
         setCurrentBatch(null); // 清除占位符
-        toast.error(data.message || '开始批量试用失败');
+        toast.error(data.message || t('errors.trialFailed', { default: 'Batch trial failed, please try again' }));
         
         if (data.message?.includes('已使用过')) {
           setTrialEligible(false);
           setTimeout(() => {
-            window.location.href = '/login';
+            setIsLoginModalOpen(true);
           }, 2000);
         }
       }
@@ -295,7 +298,7 @@ export default function ImageProcessingDemo() {
       console.error('开始批量试用失败:', error);
       setIsGenerating(false);
       setCurrentBatch(null); // 清除占位符
-      toast.error('开始批量试用失败，请重试');
+      toast.error(t('errors.trialFailed', { default: 'Batch trial failed, please try again' }));
     }
   };
 
@@ -350,10 +353,10 @@ export default function ImageProcessingDemo() {
           <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-center">
             <div className="flex items-center justify-center gap-2 text-red-400">
               <XCircle className="w-5 h-5" />
-              <span>该设备已使用过免费试用</span>
+              <span>{t('trialUsedDevice', { default: 'This device has used the free trial' })}</span>
             </div>
             <p className="mt-2 text-gray-300 text-sm">
-              请 <a href="/login" className="text-pink-400 hover:underline">登录</a> 使用完整功能
+              {t('pleaseLogin', { default: 'Please' })} <button onClick={() => setIsLoginModalOpen(true)} className="text-pink-400 hover:underline cursor-pointer">{t('loginText', { default: 'login' })}</button> {t('useFullFeatures', { default: 'to use full features' })}
             </p>
           </div>
         </div>
@@ -364,11 +367,8 @@ export default function ImageProcessingDemo() {
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 text-center">
             <div className="flex items-center justify-center gap-2 text-green-400">
               <CheckCircle className="w-5 h-5" />
-              <span>可以使用免费试用</span>
+              <span>{t('canUseTrial', { default: 'Free trial available' })}</span>
             </div>
-            <p className="mt-2 text-gray-300 text-sm">
-              上传图片开始您的免费 2x/4x/8x/16x 图片增强体验
-            </p>
           </div>
         </div>
       )}
@@ -514,33 +514,16 @@ export default function ImageProcessingDemo() {
               {isGenerating ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  处理中 ({currentBatch?.completedCount || 0}/{currentBatch?.totalCount || 4})
+                  {t('processing', { completed: currentBatch?.completedCount || 0, total: currentBatch?.totalCount || 4, default: 'Processing ({completed}/{total})' })}
                 </>
               ) : (
                 <>
                   <Sparkles className="mr-2 h-5 w-5" />
-                  {trialEligible === false ? '免费试用已完成' : '免费试用 2x/4x/8x/16x 增强'}
+                  {trialEligible === false ? t('trialCompleted', { default: 'Free Trial Completed' }) : t('freeTrial', { default: 'Free Trial' })}
                 </>
               )}
             </Button>
             
-            {/* 批量处理状态显示 */}
-            {isGenerating && currentBatch && (
-              <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                <div className="flex items-center gap-2 text-blue-400 mb-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="font-medium">
-                    正在处理您的图片 ({currentBatch.completedCount}/{currentBatch.totalCount})
-                  </span>
-                </div>
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${(currentBatch.completedCount / currentBatch.totalCount) * 100}%` }}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -549,12 +532,7 @@ export default function ImageProcessingDemo() {
       {(currentBatch || Object.keys(resultImages).length > 0) && (
         <div className="max-w-7xl mx-auto mt-16">
           <div className="text-center mb-8">
-            <h3 className="text-white text-2xl font-bold mb-2">批量处理结果</h3>
-            <p className="text-gray-400">
-              {currentBatch ? 
-                `正在处理 ${currentBatch.totalCount} 种倍数，完成 ${currentBatch.completedCount} 个` : 
-                '您的图片已成功进行多倍数增强'}
-            </p>
+            <h3 className="text-white text-2xl font-bold mb-2">{t('processingResults', { default: 'Processing Results' })}</h3>
           </div>
           
           {/* 4x1 网格布局 */}
@@ -566,7 +544,7 @@ export default function ImageProcessingDemo() {
               return (
                 <div key={scaleFactor} className="space-y-4">
                   <h4 className="text-white text-lg font-semibold text-center">
-                    {scaleFactor} 增强
+                    {t('scaleEnhancement', { scale: scaleFactor, default: '{scale} Enhancement' })}
                   </h4>
                   
                   <div className="relative bg-gray-800/50 rounded-lg overflow-hidden min-h-[200px] flex items-center justify-center">
@@ -585,7 +563,7 @@ export default function ImageProcessingDemo() {
                         {/* 悬停提示 */}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/70 text-white px-3 py-1 rounded-lg text-sm">
-                            点击查看大图
+                            {t('clickToView', { default: 'Click to view large image' })}
                           </div>
                         </div>
                       </div>
@@ -594,24 +572,24 @@ export default function ImageProcessingDemo() {
                         {task.status === 'processing' ? (
                           <>
                             <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-2" />
-                            <p className="text-blue-400 text-sm">处理中...</p>
+                            <p className="text-blue-400 text-sm">{t('processingInProgress', { default: 'Processing...' })}</p>
                           </>
                         ) : task.isFailed ? (
                           <>
                             <XCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-                            <p className="text-red-400 text-sm">处理失败</p>
+                            <p className="text-red-400 text-sm">{t('processingFailed', { default: 'Processing failed' })}</p>
                           </>
                         ) : (
                           <>
                             <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                            <p className="text-gray-400 text-sm">等待处理</p>
+                            <p className="text-gray-400 text-sm">{t('waitingProcess', { default: 'Waiting to process' })}</p>
                           </>
                         )}
                       </div>
                     ) : (
                       <div className="text-center p-4">
                         <ImageIcon className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-                        <p className="text-gray-600 text-sm">未开始</p>
+                        <p className="text-gray-600 text-sm">{t('notStarted', { default: 'Not started' })}</p>
                       </div>
                     )}
                     
@@ -623,7 +601,7 @@ export default function ImageProcessingDemo() {
                     {/* 完成标记 */}
                     {resultUrl && (
                       <div className="absolute top-2 left-2 bg-green-500/80 text-white px-2 py-1 rounded text-sm">
-                        ✓ 完成
+                        {t('completed', { default: '✓ Completed' })}
                       </div>
                     )}
                   </div>
@@ -635,7 +613,7 @@ export default function ImageProcessingDemo() {
                         onClick={() => handleDownload(resultUrl, task.taskId)}
                         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm w-full"
                       >
-                        下载 {scaleFactor}
+                        {t('downloadScale', { scale: scaleFactor, default: 'Download {scale}' })}
                       </Button>
                     </div>
                   )}
@@ -648,21 +626,21 @@ export default function ImageProcessingDemo() {
           {/* 试用完成提示 */}
           {currentBatch?.isAllComplete && (
             <div className="mt-8 text-center p-6 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-              <h4 className="text-yellow-400 font-semibold mb-2">免费试用已完成！</h4>
+              <h4 className="text-yellow-400 font-semibold mb-2">{t('trialCompletedTitle', { default: 'Free trial completed!' })}</h4>
               <p className="text-gray-300 mb-4">
-                成功处理 {currentBatch.completedCount} 个倍数的图片。想要更多高质量图片增强服务吗？登录解锁所有功能：
+                {t('trialCompletedDescription', { count: currentBatch.completedCount, default: 'Successfully processed {count} multiplier images. Want more high-quality image enhancement services? Login to unlock all features:' })}
               </p>
               <div className="space-y-2 text-sm text-gray-400 mb-4">
-                <p>• 无限制的图片处理次数</p>
-                <p>• 专业的人像、风景、艺术优化模式</p>
-                <p>• 自定义提示词和高级参数调节</p>
-                <p>• 更快的处理速度和优先级支持</p>
+                <p>{t('unlimitedProcessing', { default: '• Unlimited image processing times' })}</p>
+                <p>{t('professionalModes', { default: '• Professional portrait, landscape, and art optimization modes' })}</p>
+                <p>{t('customPrompts', { default: '• Custom prompts and advanced parameter adjustment' })}</p>
+                <p>{t('fasterProcessing', { default: '• Faster processing speed and priority support' })}</p>
               </div>
               <Button
-                onClick={() => window.location.href = '/login'}
+                onClick={() => setIsLoginModalOpen(true)}
                 className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-2 rounded-lg"
               >
-                立即登录体验完整功能
+                {t('loginNowButton', { default: 'Login Now for Full Features' })}
               </Button>
             </div>
           )}
@@ -690,7 +668,7 @@ export default function ImageProcessingDemo() {
             
             {/* 倍数标签 */}
             <div className="absolute top-4 left-4 z-10 bg-black/70 text-white px-3 py-1 rounded-lg text-sm font-medium">
-              {modalImage.scaleFactor} 增强
+              {t('modalScaleLabel', { scale: modalImage.scaleFactor, default: '{scale} Enhancement' })}
             </div>
             
             {/* 大图显示 */}
@@ -718,17 +696,23 @@ export default function ImageProcessingDemo() {
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
-                下载 {modalImage.scaleFactor}
+                {t('modalDownloadButton', { scale: modalImage.scaleFactor, default: 'Download {scale}' })}
               </Button>
             </div>
             
             {/* 底部提示 */}
             <div className="absolute bottom-4 left-4 z-10 bg-black/70 text-white px-3 py-1 rounded-lg text-sm">
-              按 ESC 或点击背景关闭
+              {t('modalCloseHint', { default: 'Press ESC or click background to close' })}
             </div>
           </div>
         </div>
       )}
+
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+      />
     </div>
   );
 }

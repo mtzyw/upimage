@@ -13,7 +13,7 @@
       "part5": "宛如",
       "part6": "魔法"
     },
-    "description": "最先进的 AI 技术实现超高分辨率图像放大。不仅仅是放大，还能增强、变换和生成！Magnific 可以根据你的提示和参数重新想象出你希望的任何细节！",
+    "description": "最先进的 AI 技术实现超高分辨率图像放大。不仅仅是放大，还能增强、变换和生成！ImgEnhancer 可以根据你的提示和参数重新想象出你希望的任何细节！",
     "getStarted": "放大、变换或生成图片",
     "getStartedLink": "https://nexty.dev/#pricing",
     "viewDocs": "查看文档",
@@ -302,10 +302,10 @@
       "label": "用户评价"
     },
     "title": "用户如何评价",
-    "description": "看看 Magnific 如何改变创意工作流程",
+    "description": "看看 ImgEnhancer 如何改变创意工作流程",
     "items": [
       {
-        "content": "Magnific 完全改变了我的摄影工作流程！现在我可以将人像放大到令人难以置信的细节水平。AI 增强功能为图像添加了以前无法实现的深度和清晰度。这个工具对专业摄影师来说就是纯粹的魔法。",
+        "content": "ImgEnhancer 完全改变了我的摄影工作流程！现在我可以将人像放大到令人难以置信的细节水平。AI 增强功能为图像添加了以前无法实现的深度和清晰度。这个工具对专业摄影师来说就是纯粹的魔法。",
         "author": {
           "name": "陈莎拉",
           "position": "专业摄影师",
@@ -314,7 +314,7 @@
         "rating": "5.0"
       },
       {
-        "content": "作为一名数字艺术家，Magnific 彻底改变了我处理 AI 生成图像的方式。我可以先创建低分辨率的作品，然后放大到令人惊叹的细节水平。创造力控制让我能够精确添加恰到好处的增强效果。",
+        "content": "作为一名数字艺术家，ImgEnhancer 彻底改变了我处理 AI 生成图像的方式。我可以先创建低分辨率的作品，然后放大到令人惊叹的细节水平。创造力控制让我能够精确添加恰到好处的增强效果。",
         "author": {
           "name": "罗德里格斯·迈克尔",
           "position": "数字艺术家",
@@ -323,7 +323,7 @@
         "rating": "4.9"
       },
       {
-        "content": "我们设计工作室一直在为客户项目使用 Magnific，效果非常惊人。我们可以交付超高分辨率的艺术作品，客户非常喜欢。它已经成为我们创意流程中不可或缺的工具。",
+        "content": "我们设计工作室一直在为客户项目使用 ImgEnhancer，效果非常惊人。我们可以交付超高分辨率的艺术作品，客户非常喜欢。它已经成为我们创意流程中不可或缺的工具。",
         "author": {
           "name": "汤普森·艾玛",
           "position": "创意总监",
@@ -338,20 +338,20 @@
     "description": "关于AI图像增强技术的常见问题以及如何变革您的图像",
     "items": [
       {
-        "question": "Magnific的AI放大器和增强器是如何工作的？",
-        "answer": "您会感觉就像拥有一根魔法棒！Magnific会将您选择的任何图像转换为更高分辨率的版本，添加您想要的任何细节。您可以通过描述和各种控制来指导放大过程，比如'创造力'控制，它允许您控制AI生成的幻觉（因此新细节）的水平。"
+        "question": "ImgEnhancer的AI放大器和增强器是如何工作的？",
+        "answer": "您会感觉就像拥有一根魔法棒！ImgEnhancer会将您选择的任何图像转换为更高分辨率的版本，添加您想要的任何细节。您可以通过描述和各种控制来指导放大过程，比如'创造力'控制，它允许您控制AI生成的幻觉（因此新细节）的水平。"
       },
       {
-        "question": "Magnific适合初学者使用吗？",
-        "answer": "Magnific.ai的设计旨在为所有背景和技能水平的创作者提供易于访问和用户友好的体验。它的直观界面、深入教程和社区都可以在您的创作之旅中为您提供支持。"
+        "question": "ImgEnhancer适合初学者使用吗？",
+        "answer": "ImgEnhancer.ai的设计旨在为所有背景和技能水平的创作者提供易于访问和用户友好的体验。它的直观界面、深入教程和社区都可以在您的创作之旅中为您提供支持。"
       },
       {
-        "question": "谁可以通过Magnific放大器增强他们的工作流程和创作过程？",
-        "answer": "Magnific专为广泛的用户群体而设计，包括摄影、平面设计、数字艺术和插画领域的专业人士和爱好者，他们需要高分辨率图像和精细的细节增强。它还服务于AI艺术家和创作者，他们用AI生成图像并希望放大它们以获得更多分辨率和深度。"
+        "question": "谁可以通过ImgEnhancer放大器增强他们的工作流程和创作过程？",
+        "answer": "ImgEnhancer专为广泛的用户群体而设计，包括摄影、平面设计、数字艺术和插画领域的专业人士和爱好者，他们需要高分辨率图像和精细的细节增强。它还服务于AI艺术家和创作者，他们用AI生成图像并希望放大它们以获得更多分辨率和深度。"
       },
       {
-        "question": "Magnific AI的费用是多少？",
-        "answer": "Magnific AI的适用价格是购买时在我们定价页面上显示的价格。在可能的情况下，价格以您的本地货币显示。请注意，根据您的地区，最终价格可能会加上增值税和/或地方税。当您选择年度订阅时，您可以免费获得两个月。"
+        "question": "ImgEnhancer AI的费用是多少？",
+        "answer": "ImgEnhancer AI的适用价格是购买时在我们定价页面上显示的价格。在可能的情况下，价格以您的本地货币显示。请注意，根据您的地区，最终价格可能会加上增值税和/或地方税。当您选择年度订阅时，您可以免费获得两个月。"
       },
       {
         "question": "放大的图像会有伪影吗？",
@@ -371,7 +371,7 @@
       },
       {
         "question": "如何取消我的订阅？",
-        "answer": "您可以随时取消订阅。登录后，转到Magnific AI的顶部并点击账单，您将被重定向到Stripe的账单门户，在那里您可以下载发票、切换计划和取消订阅。"
+        "answer": "您可以随时取消订阅。登录后，转到ImgEnhancer AI的顶部并点击账单，您将被重定向到Stripe的账单门户，在那里您可以下载发票、切换计划和取消订阅。"
       }
     ]
   },
@@ -418,6 +418,42 @@
     },
     "promptLabel": "提示词内容输入框",
     "promptPlaceholder": "描述您想要的效果，例如：增强细节，提高清晰度，保持自然色彩...",
-    "generateButton": "生成"
+    "generateButton": "生成",
+    "processing": "处理中 ({completed}/{total})",
+    "trialCompleted": "免费试用已完成",
+    "freeTrial": "免费试用",
+    "processingResults": "处理结果",
+    "scaleEnhancement": "{scale} 增强",
+    "clickToView": "点击查看大图",
+    "processingInProgress": "处理中...",
+    "processingFailed": "处理失败",
+    "waitingProcess": "等待处理",
+    "notStarted": "未开始",
+    "completed": "✓ 完成",
+    "downloadScale": "下载 {scale}",
+    "errors": {
+      "downloadNotConfigured": "下载服务未配置，请联系管理员",
+      "downloadStarted": "开始下载增强图片",
+      "downloadFailed": "下载失败，请重试",
+      "selectImageFirst": "请先选择图片",
+      "fingerprintFailed": "浏览器指纹获取失败，请刷新页面重试",
+      "trialFailed": "开始批量试用失败，请重试",
+      "allProcessingFailed": "所有图片处理失败，请重试"
+    },
+    "trialUsedDevice": "该设备已使用过免费试用",
+    "pleaseLogin": "请",
+    "loginText": "登录",
+    "useFullFeatures": "使用完整功能",
+    "trialCompletedTitle": "免费试用已完成！",
+    "trialCompletedDescription": "成功处理 {count} 个倍数的图片。想要更多高质量图片增强服务吗？登录解锁所有功能：",
+    "unlimitedProcessing": "• 无限制的图片处理次数",
+    "professionalModes": "• 专业的人像、风景、艺术优化模式",
+    "customPrompts": "• 自定义提示词和高级参数调节",
+    "fasterProcessing": "• 更快的处理速度和优先级支持",
+    "loginNowButton": "立即登录体验完整功能",
+    "modalScaleLabel": "{scale} 增强",
+    "modalDownloadButton": "下载 {scale}",
+    "modalCloseHint": "按 ESC 或点击背景关闭",
+    "canUseTrial": "可以使用免费试用"
   }
 }

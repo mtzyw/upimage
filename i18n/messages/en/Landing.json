@@ -13,7 +13,7 @@
       "part5": "that feels like ",
       "part6": "Magic"
     },
-    "description": "The most advanced AI tech to achieve insanely high-res upscaling. Not only upscale, enhance, transform & generate! Magnific can reimagine as many details as you wish guided by your prompt and parameters!",
+    "description": "The most advanced AI tech to achieve insanely high-res upscaling. Not only upscale, enhance, transform & generate! ImgEnhancer can reimagine as many details as you wish guided by your prompt and parameters!",
     "getStarted": "Upscale, transform or generate an image",
     "getStartedLink": "https://nexty.dev/#pricing",
     "viewDocs": "View Documentation",
@@ -302,10 +302,10 @@
       "label": "TESTIMONIALS"
     },
     "title": "What Our Users Say",
-    "description": "See how Magnific transforms creative workflows",
+    "description": "See how ImgEnhancer transforms creative workflows",
     "items": [
       {
-        "content": "Magnific completely transformed my photography workflow! I can now upscale my portraits to incredible detail levels. The AI enhancement adds depth and clarity that was impossible before. This tool is pure magic for professional photographers.",
+        "content": "ImgEnhancer completely transformed my photography workflow! I can now upscale my portraits to incredible detail levels. The AI enhancement adds depth and clarity that was impossible before. This tool is pure magic for professional photographers.",
         "author": {
           "name": "Sarah Chen",
           "position": "Professional Photographer",
@@ -314,7 +314,7 @@
         "rating": "5.0"
       },
       {
-        "content": "As a digital artist, Magnific has revolutionized how I work with AI-generated images. I can create at lower resolutions and then upscale with stunning detail. The creativity controls let me add exactly the right amount of enhancement.",
+        "content": "As a digital artist, ImgEnhancer has revolutionized how I work with AI-generated images. I can create at lower resolutions and then upscale with stunning detail. The creativity controls let me add exactly the right amount of enhancement.",
         "author": {
           "name": "Michael Rodriguez",
           "position": "Digital Artist",
@@ -323,7 +323,7 @@
         "rating": "4.9"
       },
       {
-        "content": "Our design studio has been using Magnific for client projects, and the results are phenomenal. We can deliver ultra-high-resolution artwork that our clients absolutely love. It's become an essential tool in our creative process.",
+        "content": "Our design studio has been using ImgEnhancer for client projects, and the results are phenomenal. We can deliver ultra-high-resolution artwork that our clients absolutely love. It's become an essential tool in our creative process.",
         "author": {
           "name": "Emma Thompson",
           "position": "Creative Director",
@@ -338,20 +338,20 @@
     "description": "Common questions about our AI image enhancement technology and how it can transform your images",
     "items": [
       {
-        "question": "How does Magnific's AI upscaler & enhancer work?",
-        "answer": "The feeling you will have is like having a magic wand! Magnific will transform any image of your choice into a higher-resolution version, adding as much detail as you wish. You will be able to direct the upscaling process with a description and various controls such as 'Creativity', which will allow you to control the level of hallucinations (and therefore the new details) that you want the AI to generate."
+        "question": "How does ImgEnhancer's AI upscaler & enhancer work?",
+        "answer": "The feeling you will have is like having a magic wand! ImgEnhancer will transform any image of your choice into a higher-resolution version, adding as much detail as you wish. You will be able to direct the upscaling process with a description and various controls such as 'Creativity', which will allow you to control the level of hallucinations (and therefore the new details) that you want the AI to generate."
       },
       {
-        "question": "Is Magnific suitable for beginners?",
-        "answer": "Magnific.ai is designed to be accessible and user-friendly for creators of all backgrounds and skill levels. It's intuitive interface, in-depth tutorials, and community are all available to support you through your creative journey."
+        "question": "Is ImgEnhancer suitable for beginners?",
+        "answer": "ImgEnhancer is designed to be accessible and user-friendly for creators of all backgrounds and skill levels. It's intuitive interface, in-depth tutorials, and community are all available to support you through your creative journey."
       },
       {
-        "question": "Who can enhance their workflow and creative process with Magnific upscaler?",
-        "answer": "Magnific is designed for a broad spectrum of users including professionals and enthusiasts in photography, graphic design, digital art, and illustration, who require high-resolution images and meticulous detail enhancements. It also serves AI artists and creators who generate images with AI and are looking to upscale them for more resolution and depth."
+        "question": "Who can enhance their workflow and creative process with ImgEnhancer upscaler?",
+        "answer": "ImgEnhancer is designed for a broad spectrum of users including professionals and enthusiasts in photography, graphic design, digital art, and illustration, who require high-resolution images and meticulous detail enhancements. It also serves AI artists and creators who generate images with AI and are looking to upscale them for more resolution and depth."
       },
       {
-        "question": "How much does Magnific AI cost?",
-        "answer": "The applicable prices for Magnific AI are those displayed on our pricing page at the time of the purchase. Where possible, prices are shown in your local currency. Please note that VAT and/or local taxes may be added to the final price, depending on your region. When you opt for an annual subscription, you get two months free."
+        "question": "How much does ImgEnhancer AI cost?",
+        "answer": "The applicable prices for ImgEnhancer AI are those displayed on our pricing page at the time of the purchase. Where possible, prices are shown in your local currency. Please note that VAT and/or local taxes may be added to the final price, depending on your region. When you opt for an annual subscription, you get two months free."
       },
       {
         "question": "Will the upscaled images have artefacts?",
@@ -371,7 +371,7 @@
       },
       {
         "question": "How do I cancel my subscription?",
-        "answer": "You can cancel your subscription at any time. Log in, go to the top of Magnific AI and click Billing, you will be redirected to Stripe's billing portal where you can download invoices, switch plans and cancel your subscription."
+        "answer": "You can cancel your subscription at any time. Log in, go to the top of ImgEnhancer AI and click Billing, you will be redirected to Stripe's billing portal where you can download invoices, switch plans and cancel your subscription."
       }
     ]
   },
@@ -418,6 +418,42 @@
     },
     "promptLabel": "Prompt Input",
     "promptPlaceholder": "Describe the effects you want, e.g.: enhance details, improve clarity, maintain natural colors...",
-    "generateButton": "Generate"
+    "generateButton": "Generate",
+    "processing": "Processing ({completed}/{total})",
+    "trialCompleted": "Free Trial Completed",
+    "freeTrial": "Free Trial",
+    "processingResults": "Processing Results",
+    "scaleEnhancement": "{scale} Enhancement",
+    "clickToView": "Click to view large image",
+    "processingInProgress": "Processing...",
+    "processingFailed": "Processing failed",
+    "waitingProcess": "Waiting to process",
+    "notStarted": "Not started",
+    "completed": "✓ Completed",
+    "downloadScale": "Download {scale}",
+    "errors": {
+      "downloadNotConfigured": "Download service not configured, please contact administrator",
+      "downloadStarted": "Starting download of enhanced image",
+      "downloadFailed": "Download failed, please try again",
+      "selectImageFirst": "Please select an image first",
+      "fingerprintFailed": "Browser fingerprint failed, please refresh and try again",
+      "trialFailed": "Batch trial failed, please try again",
+      "allProcessingFailed": "All image processing failed, please try again"
+    },
+    "trialUsedDevice": "This device has used the free trial",
+    "pleaseLogin": "Please",
+    "loginText": "login",
+    "useFullFeatures": "to use full features",
+    "trialCompletedTitle": "Free trial completed!",
+    "trialCompletedDescription": "Successfully processed {count} multiplier images. Want more high-quality image enhancement services? Login to unlock all features:",
+    "unlimitedProcessing": "• Unlimited image processing times",
+    "professionalModes": "• Professional portrait, landscape, and art optimization modes",
+    "customPrompts": "• Custom prompts and advanced parameter adjustment",
+    "fasterProcessing": "• Faster processing speed and priority support",
+    "loginNowButton": "Login Now for Full Features",
+    "modalScaleLabel": "{scale} Enhancement",
+    "modalDownloadButton": "Download {scale}",
+    "modalCloseHint": "Press ESC or click background to close",
+    "canUseTrial": "Free trial available"
   }
 }
