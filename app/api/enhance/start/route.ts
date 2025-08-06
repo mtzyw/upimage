@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
     console.log('🚀 [ENHANCE START] 步骤8: 调用Freepik API...');
     
     // 确保 webhook URL 是公开可访问的
-    const webhookUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/webhook/freepik`;
+    const webhookUrl = `${process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL}/api/webhook/freepik`;
     console.log('🔗 [ENHANCE START] Webhook URL:', webhookUrl);
     
     // 验证 webhook URL 格式

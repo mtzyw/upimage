@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { BG1 } from "@/components/shared/BGs";
 import { DEFAULT_LOCALE, Link as I18nLink, useRouter } from "@/i18n/routing";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
@@ -110,8 +111,8 @@ function SuccessContent() {
   const renderVerifying = () => (
     <div className="flex flex-col items-center justify-center">
       <Loader2 className="w-12 h-12 mb-6 text-primary animate-spin" />
-      <h1 className="text-2xl font-semibold mb-2">Verifying Your Payment</h1>
-      <p className="text-muted-foreground text-center max-w-md">
+      <h1 className="text-2xl font-semibold mb-2 text-white">Verifying Your Payment</h1>
+      <p className="text-gray-300 text-center max-w-md">
         {paymentData.message}
       </p>
     </div>
@@ -126,44 +127,44 @@ function SuccessContent() {
     >
       <motion.div variants={fadeIn} className="mb-6">
         <div className="relative">
-          <div className="absolute inset-0 bg-green-100 rounded-full scale-150 opacity-20 animate-pulse"></div>
+          <div className="absolute inset-0 bg-green-100 rounded-full scale-150 opacity-20"></div>
           <CheckCircle className="w-20 h-20 text-green-500 relative z-10" />
         </div>
       </motion.div>
 
-      <motion.h1 variants={fadeIn} className="text-3xl font-bold mb-2">
+      <motion.h1 variants={fadeIn} className="text-3xl font-bold mb-2 text-white">
         Payment Successful!
       </motion.h1>
       <motion.p
         variants={fadeIn}
-        className="text-muted-foreground text-center mb-8 max-w-md"
+        className="text-gray-300 text-center mb-8 max-w-md"
       >
         {paymentData.message}
       </motion.p>
 
       <motion.div variants={fadeIn} className="w-full max-w-md mb-8">
-        <Card className="p-6 bg-muted/50">
-          <h3 className="font-medium mb-4">Payment Details</h3>
+        <Card className="p-6 bg-slate-800/80 border-slate-700">
+          <h3 className="font-medium mb-4 text-white">Payment Details</h3>
           <div className="space-y-3 text-sm">
             {paymentData.orderId && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Order ID:</span>
-                <span className="font-medium">
+                <span className="text-gray-400">Order ID:</span>
+                <span className="font-medium text-white">
                   {paymentData.orderId || "-"}
                 </span>
               </div>
             )}
             {paymentData.subscriptionId && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Subscription ID:</span>
-                <span className="font-medium">
+                <span className="text-gray-400">Subscription ID:</span>
+                <span className="font-medium text-white">
                   {paymentData.subscriptionId || "-"}
                 </span>
               </div>
             )}
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Plan:</span>
-              <span className="font-medium">{paymentData.planName || "-"}</span>
+              <span className="text-gray-400">Plan:</span>
+              <span className="font-medium text-white">{paymentData.planName || "-"}</span>
             </div>
           </div>
         </Card>
@@ -171,22 +172,17 @@ function SuccessContent() {
 
       <motion.div
         variants={fadeIn}
-        className="flex flex-col sm:flex-row gap-3 w-full max-w-md"
+        className="flex justify-center w-full max-w-md"
       >
         <Button
           variant="outline"
-          className="flex-1 gap-2 highlight-button"
+          className="gap-2 highlight-button"
           asChild
           size="lg"
         >
-          <I18nLink href="/" title="Back to Home" prefetch={true}>
+          <I18nLink href="/home" title="Back to Home" prefetch={true}>
             <Home className="w-4 h-4" />
             Back to Home <ArrowRight className="w-4 h-4" />
-          </I18nLink>
-        </Button>
-        <Button className="flex-1 gap-2" asChild size="lg">
-          <I18nLink href="/dashboard" title="Go to Dashboard" prefetch={true}>
-            Go to Dashboard <ArrowRight className="w-4 h-4" />
           </I18nLink>
         </Button>
       </motion.div>
@@ -207,12 +203,12 @@ function SuccessContent() {
         </div>
       </motion.div>
 
-      <motion.h1 variants={fadeIn} className="text-3xl font-bold mb-2">
+      <motion.h1 variants={fadeIn} className="text-3xl font-bold mb-2 text-white">
         Payment Verification Failed
       </motion.h1>
       <motion.p
         variants={fadeIn}
-        className="text-muted-foreground text-center mb-8 max-w-md"
+        className="text-gray-300 text-center mb-8 max-w-md"
       >
         {paymentData.message}
       </motion.p>
@@ -252,19 +248,22 @@ function SuccessContent() {
 
 export default function PaymentSuccessPage() {
   return (
-    <main className="container max-w-screen-xl mx-auto">
-      <Suspense
-        fallback={
-          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center px-4">
-            <Loader2 className="w-12 h-12 mb-4 text-primary animate-spin" />
-            <h1 className="text-2xl font-semibold mb-2">
-              Loading Payment Status
-            </h1>
-          </div>
-        }
-      >
-        <SuccessContent />
-      </Suspense>
-    </main>
+    <>
+      <BG1 />
+      <main className="container max-w-screen-xl mx-auto relative">
+        <Suspense
+          fallback={
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center px-4">
+              <Loader2 className="w-12 h-12 mb-4 text-primary animate-spin" />
+              <h1 className="text-2xl font-semibold mb-2 text-white">
+                Loading Payment Status
+              </h1>
+            </div>
+          }
+        >
+          <SuccessContent />
+        </Suspense>
+      </main>
+    </>
   );
 }

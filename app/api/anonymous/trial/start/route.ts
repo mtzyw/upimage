@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
     console.log(`🎯 [ANONYMOUS BATCH TRIAL START] 生成批量任务ID: ${batchId}`);
 
     // 4. 验证 webhook URL
-    const webhookUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/anonymous/webhook/freepik`;
+    const webhookUrl = `${process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL}/api/anonymous/webhook/freepik`;
     console.log('🔗 [ANONYMOUS BATCH TRIAL START] Webhook URL:', webhookUrl);
     
     if (!webhookUrl || webhookUrl.includes('localhost') || webhookUrl.includes('127.0.0.1')) {
