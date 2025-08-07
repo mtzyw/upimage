@@ -38,18 +38,28 @@ export async function POST(req: NextRequest) {
         p_batch_id: batchId
       });
 
+    // 类型断言：RPC 函数返回 JSONB 对象
+    const result = statusResult as { 
+      found?: boolean; 
+      batch_id?: string; 
+      total_count?: number; 
+      completed_count?: number; 
+      failed_count?: number;
+      tasks?: any[];
+    } | null;
+
     if (statusError) {
       console.error(`❌ [STATUS-${batchIdShort}] 数据库查询失败:`, statusError);
       return apiResponse.error('查询批量任务状态失败，请重试');
     }
 
-    if (!statusResult.found) {
+    if (!result?.found) {
       console.log(`❌ [STATUS-${batchIdShort}] 批量任务不存在`);
       return apiResponse.notFound('批量任务不存在或已过期');
     }
 
     // 3. 格式化返回数据
-    const tasks = statusResult.tasks.map((task: any) => ({
+    const tasks = result?.tasks?.map((task: any) => ({
       taskId: task.task_id,
       scaleFactor: task.scale_factor,
       status: task.status,
@@ -60,18 +70,18 @@ export async function POST(req: NextRequest) {
     }));
 
     const response = {
-      batchId: statusResult.batch_id,
-      tasks,
-      totalCount: statusResult.total_count,
-      completedCount: statusResult.completed_count,
-      failedCount: statusResult.failed_count,
-      isAllComplete: statusResult.completed_count + statusResult.failed_count >= statusResult.total_count
+      batchId: result?.batch_id,
+      tasks: tasks || [],
+      totalCount: result?.total_count || 0,
+      completedCount: result?.completed_count || 0,
+      failedCount: result?.failed_count || 0,
+      isAllComplete: (result?.completed_count || 0) + (result?.failed_count || 0) >= (result?.total_count || 0)
     };
 
     // 只在任务状态变化时输出日志
-    const newCompleted = tasks.filter(t => t.isCompleted).length;
+    const newCompleted = (tasks || []).filter(t => t.isCompleted).length;
     if (newCompleted > 0) {
-      console.log(`📊 [STATUS-${batchIdShort}] ${newCompleted}/${statusResult.total_count} completed`);
+      console.log(`📊 [STATUS-${batchIdShort}] ${newCompleted}/${result?.total_count || 0} completed`);
     }
 
     return apiResponse.success(response);

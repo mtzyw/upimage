@@ -59,7 +59,7 @@ export async function DELETE(req: NextRequest) {
     console.log('✅ [HISTORY DELETE] 找到任务记录');
 
     // 4. 删除云存储文件（如果存在）
-    if (task.r2_original_key || task.r2_enhanced_key) {
+    if (task.r2_original_key || (task as any).r2_optimized_key) {
       try {
         const { deleteFile } = await import('@/lib/cloudflare/r2');
         
@@ -68,9 +68,9 @@ export async function DELETE(req: NextRequest) {
           deletePromises.push(deleteFile(task.r2_original_key));
           console.log(`🗂️ [HISTORY DELETE] 删除原始图片: ${task.r2_original_key}`);
         }
-        if (task.r2_enhanced_key) {
-          deletePromises.push(deleteFile(task.r2_enhanced_key));
-          console.log(`🗂️ [HISTORY DELETE] 删除增强图片: ${task.r2_enhanced_key}`);
+        if ((task as any).r2_optimized_key) {
+          deletePromises.push(deleteFile((task as any).r2_optimized_key));
+          console.log(`🗂️ [HISTORY DELETE] 删除增强图片: ${(task as any).r2_optimized_key}`);
         }
         
         await Promise.all(deletePromises);

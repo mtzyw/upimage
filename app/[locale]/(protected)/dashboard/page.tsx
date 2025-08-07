@@ -84,21 +84,21 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 rounded-lg bg-cyan-400/10 border border-cyan-400/20">
                     <div className="text-2xl font-bold text-cyan-400">
-                      {benefits.totalCredits || 0}
+                      {benefits.totalAvailableCredits || 0}
                     </div>
-                    <div className="text-sm text-slate-300">总积分</div>
+                    <div className="text-sm text-slate-300">可用积分</div>
                   </div>
                   <div className="text-center p-4 rounded-lg bg-pink-400/10 border border-pink-400/20">
                     <div className="text-2xl font-bold text-pink-400">
-                      {benefits.usedCredits || 0}
+                      {benefits.subscriptionCreditsBalance || 0}
                     </div>
-                    <div className="text-sm text-slate-300">已使用</div>
+                    <div className="text-sm text-slate-300">订阅积分</div>
                   </div>
                   <div className="text-center p-4 rounded-lg bg-yellow-400/10 border border-yellow-400/20">
                     <div className="text-2xl font-bold text-yellow-400">
-                      {(benefits.totalCredits || 0) - (benefits.usedCredits || 0)}
+                      {benefits.oneTimeCreditsBalance || 0}
                     </div>
-                    <div className="text-sm text-slate-300">剩余积分</div>
+                    <div className="text-sm text-slate-300">一次性积分</div>
                   </div>
                 </div>
                 

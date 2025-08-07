@@ -82,8 +82,8 @@ export async function generateBrowserFingerprint(): Promise<BrowserFingerprint> 
 
     // 5. WebGL 指纹
     try {
-      const gl = document.createElement('canvas').getContext('webgl') || 
-                  document.createElement('canvas').getContext('experimental-webgl');
+      const gl = (document.createElement('canvas').getContext('webgl') || 
+                  document.createElement('canvas').getContext('experimental-webgl')) as WebGLRenderingContext | null;
       if (gl) {
         const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
         components.webgl = {

@@ -629,7 +629,7 @@ export async function handleRefund(charge: Stripe.Charge) {
  * @param earlyFraudWarning The Stripe Radar Early Fraud Warning object.
  */
 export async function handleEarlyFraudWarning(earlyFraudWarning: Stripe.Radar.EarlyFraudWarning) {
-  const chargeId = earlyFraudWarning.charge;
+  const chargeId = typeof earlyFraudWarning.charge === 'string' ? earlyFraudWarning.charge : earlyFraudWarning.charge.id;
   const efwId = earlyFraudWarning.id;
 
   console.log(`处理 Early Fraud Warning: ${efwId} for charge: ${chargeId}`);

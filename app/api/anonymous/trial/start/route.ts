@@ -42,7 +42,7 @@ type StartTrialRequest = z.infer<typeof startTrialSchema>;
 // 创建单个Freepik任务的辅助函数
 async function createFreepikTask(
   payload: any,
-  apiKey: { id: string; key: string; name: string; remaining: number }
+  apiKey: { id: string; key: string; name: string | null; remaining: number }
 ): Promise<string> {
   const response = await fetch('https://api.freepik.com/v1/ai/image-upscaler', {
     method: 'POST',
@@ -112,10 +112,13 @@ export async function POST(req: NextRequest) {
         p_browser_fingerprint: browserFingerprint
       });
 
-    if (trialCheckError || !trialCheckResult.success) {
-      console.error(`❌ [TRIAL-${batchId.slice(-4)}] 试用资格验证失败:`, trialCheckError || trialCheckResult.message);
+    // 类型断言：RPC 函数返回 JSONB 对象
+    const result = trialCheckResult as { success?: boolean; message?: string } | null;
+
+    if (trialCheckError || !result?.success) {
+      console.error(`❌ [TRIAL-${batchId.slice(-4)}] 试用资格验证失败:`, trialCheckError || result?.message);
       await releaseApiKey(apiKey.id);
-      return apiResponse.badRequest(trialCheckResult?.message || '试用资格验证失败');
+      return apiResponse.badRequest(result?.message || '试用资格验证失败');
     }
 
     // 5. 批量创建 Freepik 任务
