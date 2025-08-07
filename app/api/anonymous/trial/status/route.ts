@@ -248,7 +248,7 @@ export async function POST(req: NextRequest) {
               }
               
               hasUpdatedTasks = true;
-            } else if (queryResult && queryResult.status === 'failed') {
+            } else if (freepikStatus && freepikStatus.status === 'failed') {
               // Freepik 任务失败
               console.log(`❌ [FALLBACK-${batchIdShort}] ${task.scaleFactor} Freepik 任务失败`);
               
@@ -288,8 +288,15 @@ export async function POST(req: NextRequest) {
       const { data: updatedResult } = await supabaseAdmin
         .rpc('get_batch_tasks_status', { p_batch_id: batchId });
       
-      if (updatedResult) {
-        const updatedTasks = updatedResult.tasks?.map((task: any) => ({
+      if (updatedResult && typeof updatedResult === 'object' && updatedResult !== null) {
+        const batchResult = updatedResult as { 
+          tasks?: any[];
+          batch_id?: string;
+          total_count?: number;
+          completed_count?: number;
+          failed_count?: number;
+        };
+        const updatedTasks = batchResult.tasks?.map((task: any) => ({
           taskId: task.task_id,
           scaleFactor: task.scale_factor,
           status: task.status,
@@ -300,12 +307,12 @@ export async function POST(req: NextRequest) {
         }));
 
         const response = {
-          batchId: updatedResult.batch_id,
+          batchId: batchResult.batch_id,
           tasks: updatedTasks || [],
-          totalCount: updatedResult.total_count || 0,
-          completedCount: updatedResult.completed_count || 0,
-          failedCount: updatedResult.failed_count || 0,
-          isAllComplete: (updatedResult.completed_count || 0) + (updatedResult.failed_count || 0) >= (updatedResult.total_count || 0)
+          totalCount: batchResult.total_count || 0,
+          completedCount: batchResult.completed_count || 0,
+          failedCount: batchResult.failed_count || 0,
+          isAllComplete: (batchResult.completed_count || 0) + (batchResult.failed_count || 0) >= (batchResult.total_count || 0)
         };
 
         console.log(`✅ [FALLBACK-${batchIdShort}] 状态已更新: ${response.completedCount}/${response.totalCount} completed`);

@@ -5,7 +5,30 @@ import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { getTaskStatus } from '@/lib/freepik/utils';
 import { redis } from '@/lib/upstash';
-import { processCompletedImageTask } from '@/lib/freepik/utils';
+import { uploadOptimizedImageLocalToR2, getImageExtension } from '@/lib/freepik/utils';
+
+// Helper function to process completed image task
+async function processCompletedImageTask(imageUrl: string, taskId: string, userType: string): Promise<string> {
+  const taskIdShort = taskId.slice(0, 8);
+  console.log(`💾 [ENHANCE-${taskIdShort}] 开始处理图片: ${imageUrl}`);
+
+  // Download image
+  const imageResponse = await fetch(imageUrl);
+  if (!imageResponse.ok) {
+    throw new Error(`无法下载图片 ${imageResponse.status} ${imageResponse.statusText}`);
+  }
+  
+  // Upload to R2 - for authenticated users, use their user ID path structure
+  const uploadResult = await uploadOptimizedImageLocalToR2(
+    imageResponse,
+    userType === 'authenticated' ? 'authenticated' : 'anonymous',
+    taskId,
+    getImageExtension(imageUrl)
+  );
+  
+  console.log(`✅ [ENHANCE-${taskIdShort}] 图片处理成功: ${uploadResult.url}`);
+  return uploadResult.url;
+}
 
 const supabaseAdmin = createAdminClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

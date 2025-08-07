@@ -129,6 +129,7 @@ export type Database = {
       }
       image_enhancement_tasks: {
         Row: {
+          api_key: string | null
           api_key_id: string | null
           cdn_url: string | null
           completed_at: string | null
@@ -150,6 +151,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          api_key?: string | null
           api_key_id?: string | null
           cdn_url?: string | null
           completed_at?: string | null
@@ -171,6 +173,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          api_key?: string | null
           api_key_id?: string | null
           cdn_url?: string | null
           completed_at?: string | null
@@ -699,6 +702,16 @@ export type Database = {
         Args: { p_batch_id: string }
         Returns: Json
       }
+      get_timed_out_image_enhancement_tasks: {
+        Args: { p_timeout_minutes?: number }
+        Returns: {
+          task_id: string
+          user_id: string
+          api_key: string
+          scale_factor: string
+          created_at: string
+        }[]
+      }
       grant_one_time_credits_and_log: {
         Args: {
           p_user_id: string
@@ -755,6 +768,17 @@ export type Database = {
           p_freepik_task_id: string
           p_status: string
           p_result_data?: Json
+        }
+        Returns: boolean
+      }
+      update_image_enhancement_task_status: {
+        Args: {
+          p_task_id: string
+          p_status: string
+          p_result_data?: Json
+          p_cdn_url?: string
+          p_completed_at?: string
+          p_error_message?: string
         }
         Returns: boolean
       }
