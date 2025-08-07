@@ -18,7 +18,7 @@ import { toast } from "sonner";
 export const columns: ColumnDef<UserType>[] = [
   {
     accessorKey: "avatar_url",
-    header: "Avatar",
+    header: () => <span className="text-white">Avatar</span>,
     cell: ({ row }) => {
       const avatarUrl = row.original.avatar_url;
       const fullName = row.original.full_name || row.original.email;
@@ -32,10 +32,10 @@ export const columns: ColumnDef<UserType>[] = [
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: () => <span className="text-white">Email</span>,
     cell: ({ row }) => (
       <span
-        className="cursor-pointer"
+        className="cursor-pointer text-white hover:text-pink-400"
         onClick={() => {
           navigator.clipboard.writeText(row.original.email);
           toast.success("Copied to clipboard");
@@ -47,16 +47,16 @@ export const columns: ColumnDef<UserType>[] = [
   },
   {
     accessorKey: "full_name",
-    header: "Full Name",
-    cell: ({ row }) => row.original.full_name || "-",
+    header: () => <span className="text-white">Full Name</span>,
+    cell: ({ row }) => <span className="text-white">{row.original.full_name || "-"}</span>,
   },
   {
     accessorKey: "role",
-    header: "Role",
+    header: () => <span className="text-white">Role</span>,
     cell: ({ row }) => (
       <span
-        className={`capitalize ${
-          row.original.role === "admin" ? "text-primary font-medium" : ""
+        className={`capitalize text-white ${
+          row.original.role === "admin" ? "text-pink-400 font-medium" : ""
         }`}
       >
         {row.original.role}
@@ -65,10 +65,10 @@ export const columns: ColumnDef<UserType>[] = [
   },
   {
     accessorKey: "stripe_customer_id",
-    header: "Stripe Customer ID",
+    header: () => <span className="text-white">Stripe Customer ID</span>,
     cell: ({ row }) => (
       <span
-        className="cursor-pointer"
+        className="cursor-pointer text-white hover:text-pink-400"
         onClick={() => {
           navigator.clipboard.writeText(row.original.stripe_customer_id || "");
           toast.success("Copied to clipboard");
@@ -80,13 +80,16 @@ export const columns: ColumnDef<UserType>[] = [
   },
   {
     accessorKey: "created_at",
-    header: "Joined",
-    cell: ({ row }) =>
-      dayjs(row.original.created_at).format("YYYY-MM-DD HH:mm"),
+    header: () => <span className="text-white">Joined</span>,
+    cell: ({ row }) => (
+      <span className="text-slate-300">
+        {dayjs(row.original.created_at).format("YYYY-MM-DD HH:mm")}
+      </span>
+    ),
   },
   {
     id: "actions",
-    header: "Actions",
+    header: () => <span className="text-white">Actions</span>,
     cell: ({ row }) => {
       const user = row.original;
 

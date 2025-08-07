@@ -38,7 +38,7 @@ async function FreepikKeysTable() {
   const { data: keys, error } = await getFreepikApiKeys();
 
   if (error) {
-    return <div className="text-red-500">Error loading API keys</div>;
+    return <div className="text-red-400">Error loading API keys</div>;
   }
 
   return (
@@ -57,14 +57,14 @@ export default function FreepikKeysPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("description")}</p>
+        <h1 className="text-2xl font-semibold text-white">{t("title")}</h1>
+        <p className="text-slate-300">{t("description")}</p>
       </div>
 
       <Suspense
         fallback={
-          <div className="flex items-center justify-center h-64">
-            <Loader2 className="w-8 h-8 animate-spin" />
+          <div className="flex items-center justify-center h-64 bg-white/5 rounded-lg border border-white/20">
+            <Loader2 className="w-8 h-8 animate-spin text-white" />
           </div>
         }
       >

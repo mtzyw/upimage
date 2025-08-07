@@ -135,14 +135,14 @@ export function PostsDataTable<TData, TValue>({
           placeholder={t("searchPlaceholder")}
           value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm bg-white/10 border-white/20 text-white placeholder:text-slate-300"
         />
       </div>
 
-      <div className="rounded-md border relative min-h-[200px] max-h-[calc(100vh-330px)] overflow-y-auto">
+      <div className="rounded-md border border-white/20 bg-white/5 backdrop-blur-sm relative min-h-[200px] max-h-[calc(100vh-330px)] overflow-y-auto">
         {isLoading && (
-          <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-10">
+            <Loader2 className="w-8 h-8 animate-spin text-white" />
           </div>
         )}
         <Table>
@@ -185,7 +185,7 @@ export function PostsDataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-slate-300"
                 >
                   {isLoading ? "" : "No results."}
                 </TableCell>
@@ -196,7 +196,7 @@ export function PostsDataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-slate-300">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()} ({totalPosts} Posts)
         </div>
@@ -206,6 +206,7 @@ export function PostsDataTable<TData, TValue>({
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage() || isLoading}
+            className="bg-pink-600 hover:bg-pink-700 text-white border-pink-600"
           >
             Previous
           </Button>
@@ -214,6 +215,7 @@ export function PostsDataTable<TData, TValue>({
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage() || isLoading}
+            className="bg-pink-600 hover:bg-pink-700 text-white border-pink-600"
           >
             Next
           </Button>

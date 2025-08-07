@@ -65,7 +65,7 @@ export function CreateKeyDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="bg-pink-600 hover:bg-pink-700 text-white">
           <Plus className="w-4 h-4 mr-2" />
           Add API Key
         </Button>
@@ -140,7 +140,7 @@ export function CreateKeyDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="bg-pink-600 hover:bg-pink-700 text-white">
               {loading ? "Creating..." : "Create API Key"}
             </Button>
           </DialogFooter>

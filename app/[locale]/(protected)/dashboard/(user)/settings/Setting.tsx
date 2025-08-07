@@ -146,20 +146,21 @@ export default function Settings() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-6">{t("title")}</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-white">{t("title")}</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <Label>{t("form.emailLabel")}</Label>
-          <Input defaultValue={user?.email} disabled className="bg-muted" />
+          <Label className="text-white">{t("form.emailLabel")}</Label>
+          <Input defaultValue={user?.email} disabled className="bg-white/10 border-white/20 text-white" />
         </div>
 
         <div className="space-y-2">
-          <Label>{t("form.fullNameLabel")}</Label>
+          <Label className="text-white">{t("form.fullNameLabel")}</Label>
           <Input
             value={fullName}
             onChange={handleFullNameChange}
             placeholder={t("form.fullNamePlaceholder")}
             maxLength={FULL_NAME_MAX_LENGTH}
+            className="bg-white/10 border-white/20 text-white placeholder:text-slate-300"
           />
           {fullNameError && (
             <p className="text-sm text-red-500 mt-1">{fullNameError}</p>
@@ -167,7 +168,7 @@ export default function Settings() {
         </div>
 
         <div className="space-y-2">
-          <Label>{t("form.avatarLabel")}</Label>
+          <Label className="text-white">{t("form.avatarLabel")}</Label>
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20">
               <AvatarImage
@@ -183,10 +184,10 @@ export default function Settings() {
                 type="file"
                 accept={AVATAR_ACCEPT_ATTRIBUTE}
                 onChange={handleAvatarChange}
-                className="max-w-[300px] hover:cursor-pointer"
+                className="max-w-[300px] hover:cursor-pointer bg-white/10 border-white/20 text-white file:bg-white/20 file:text-white file:border-0"
                 lang="en"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-300">
                 {t("form.avatarHint", {
                   maxSizeInMB: AVATAR_MAX_FILE_SIZE / 1024 / 1024,
                   allowedTypes:
@@ -197,7 +198,7 @@ export default function Settings() {
           </div>
         </div>
 
-        <Button type="submit" disabled={isLoading || !!fullNameError}>
+        <Button type="submit" disabled={isLoading || !!fullNameError} className="bg-pink-600 hover:bg-pink-700 text-white">
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin mr-2" />{" "}

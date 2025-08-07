@@ -143,7 +143,7 @@ export function EditKeyDialog({ apiKey, open, onOpenChange }: EditKeyDialogProps
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="bg-pink-600 hover:bg-pink-700 text-white">
               {loading ? "Updating..." : "Update API Key"}
             </Button>
           </DialogFooter>

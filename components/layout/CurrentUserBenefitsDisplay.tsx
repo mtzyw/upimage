@@ -27,10 +27,10 @@ export default function CurrentUserBenefitsDisplay() {
     benefits.subscriptionStatus === "active"
   ) {
     return (
-      <div className="flex flex-col gap-2 text-sm">
+      <div className="flex flex-col gap-2 text-sm text-white">
         {benefits.currentPeriodEnd ? (
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-primary" />
+            <Calendar className="w-4 h-4 text-cyan-400" />
             <span>
               Renewal: {dayjs(benefits.currentPeriodEnd).format("YYYY-MM-DD")}
             </span>
@@ -39,7 +39,7 @@ export default function CurrentUserBenefitsDisplay() {
           <></>
         )}
         <div className="flex items-center gap-2">
-          <Coins className="w-4 h-4 text-primary" />
+          <Coins className="w-4 h-4 text-yellow-400" />
           <span>Credits: {benefits.totalAvailableCredits}</span>
         </div>
       </div>

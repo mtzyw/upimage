@@ -236,6 +236,16 @@
     "title": "Privacy Policy",
     "description": "Privacy Policy"
   },
+  "Pricing": {
+    "buttons": {
+      "subscribed": "Subscribed",
+      "upgradeToThis": "Upgrade to this plan",
+      "downgradeToThis": "Downgrade to this plan",
+      "switchToThis": "Switch to this plan",
+      "cannotDowngrade": "Cannot downgrade",
+      "alreadySubscribed": "You have already subscribed to this plan"
+    }
+  },
   "AIDemo": {
     "title": "AI Capabilities Demo",
     "description": "This page showcases non-public features and is exclusively for users who have purchased the template. It's designed for learning and testing the AI model invocation process. To use it, simply launch the template locally and input your API key in the environment variables. The AI demo includes functionalities like single-turn and multi-turn conversations, text-to-image, image-to-image, and text/image-to-video conversions. Through this demo, you can quickly grasp the AI invocation workflow, accelerating your journey in building AI applications.",

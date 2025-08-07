@@ -54,7 +54,7 @@ async function CategoryTable({ categoryPrefix }: { categoryPrefix: string }) {
       initialResult.error
     );
     return (
-      <div className="text-red-500">
+      <div className="text-red-400">
         Error loading images: {initialResult.error}
       </div>
     );
@@ -88,8 +88,8 @@ export default function AdminImagesPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("description")}</p>
+        <h1 className="text-2xl font-semibold text-white">{t("title")}</h1>
+        <p className="text-slate-300">{t("description")}</p>
       </div>
 
       <Tabs defaultValue={defaultCategory}>

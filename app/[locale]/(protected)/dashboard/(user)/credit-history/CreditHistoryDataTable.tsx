@@ -96,7 +96,7 @@ export function CreditHistoryDataTable({
   return (
     <div className="space-y-4">
       {error && (
-        <div className="text-red-600 bg-red-100 border border-red-400 rounded p-4 flex items-center space-x-2 mb-4">
+        <div className="text-red-200 bg-red-900/20 border border-red-500/50 rounded p-4 flex items-center space-x-2 mb-4">
           <AlertCircle className="h-5 w-5" />
           <span>
             {t("load_error")}: {error}
@@ -104,10 +104,10 @@ export function CreditHistoryDataTable({
         </div>
       )}
 
-      <div className="rounded-md border relative min-h-[200px] max-h-[calc(100vh-270px)] overflow-y-auto">
+      <div className="rounded-md border border-white/20 bg-white/5 backdrop-blur-sm relative min-h-[200px] max-h-[calc(100vh-270px)] overflow-y-auto">
         {isLoading && (
-          <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-10">
+            <Loader2 className="w-8 h-8 animate-spin text-white" />
           </div>
         )}
         <Table>
@@ -148,7 +148,7 @@ export function CreditHistoryDataTable({
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 text-center"
+                      className="h-24 text-center text-white"
                     >
                       {t("no_records")}
                     </TableCell>
@@ -159,24 +159,24 @@ export function CreditHistoryDataTable({
       </div>
 
       <div className="flex items-center justify-between space-x-2">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-slate-300">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()} ({totalCount} Logs)
         </div>
         <div className="space-x-2">
           <Button
-            variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage() || isLoading}
+            className="bg-pink-600 hover:bg-pink-700 text-white disabled:bg-pink-600/50 disabled:text-white/50"
           >
             Previous
           </Button>
           <Button
-            variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage() || isLoading}
+            className="bg-pink-600 hover:bg-pink-700 text-white disabled:bg-pink-600/50 disabled:text-white/50"
           >
             Next
           </Button>

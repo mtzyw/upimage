@@ -129,14 +129,14 @@ export const getColumns = (
 ): ColumnDef<R2File>[] => [
   {
     accessorKey: "preview",
-    header: "Preview",
+    header: () => <span className="text-white">Preview</span>,
     cell: ({ row }) => {
       const file = row.original;
       const fileType = getFileType(file.key);
       const previewUrl = r2PublicUrl ? `${r2PublicUrl}/${file.key}` : undefined;
 
       if (!previewUrl)
-        return <span className="text-xs text-muted-foreground">N/A</span>;
+        return <span className="text-xs text-slate-300">N/A</span>;
 
       if (fileType === "image") {
         return (
@@ -146,7 +146,7 @@ export const getColumns = (
               alt={`Preview of ${file.key}`}
               width={64}
               height={64}
-              className="object-contain rounded border bg-muted"
+              className="object-contain rounded border bg-white/10"
             />
           </ImagePreview>
         );
@@ -159,14 +159,14 @@ export const getColumns = (
             controls={false}
             muted
             preload="metadata"
-            className="rounded border bg-muted"
+            className="rounded border bg-white/10"
           >
-            <Video className="h-8 w-8 text-muted-foreground" />
+            <Video className="h-8 w-8 text-slate-300" />
           </video>
         );
       } else {
         return (
-          <span className="text-xs text-muted-foreground">No Preview</span>
+          <span className="text-xs text-slate-300">No Preview</span>
         );
       }
     },
@@ -174,25 +174,25 @@ export const getColumns = (
   },
   {
     accessorKey: "type",
-    header: "Type",
-    cell: ({ row }) => getFileType(row.original.key).toUpperCase() ?? "Unknown",
+    header: () => <span className="text-white">Type</span>,
+    cell: ({ row }) => <span className="text-white">{getFileType(row.original.key).toUpperCase() ?? "Unknown"}</span>,
   },
   {
     accessorKey: "size",
-    header: "Size",
-    cell: ({ row }) => formatBytes(row.getValue<number>("size")),
+    header: () => <span className="text-white">Size</span>,
+    cell: ({ row }) => <span className="text-white">{formatBytes(row.getValue<number>("size"))}</span>,
   },
   {
     accessorKey: "lastModified",
-    header: "Last Modified",
+    header: () => <span className="text-white">Last Modified</span>,
     cell: ({ row }) => {
       const date = row.getValue<Date>("lastModified");
-      return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
+      return <span className="text-slate-300">{dayjs(date).format("YYYY-MM-DD HH:mm:ss")}</span>;
     },
   },
   {
     id: "actions",
-    header: "Actions",
+    header: () => <span className="text-white">Actions</span>,
     cell: ({ row }) => (
       <ActionsCell
         file={row.original}

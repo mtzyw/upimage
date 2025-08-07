@@ -20,6 +20,7 @@ export const columns: ColumnDef<PricingPlan>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-white hover:text-white"
         >
           Environment
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -30,7 +31,9 @@ export const columns: ColumnDef<PricingPlan>[] = [
       const environment = row.getValue("environment") as string;
       const variant = environment === "live" ? "default" : "secondary";
       return (
-        <Badge variant={variant} className="capitalize">
+        <Badge variant={variant} className={`capitalize ${
+          environment === "live" ? "bg-green-600 text-white" : "bg-slate-600 text-slate-300"
+        }`}>
           {environment}
         </Badge>
       );
@@ -39,14 +42,14 @@ export const columns: ColumnDef<PricingPlan>[] = [
   },
   {
     accessorKey: "card_title",
-    header: "Title",
+    header: () => <span className="text-white">Title</span>,
     cell: ({ row }) => (
-      <span className="font-medium">{row.getValue("card_title")}</span>
+      <span className="font-medium text-white">{row.getValue("card_title")}</span>
     ),
   },
   {
     accessorKey: "stripe_price_id",
-    header: "Stripe Price ID",
+    header: () => <span className="text-white">Stripe Price ID</span>,
     cell: ({ row }) => {
       const priceId = row.getValue("stripe_price_id");
       const environment = row.original.environment;
@@ -58,7 +61,7 @@ export const columns: ColumnDef<PricingPlan>[] = [
 
       return priceId ? (
         <div className="flex items-center space-x-1">
-          <code className="text-xs">{priceId as string}</code>
+          <code className="text-xs bg-white/10 text-white px-1 rounded">{priceId as string}</code>
           {stripeLink && (
             <Link
               href={stripeLink}
@@ -67,41 +70,41 @@ export const columns: ColumnDef<PricingPlan>[] = [
               title="View on Stripe Dashboard"
               prefetch={false}
             >
-              <ExternalLink className="h-3 w-3 text-muted-foreground hover:text-primary" />
+              <ExternalLink className="h-3 w-3 text-slate-300 hover:text-pink-400" />
             </Link>
           )}
         </div>
       ) : (
-        <span className="text-muted-foreground">-</span>
+        <span className="text-slate-300">-</span>
       );
     },
   },
   {
     accessorKey: "payment_type",
-    header: "Payment Type",
+    header: () => <span className="text-white">Payment Type</span>,
     cell: ({ row }) => {
       const paymentType = row.getValue("payment_type") as string | null;
       const interval = row.original.recurring_interval;
       if (paymentType === "recurring" && interval) {
         return (
-          <span className="capitalize">
+          <span className="capitalize text-white">
             {paymentType} ({interval})
           </span>
         );
       }
       return paymentType ? (
-        <span className="capitalize">{paymentType}</span>
+        <span className="capitalize text-white">{paymentType}</span>
       ) : (
-        <span className="text-muted-foreground">-</span>
+        <span className="text-slate-300">-</span>
       );
     },
   },
   {
     accessorKey: "price",
-    header: "Price",
+    header: () => <span className="text-white">Price</span>,
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">
+        <div className="text-right font-medium text-white">
           {row.original.display_price}
         </div>
       );
@@ -115,7 +118,7 @@ export const columns: ColumnDef<PricingPlan>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-center w-full justify-center"
+          className="text-center w-full justify-center text-white hover:text-white"
         >
           Order
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -123,27 +126,27 @@ export const columns: ColumnDef<PricingPlan>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("display_order")}</div>;
+      return <div className="text-center text-white">{row.getValue("display_order")}</div>;
     },
     enableSorting: true,
     size: 50,
   },
   {
     accessorKey: "is_active",
-    header: "Status",
+    header: () => <span className="text-white">Status</span>,
     cell: ({ row }) => {
       const isActive = row.getValue("is_active") as boolean;
       return isActive ? (
-        <Badge variant="default">Active</Badge>
+        <Badge variant="default" className="bg-green-600 text-white">Active</Badge>
       ) : (
-        <Badge variant="destructive">Inactive</Badge>
+        <Badge variant="destructive" className="bg-red-600 text-white">Inactive</Badge>
       );
     },
     enableSorting: false,
   },
   {
     accessorKey: "benefits_jsonb",
-    header: "Benefits",
+    header: () => <span className="text-white">Benefits</span>,
     cell: ({ row }) => {
       const benefits = row.getValue("benefits_jsonb") as object | null;
       const benefitsString = benefits ? JSON.stringify(benefits) : "-";
@@ -156,22 +159,22 @@ export const columns: ColumnDef<PricingPlan>[] = [
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <code className="text-xs">{displayString}</code>
+              <code className="text-xs bg-white/10 text-white px-1 rounded">{displayString}</code>
             </TooltipTrigger>
-            <TooltipContent className="max-w-xs">
-              <pre className="text-xs">{JSON.stringify(benefits, null, 2)}</pre>
+            <TooltipContent className="max-w-xs bg-slate-800 text-white border-slate-600">
+              <pre className="text-xs text-white">{JSON.stringify(benefits, null, 2)}</pre>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       ) : (
-        <span className="text-muted-foreground">-</span>
+        <span className="text-slate-300">-</span>
       );
     },
     enableSorting: false,
   },
   {
     id: "actions",
-    header: "Actions",
+    header: () => <span className="text-white">Actions</span>,
     cell: ({ row, table }) => {
       const plan = row.original;
 

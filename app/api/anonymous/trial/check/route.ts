@@ -52,13 +52,18 @@ export async function POST(req: NextRequest) {
       return apiResponse.error('检查试用资格失败，请重试');
     }
 
+    if (!eligibilityResult) {
+      console.error('❌ [ANONYMOUS TRIAL CHECK] 数据库函数返回null结果');
+      return apiResponse.error('检查试用资格失败，请重试');
+    }
+
     console.log('✅ [ANONYMOUS TRIAL CHECK] 试用资格检查结果:', eligibilityResult);
 
     // 4. 返回结果
     const response = {
-      eligible: eligibilityResult.eligible,
-      reason: eligibilityResult.reason,
-      message: eligibilityResult.message
+      eligible: (eligibilityResult as any).eligible,
+      reason: (eligibilityResult as any).reason,
+      message: (eligibilityResult as any).message
     };
 
     console.log('🎉 [ANONYMOUS TRIAL CHECK] 返回结果:', response);

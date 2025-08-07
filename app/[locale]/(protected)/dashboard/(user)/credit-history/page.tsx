@@ -16,14 +16,14 @@ export default async function CreditHistoryPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("description")}</p>
+        <h1 className="text-2xl font-semibold text-white">{t("title")}</h1>
+        <p className="text-slate-300">{t("description")}</p>
       </div>
       {initialResult.success && initialResult.data ? (
         <Suspense
           fallback={
-            <div className="flex items-center justify-center rounded-md border">
-              <Loader2 className="w-8 h-8 animate-spin" />
+            <div className="flex items-center justify-center rounded-md border border-white/20 bg-white/5 backdrop-blur-sm p-8">
+              <Loader2 className="w-8 h-8 animate-spin text-white" />
             </div>
           }
         >
@@ -34,7 +34,7 @@ export default async function CreditHistoryPage() {
           />
         </Suspense>
       ) : (
-        <p className="text-destructive">
+        <p className="text-red-400">
           {initialResult.error || t("load_error")}
         </p>
       )}

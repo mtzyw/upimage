@@ -48,8 +48,8 @@ export default async function AdminBlogsPage() {
   if (!result.success) {
     return (
       <div className="space-y-4 p-4 md:p-8">
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-destructive">
+        <h1 className="text-2xl font-semibold text-white">{t("title")}</h1>
+        <p className="text-red-400">
           {t("fetchError", { error: result.error ?? "Unknown error" })}
         </p>
       </div>
@@ -63,10 +63,10 @@ export default async function AdminBlogsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">{t("title")}</h1>
         <div className="flex space-x-2">
           <TagManagementDrawer />
-          <Button asChild className="highlight-bg text-white">
+          <Button asChild className="bg-pink-600 hover:bg-pink-700 text-white">
             <I18nLink
               href={`/dashboard/blogs/new`}
               title={t("createNewButton")}
@@ -77,7 +77,7 @@ export default async function AdminBlogsPage() {
           </Button>
         </div>
       </div>
-      <p className="text-muted-foreground">{t("description")}</p>
+      <p className="text-slate-300">{t("description")}</p>
 
       <PostsDataTable
         initialData={posts}

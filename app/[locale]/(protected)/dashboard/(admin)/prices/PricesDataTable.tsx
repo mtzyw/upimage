@@ -92,7 +92,7 @@ export function PricesDataTable<TData extends PricingPlan, TValue>({
           onChange={(event) =>
             table.getColumn("card_title")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm bg-white/10 border-white/20 text-white placeholder:text-slate-300"
         />
         <Select
           value={
@@ -104,7 +104,7 @@ export function PricesDataTable<TData extends PricingPlan, TValue>({
             table.getColumn("environment")?.setFilterValue(filterValue);
           }}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white/10 border-white/20 text-white">
             <SelectValue placeholder="Filter Environment" />
           </SelectTrigger>
           <SelectContent>
@@ -114,7 +114,7 @@ export function PricesDataTable<TData extends PricingPlan, TValue>({
           </SelectContent>
         </Select>
       </div>
-      <div className="rounded-md border relative min-h-[200px] max-h-[calc(100vh-330px)] overflow-y-auto">
+      <div className="rounded-md border border-white/20 bg-white/5 backdrop-blur-sm relative min-h-[200px] max-h-[calc(100vh-330px)] overflow-y-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -163,7 +163,7 @@ export function PricesDataTable<TData extends PricingPlan, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-slate-300"
                 >
                   {t("noPlansFound")}
                 </TableCell>
@@ -173,13 +173,13 @@ export function PricesDataTable<TData extends PricingPlan, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex-1 text-sm text-slate-300">
           {table.getFilteredRowModel().rows.length} plan(s) found.
           {table.getFilteredSelectedRowModel().rows.length > 0 &&
             ` (${table.getFilteredSelectedRowModel().rows.length} selected)`}
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-slate-300">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </span>
@@ -188,6 +188,7 @@ export function PricesDataTable<TData extends PricingPlan, TValue>({
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className="bg-pink-600 hover:bg-pink-700 text-white border-pink-600"
           >
             Previous
           </Button>
@@ -196,6 +197,7 @@ export function PricesDataTable<TData extends PricingPlan, TValue>({
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className="bg-pink-600 hover:bg-pink-700 text-white border-pink-600"
           >
             Next
           </Button>

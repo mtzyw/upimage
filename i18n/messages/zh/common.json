@@ -321,6 +321,16 @@
       "networkError": "网络错误，请重试"
     }
   },
+  "Pricing": {
+    "buttons": {
+      "subscribed": "已订阅",
+      "upgradeToThis": "升级到此套餐",
+      "downgradeToThis": "降级到此套餐",
+      "switchToThis": "切换到此套餐",
+      "cannotDowngrade": "无法降级",
+      "alreadySubscribed": "您已经订阅了此套餐"
+    }
+  },
   "ErrorPage": {
     "403": {
       "title": "403 - 访问被拒绝",

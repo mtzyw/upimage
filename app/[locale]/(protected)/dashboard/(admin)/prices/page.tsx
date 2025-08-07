@@ -47,10 +47,10 @@ export default async function AdminPricesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
+          <h1 className="text-2xl font-semibold text-white">{t("title")}</h1>
+          <p className="text-slate-300">{t("description")}</p>
         </div>
-        <Button asChild className="highlight-bg text-white">
+        <Button asChild className="bg-pink-600 hover:bg-pink-700 text-white">
           <I18nLink
             href="/dashboard/prices/new"
             title={t("createNewPlan")}
