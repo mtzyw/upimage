@@ -1,7 +1,6 @@
 "use client";
 
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LOCALE, routing } from "@/i18n/routing";
 import { useLocaleStore } from "@/stores/localeStore";
@@ -10,7 +9,7 @@ import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
 export function LanguageDetectionAlert() {
-  const [countdown, setCountdown] = useState(10); // countdown 10s and dismiss
+  const [countdown, setCountdown] = useState(7); // countdown 7s and dismiss
   const locale = useLocale();
   const [currentLocale, setCurrentLocale] = useState(locale);
   const {
@@ -63,27 +62,38 @@ export function LanguageDetectionAlert() {
   const alertMessages = messages.LanguageDetection;
 
   return (
-    <Alert className="mb-4 relative">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-2 top-2 h-6 w-6"
-        onClick={dismissLanguageAlert}
-      >
-        <X className="h-4 w-4" />
-      </Button>
-      <Globe className="h-4 w-4" />
-      <AlertTitle>
-        {alertMessages.title}{" "}
-        <span className=" mt-2 text-sm text-muted-foreground">
-          {alertMessages.countdown.replace("{countdown}", countdown.toString())}
-        </span>
-      </AlertTitle>
-      <AlertDescription>
-        <div className="flex items-center gap-2">
-          {alertMessages.description} <LocaleSwitcher />
+    <div className="fixed top-16 right-4 z-50">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 max-w-sm">
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Globe className="h-4 w-4 text-blue-500" />
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
+              {alertMessages.title}
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 -mt-1 -mr-1"
+            onClick={dismissLanguageAlert}
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
-      </AlertDescription>
-    </Alert>
+        
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+          {alertMessages.description}
+        </p>
+        
+        <div className="flex items-center justify-between">
+          <div className="[&_button]:!text-black [&_button]:!border-gray-300 [&_svg]:!text-black">
+            <LocaleSwitcher />
+          </div>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {alertMessages.countdown.replace("{countdown}", countdown.toString())}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
