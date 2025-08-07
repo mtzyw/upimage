@@ -3,6 +3,7 @@
 import { Menu, Sparkles, History } from "lucide-react";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 interface LeftSidebarProps {
   activeTab?: string;
@@ -14,22 +15,23 @@ export default function LeftSidebar({
   onTabChange 
 }: LeftSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const t = useTranslations("Enhance");
 
   const menuItems = [
     {
       id: 'enhance',
       icon: Sparkles,
-      label: '图像增强',
+      label: t('title'),
     },
     {
       id: 'history',
       icon: History,
-      label: '历史记录',
+      label: t('history.title'),
     },
   ];
 
   return (
-    <div className="w-16 sm:w-20 lg:w-24 bg-gray-900/90 flex flex-col h-full overflow-hidden">
+    <div className="w-20 sm:w-24 lg:w-28 xl:w-32 bg-gray-900/95 border-r border-gray-700 flex flex-col h-full overflow-hidden">
       {/* 汉堡菜单按钮 */}
       <div className="p-4 flex justify-center">
         <button

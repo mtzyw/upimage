@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Wand2, History, Sparkles, Loader2, Coins } from "lucide-react";
+import { useTranslations } from "next-intl";
 import ImageUploader from "@/components/upload/ImageUploader";
 
 interface UserBenefits {
@@ -48,15 +49,16 @@ export default function LeftControlPanel({
   onProcess,
   getRequiredCredits,
 }: LeftControlPanelProps) {
+  const t = useTranslations("Enhance");
   return (
     <div className="w-full sm:w-[350px] lg:w-[400px] xl:w-[450px] h-full bg-gray-900/95 border-r border-gray-700 flex flex-col overflow-hidden">
       {/* 头部区域 - 标题和积分 */}
       <div className="p-4 sm:p-6">
         <div className="mb-3">
-          <h1 className="text-base sm:text-lg font-semibold text-white">图像增强</h1>
+          <h1 className="text-base sm:text-lg font-semibold text-white">{t('title')}</h1>
         </div>
         <p className="text-gray-500 text-xs">
-          我们最多能将您的图像分辨率提高 20MB、4096 x 4096 像素的 JPEG、PNG、GIF 或 WEBP 格式。
+          {t('description')}
         </p>
       </div>
 
@@ -68,15 +70,15 @@ export default function LeftControlPanel({
           <div className="bg-gray-800/60 rounded-lg p-3 border border-gray-700/50">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="h-4 w-4 text-cyan-400" />
-              <span className="text-cyan-400 font-medium text-sm">专业图像增强</span>
+              <span className="text-cyan-400 font-medium text-sm">{t('settings.engine')}</span>
             </div>
-            <p className="text-gray-500 text-xs">使用 AI 技术定制的模型，让您的作品更适合</p>
+            <p className="text-gray-500 text-xs">{t('settings.engineDescription')}</p>
           </div>
         </div>
 
         {/* 图像上传区域 */}
         <div className="space-y-3">
-          <label className="text-white font-medium text-sm">图像</label>
+          <label className="text-white font-medium text-sm">{t('upload.title')}</label>
           <ImageUploader
             onFileSelected={onFileSelected}
             maxSizeMB={50}
@@ -86,11 +88,11 @@ export default function LeftControlPanel({
 
         {/* 增强设置 */}
         <div className="space-y-5">
-          <h3 className="text-cyan-400 text-lg font-semibold">增强设置</h3>
+          <h3 className="text-cyan-400 text-lg font-semibold">{t('settings.scaleFactor')}</h3>
           
           {/* 放大倍数选择 */}
           <div className="space-y-3">
-            <label className="text-cyan-400 font-medium">放大倍数</label>
+            <label className="text-cyan-400 font-medium">{t('settings.scaleFactor')}</label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {['2x', '4x', '8x', '16x'].map((scale) => {
                 const credits = getRequiredCredits(scale);
@@ -113,7 +115,7 @@ export default function LeftControlPanel({
                     `}
                   >
                     <div className="font-bold">{scale}</div>
-                    <div className="text-xs">{credits} 积分</div>
+                    <div className="text-xs">{t('credits.required', {credits})}</div>
                   </button>
                 );
               })}
@@ -122,18 +124,18 @@ export default function LeftControlPanel({
 
           {/* 优化类型 */}
           <div className="space-y-3">
-            <label className="text-yellow-400 font-medium">优化类型</label>
+            <label className="text-yellow-400 font-medium">{t('settings.optimization')}</label>
             <Select value={optimizedFor} onValueChange={onOptimizedForChange} disabled={isProcessing}>
               <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="standard">标准</SelectItem>
-                <SelectItem value="soft_portraits">柔和人像</SelectItem>
-                <SelectItem value="hard_portraits">锐化人像</SelectItem>
-                <SelectItem value="art_n_illustration">艺术插画</SelectItem>
-                <SelectItem value="nature_n_landscapes">自然风景</SelectItem>
-                <SelectItem value="films_n_photography">电影摄影</SelectItem>
+                <SelectItem value="standard">{t('settings.optimizationTypes.standard')}</SelectItem>
+                <SelectItem value="soft_portraits">{t('settings.optimizationTypes.softPortraits')}</SelectItem>
+                <SelectItem value="hard_portraits">{t('settings.optimizationTypes.hardPortraits')}</SelectItem>
+                <SelectItem value="art_n_illustration">{t('settings.optimizationTypes.artIllustration')}</SelectItem>
+                <SelectItem value="nature_n_landscapes">{t('settings.optimizationTypes.natureLandscapes')}</SelectItem>
+                <SelectItem value="films_n_photography">{t('settings.optimizationTypes.filmsPhotography')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -141,7 +143,7 @@ export default function LeftControlPanel({
           {/* 创意度滑块 */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <label className="text-pink-400 font-medium">创意度</label>
+              <label className="text-pink-400 font-medium">{t('settings.creativity')}</label>
               <span className="text-white bg-gray-800 px-2 py-1 rounded text-sm">
                 ({creativity[0]})
               </span>
@@ -160,7 +162,7 @@ export default function LeftControlPanel({
           {/* HDR滑块 */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <label className="text-green-400 font-medium">HDR强度</label>
+              <label className="text-green-400 font-medium">{t('settings.hdr')}</label>
               <span className="text-white bg-gray-800 px-2 py-1 rounded text-sm">
                 ({hdr[0]})
               </span>
@@ -178,11 +180,11 @@ export default function LeftControlPanel({
 
           {/* 增强提示词 */}
           <div className="space-y-3">
-            <label className="text-white font-medium">增强提示词（可选）</label>
+            <label className="text-white font-medium">{t('settings.prompt')}</label>
             <Textarea
               value={prompt}
               onChange={(e) => onPromptChange(e.target.value)}
-              placeholder="例如：增强细节，提高清晰度，保持自然色彩..."
+              placeholder={t('settings.promptPlaceholder')}
               className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 resize-none"
               rows={3}
               disabled={isProcessing}
@@ -196,9 +198,9 @@ export default function LeftControlPanel({
           {/* 消耗积分显示 */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">消耗积分:</span>
+              <span className="text-gray-400">{t('credits.consumed')}:</span>
               <span className="text-cyan-400 font-medium">
-                {getRequiredCredits(scaleFactor)} 积分
+                {t('credits.required', {credits: getRequiredCredits(scaleFactor)})}
               </span>
             </div>
           </div>
@@ -215,19 +217,19 @@ export default function LeftControlPanel({
           {isProcessing ? (
             <div className="flex items-center">
               <Loader2 className="animate-spin mr-2 h-4 w-4" />
-              创建
+              {t('status.processing')}
             </div>
           ) : (
             <div className="flex items-center">
               <Sparkles className="mr-2 h-4 w-4" />
-              创建
+              {t('messages.processingStarted')}
             </div>
           )}
         </Button>
         
         {userBenefits && uploadedImage && userBenefits.credits < getRequiredCredits(scaleFactor) && (
           <p className="text-red-400 text-xs text-center">
-            积分不足，需要 {getRequiredCredits(scaleFactor)} 积分
+            {t('credits.insufficient')}, {t('credits.required', {credits: getRequiredCredits(scaleFactor)})}
           </p>
         )}
       </div>

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react"
 import { useState, useRef } from "react"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 interface ImageUploaderProps {
@@ -26,17 +27,18 @@ export default function ImageUploader({
   const [uploadedImage, setUploadedImage] = useState<{url: string, key: string} | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const t = useTranslations("Enhance")
 
   const validateFile = (file: File): string | null => {
     // 检查文件类型
     if (!acceptedTypes.includes(file.type)) {
-      return `只支持 ${acceptedTypes.join(', ')} 格式的图片`
+      return t('upload.invalidFormat')
     }
     
     // 检查文件大小
     const sizeMB = file.size / (1024 * 1024)
     if (sizeMB > maxSizeMB) {
-      return `文件大小不能超过 ${maxSizeMB}MB`
+      return t('upload.fileTooLarge', {size: maxSizeMB})
     }
     
     return null
@@ -111,11 +113,11 @@ export default function ImageUploader({
       const imageData = { url: publicObjectUrl, key }
       setUploadedImage(imageData)
       onUploadSuccess?.(publicObjectUrl, key)
-      toast.success('图片上传成功！')
+      toast.success(t('upload.uploadSuccess'))
 
     } catch (error) {
       console.error('Upload error:', error)
-      toast.error(error instanceof Error ? error.message : '上传失败，请重试')
+      toast.error(error instanceof Error ? error.message : t('upload.uploadFailed'))
     } finally {
       setIsUploading(false)
     }
@@ -185,8 +187,8 @@ export default function ImageUploader({
             {isUploading ? (
               <>
                 <Loader2 className="h-12 w-12 text-pink-400 animate-spin mb-4" />
-                <p className="text-white font-medium">上传中...</p>
-                <p className="text-gray-400 text-sm mt-1">请稍候</p>
+                <p className="text-white font-medium">{t('upload.uploading')}</p>
+                <p className="text-gray-400 text-sm mt-1">{t('upload.pleaseWait')}</p>
               </>
             ) : (
               <>
@@ -194,10 +196,10 @@ export default function ImageUploader({
                   <Upload className="h-8 w-8 text-pink-400" />
                 </div>
                 <p className="text-white font-medium mb-2">
-                  点击上传或拖拽图片到此处
+                  {t('upload.clickSelect')}
                 </p>
                 <p className="text-gray-400 text-sm">
-                  支持 JPG、PNG、WebP 格式，最大 {maxSizeMB}MB
+                  {t('upload.supportedFormats', {size: maxSizeMB})}
                 </p>
               </>
             )}
@@ -208,7 +210,7 @@ export default function ImageUploader({
           <div className="relative">
             <Image
               src={uploadedImage.url}
-              alt="已上传的图片"
+              alt={t('upload.uploadedImage')}
               width={400}
               height={300}
               className="w-full h-64 object-cover rounded-t-lg"
@@ -225,7 +227,7 @@ export default function ImageUploader({
           <div className="p-4">
             <div className="flex items-center gap-2 text-green-400 mb-2">
               <ImageIcon className="h-4 w-4" />
-              <span className="text-sm font-medium">上传成功</span>
+              <span className="text-sm font-medium">{t('upload.uploadSuccess')}</span>
             </div>
             <p className="text-gray-400 text-xs truncate">
               {uploadedImage.key}

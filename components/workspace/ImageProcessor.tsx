@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import LeftSidebar from "./LeftSidebar";
 import LeftControlPanel from "./LeftControlPanel";
 import ResultDisplayPanel from "./ResultDisplayPanel";
@@ -30,6 +31,7 @@ interface TaskStatus {
 export default function ImageProcessor() {
   const { user } = useAuth();
   const router = useRouter();
+  const t = useTranslations("Enhance");
   
   // 上传和基本状态
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -91,7 +93,7 @@ export default function ImageProcessor() {
               router.refresh(); // 触发服务端重新渲染，更新导航栏积分
               
             } else {
-              toast.error('图像处理失败');
+              toast.error(t('messages.processingFailed'));
             }
           }
         }
@@ -136,14 +138,14 @@ export default function ImageProcessor() {
 
   const handleProcess = async () => {
     if (!uploadedFile || !user || !userBenefits) {
-      toast.error('请先选择图片');
+      toast.error(t('messages.selectImageFirst'));
       return;
     }
 
     // 检查积分
     const requiredCredits = getRequiredCredits(scaleFactor);
     if (userBenefits.credits < requiredCredits) {
-      toast.error('积分不足，请先充值');
+      toast.error(t('credits.insufficient'));
       return;
     }
 
@@ -190,12 +192,12 @@ export default function ImageProcessor() {
           credits: prev.credits - requiredCredits
         } : null);
       } else {
-        toast.error(result.error || '处理失败，请重试');
+        toast.error(result.error || t('messages.processingFailed'));
         setIsProcessing(false);
       }
     } catch (error) {
       console.error('Error starting enhancement:', error);
-      toast.error('网络错误，请重试');
+      toast.error(t('messages.networkError'));
       setIsProcessing(false);
     }
   };
@@ -210,7 +212,7 @@ export default function ImageProcessor() {
   const handleDownload = (url: string) => {
     try {
       if (!currentTaskId) {
-        toast.error('任务ID缺失，无法下载');
+        toast.error(t('messages.taskIdMissing'));
         return;
       }
       
@@ -218,7 +220,7 @@ export default function ImageProcessor() {
       const workerUrl = process.env.NEXT_PUBLIC_DOWNLOAD_WORKER_URL;
       
       if (!workerUrl) {
-        toast.error('下载服务未配置，请联系管理员');
+        toast.error(t('messages.downloadServiceNotConfigured'));
         return;
       }
       
@@ -228,19 +230,19 @@ export default function ImageProcessor() {
       // 直接跳转到下载链接，Worker会设置正确的响应头触发下载
       window.open(downloadUrl, '_blank');
       
-      toast.success('开始下载图片');
+      toast.success(t('messages.downloadSuccess'));
     } catch (error) {
       console.error('Download error:', error);
-      toast.error(error instanceof Error ? error.message : '下载失败，请重试');
+      toast.error(error instanceof Error ? error.message : t('messages.downloadFailed'));
     }
   };
 
   const handleCopyUrl = async (url: string) => {
     try {
       await navigator.clipboard.writeText(url);
-      toast.success('链接已复制到剪贴板');
+      toast.success(t('messages.copySuccess'));
     } catch (error) {
-      toast.error('复制失败');
+      toast.error(t('messages.copyFailed'));
     }
   };
 
@@ -278,8 +280,8 @@ export default function ImageProcessor() {
       {activeTab !== 'enhance' && (
         <div className="w-full sm:w-[350px] lg:w-[400px] xl:w-[450px] h-full bg-gray-800/50 border-r border-gray-700 flex flex-col items-center justify-center">
           <div className="text-gray-400 text-center">
-            <div className="text-lg font-medium mb-2">功能开发中</div>
-            <div className="text-sm">该功能正在开发中，敬请期待</div>
+            <div className="text-lg font-medium mb-2">{t('messages.developing')}</div>
+            <div className="text-sm">{t('messages.comingSoon')}</div>
           </div>
         </div>
       )}

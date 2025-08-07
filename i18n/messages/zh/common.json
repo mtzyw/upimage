@@ -245,15 +245,20 @@
     "title": "AI 图像增强",
     "description": "使用先进的 AI 技术放大并增强您的图像",
     "upload": {
-      "title": "上传图片",
+      "title": "图像",
       "description": "选择要增强的图片，支持 JPG、PNG、WebP 格式",
       "dragDrop": "拖拽图片到这里",
-      "clickSelect": "点击选择文件",
+      "clickSelect": "点击上传或拖拽图片到此处",
       "supportedFormats": "支持 JPG、PNG、WebP 格式，最大 {size}MB",
       "selectImage": "选择图片",
       "dropToUpload": "放开以上传图片",
       "invalidFormat": "只支持 JPG、PNG、WebP 格式的图片",
-      "fileTooLarge": "图片大小不能超过 {size}MB"
+      "fileTooLarge": "文件大小不能超过 {size}MB",
+      "uploading": "上传中...",
+      "pleaseWait": "请稍候",
+      "uploadedImage": "已上传的图片",
+      "uploadSuccess": "上传成功",
+      "uploadFailed": "上传失败，请重试"
     },
     "settings": {
       "scaleFactor": "放大倍数",
@@ -265,7 +270,8 @@
       "promptPlaceholder": "例如：增强细节，提高清晰度，保持自然色彩...",
       "advanced": "高级设置",
       "advancedDescription": "精细调节增强参数，需要一定的图像处理经验",
-      "engine": "处理引擎",
+      "engine": "专业图像增强",
+      "engineDescription": "使用 AI 技术定制的模型，让您的作品更适合",
       "creativity": "创意度",
       "creativityDescription": "控制AI的创造性，负值更保守，正值更创新",
       "hdr": "HDR强度",
@@ -273,22 +279,31 @@
       "resemblance": "相似度", 
       "resemblanceDescription": "控制与原图的相似程度",
       "fractality": "分形度",
-      "fractalityDescription": "控制提示词强度和像素复杂度"
+      "fractalityDescription": "控制提示词强度和像素复杂度",
+      "optimizationTypes": {
+        "standard": "标准",
+        "softPortraits": "柔和人像",
+        "hardPortraits": "锐化人像",
+        "artIllustration": "艺术插画",
+        "natureLandscapes": "自然风景",
+        "filmsPhotography": "电影摄影"
+      }
     },
     "status": {
       "processing": "处理中",
       "completed": "已完成",
       "failed": "处理失败",
-      "waiting": "等待开始处理",
+      "waiting": "等待处理结果",
       "progress": "处理进度",
       "estimatedTime": "预计还需 {time}",
       "originalImage": "原图",
-      "enhancedImage": "增强后",
+      "enhancedImage": "AI 增强效果对比",
       "downloadImage": "下载图片",
-      "viewOriginal": "查看原图",
+      "viewOriginal": "预览",
       "copyLink": "复制链接",
       "retry": "重新处理",
-      "refresh": "刷新状态"
+      "refresh": "刷新状态",
+      "status": "状态"
     },
     "credits": {
       "required": "需要 {credits} 积分",
@@ -312,13 +327,25 @@
       "loginRequired": "需要登录",
       "loginDescription": "请先登录才能使用图像增强功能",
       "selectImageFirst": "请先选择图片",
-      "processingStarted": "图像处理已开始",
+      "processingStarted": "开始增强",
       "processingComplete": "图像增强完成！",
-      "downloadSuccess": "图片下载成功",
+      "downloadSuccess": "开始下载图片",
       "downloadFailed": "下载失败，请重试",
       "copySuccess": "链接已复制到剪贴板",
       "copyFailed": "复制失败",
-      "networkError": "网络错误，请重试"
+      "networkError": "网络错误，请重试",
+      "developing": "功能开发中",
+      "comingSoon": "该功能正在开发中，敬请期待",
+      "processingFailed": "图像处理失败",
+      "taskIdMissing": "任务ID缺失，无法下载",
+      "downloadServiceNotConfigured": "下载服务未配置，请联系管理员",
+      "selectImageAndStart": "选择图片并点击创建按钮开始增强",
+      "aiProcessing": "AI 正在增强您的图片，请稍候",
+      "dragToCompare": "拖拽分割线查看原图与增强后的对比效果",
+      "shareText": "查看我用 AI 增强的图片",
+      "share": "分享",
+      "taskDetails": "任务详情",
+      "completedAt": "完成时间"
     }
   },
   "Pricing": {
