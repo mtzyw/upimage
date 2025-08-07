@@ -1,7 +1,7 @@
 import { apiResponse } from '@/lib/api-response';
 import { getErrorMessage } from '@/lib/error-utils';
 import stripe from '@/lib/stripe/stripe';
-import { handleCheckoutSessionCompleted, handleInvoicePaid, handleInvoicePaymentFailed, handleRefund, handleSubscriptionUpdate } from '@/lib/stripe/webhook-handlers';
+import { handleCheckoutSessionCompleted, handleEarlyFraudWarning, handleInvoicePaid, handleInvoicePaymentFailed, handleRefund, handleSubscriptionUpdate } from '@/lib/stripe/webhook-handlers';
 import { headers } from 'next/headers';
 import { after } from 'next/server';
 import Stripe from 'stripe';
@@ -13,7 +13,8 @@ const relevantEvents = new Set([
   'customer.subscription.deleted',
   'invoice.paid',
   'invoice.payment_failed',
-  'charge.refunded'
+  'charge.refunded',
+  'radar.early_fraud_warning.created'
 ]);
 
 const useAsyncProcessing = process.env.STRIPE_WEBHOOK_ASYNC_PROCESSING === 'true';
@@ -91,6 +92,9 @@ async function processWebhookEvent(event: Stripe.Event) {
       break;
     case 'charge.refunded':
       await handleRefund(event.data.object as Stripe.Charge);
+      break;
+    case 'radar.early_fraud_warning.created':
+      await handleEarlyFraudWarning(event.data.object as Stripe.Radar.EarlyFraudWarning);
       break;
     default:
       console.warn(`Unhandled relevant event type: ${event.type}`);

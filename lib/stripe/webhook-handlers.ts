@@ -617,6 +617,159 @@ export async function handleRefund(charge: Stripe.Charge) {
   // --- End: [custom] Revoke the user's benefits ---
 }
 
+/**
+ * Handles the `radar.early_fraud_warning.created` event from Stripe.
+ * 
+ * Only processes monthly subscriptions automatically:
+ * - Executes full refund
+ * - Cancels Stripe subscription  
+ * - Revokes subscription credits
+ * - Updates order status
+ *
+ * @param earlyFraudWarning The Stripe Radar Early Fraud Warning object.
+ */
+export async function handleEarlyFraudWarning(earlyFraudWarning: Stripe.Radar.EarlyFraudWarning) {
+  const chargeId = earlyFraudWarning.charge;
+  const efwId = earlyFraudWarning.id;
+
+  console.log(`处理 Early Fraud Warning: ${efwId} for charge: ${chargeId}`);
+
+  // 幂等性检查：检查是否已处理过此 EFW
+  const { data: existingEfwOrder, error: efwQueryError } = await supabaseAdmin
+    .from('orders')
+    .select('id')
+    .eq('provider', 'stripe')
+    .eq('metadata->>fraud_warning_id', efwId)
+    .maybeSingle();
+
+  if (efwQueryError) {
+    console.error(`DB error checking for existing EFW ${efwId}:`, efwQueryError);
+    throw efwQueryError;
+  }
+
+  if (existingEfwOrder) {
+    console.log(`EFW ${efwId} 已处理过，跳过`);
+    return;
+  }
+
+  // 查找对应的订单
+  const { data: order, error: orderError } = await supabaseAdmin
+    .from('orders')
+    .select('*')
+    .eq('provider', 'stripe')
+    .eq('provider_order_id', chargeId)
+    .eq('order_type', 'subscription_initial')
+    .maybeSingle();
+
+  if (orderError) {
+    console.error(`DB error fetching order for charge ${chargeId}:`, orderError);
+    throw orderError;
+  }
+
+  if (!order) {
+    console.warn(`未找到 charge ${chargeId} 对应的订单，可能是一次性购买或其他类型，跳过 EFW 处理`);
+    return;
+  }
+
+  // 检查是否为月度订阅
+  const { data: planData, error: planError } = await supabaseAdmin
+    .from('pricing_plans')
+    .select('recurring_interval')
+    .eq('id', order.plan_id)
+    .single();
+
+  if (planError || !planData) {
+    console.error(`Error fetching plan for planId ${order.plan_id}:`, planError);
+    return;
+  }
+
+  if (planData.recurring_interval !== 'month') {
+    console.log(`订单 ${order.id} 为 ${planData.recurring_interval} 订阅，跳过 EFW 自动处理`);
+    return;
+  }
+
+  if (!stripe) {
+    console.error('Stripe is not initialized. Please check your environment variables.');
+    return;
+  }
+
+  try {
+    // 1. 执行退款
+    const refund = await stripe.refunds.create({
+      charge: chargeId,
+      reason: 'fraudulent',
+      metadata: {
+        early_fraud_warning_id: efwId,
+        auto_processed: 'true'
+      }
+    });
+
+    console.log(`EFW ${efwId}: 退款成功 ${refund.id}`);
+
+    // 2. 取消订阅
+    if (order.subscription_provider_id) {
+      const canceledSubscription = await stripe.subscriptions.cancel(order.subscription_provider_id, {
+        prorate: false
+      });
+      console.log(`EFW ${efwId}: 订阅取消成功 ${canceledSubscription.id}`);
+    }
+
+    // 3. 撤销订阅积分
+    if (order.user_id && order.plan_id && order.subscription_provider_id) {
+      await revokeSubscriptionCredits(order.user_id, order.plan_id, order.subscription_provider_id);
+      console.log(`EFW ${efwId}: 积分撤销成功`);
+    }
+
+    // 4. 更新订单状态
+    const { error: updateError } = await supabaseAdmin
+      .from('orders')
+      .update({
+        status: 'refunded',
+        metadata: {
+          ...order.metadata,
+          fraud_warning_id: efwId,
+          fraud_type: earlyFraudWarning.fraud_type,
+          auto_refunded: true,
+          refund_id: refund.id,
+          efw_processed_at: new Date().toISOString()
+        }
+      })
+      .eq('id', order.id);
+
+    if (updateError) {
+      console.error(`Error updating order ${order.id} after EFW processing:`, updateError);
+    } else {
+      console.log(`EFW ${efwId}: 订单状态更新成功`);
+    }
+
+    console.log(`✅ EFW ${efwId} 自动处理完成：退款、取消订阅、撤销积分`);
+
+  } catch (error) {
+    console.error(`Error processing EFW ${efwId}:`, error);
+    
+    // 记录处理失败的信息到订单 metadata
+    try {
+      await supabaseAdmin
+        .from('orders')
+        .update({
+          metadata: {
+            ...order.metadata,
+            fraud_warning_id: efwId,
+            fraud_type: earlyFraudWarning.fraud_type,
+            auto_processing_failed: true,
+            error_message: error instanceof Error ? error.message : 'Unknown error',
+            failed_at: new Date().toISOString()
+          }
+        })
+        .eq('id', order.id);
+    } catch (metadataError) {
+      console.error(`Failed to update order metadata after EFW error:`, metadataError);
+    }
+
+    throw error;
+  }
+}
+
 export async function revokeOneTimeCredits(charge: Stripe.Charge, originalOrder: Database['public']['Tables']['orders']['Row'], refundOrderId: string) {
   // --- TODO: [custom] Revoke the user's one time purchase benefits ---
   /**
