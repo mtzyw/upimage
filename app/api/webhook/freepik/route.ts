@@ -248,16 +248,14 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
 
     console.log(`🚀 Upload completed to R2: ${uploadResult.url}`);
 
-    // 现在一次性完成：更新状态、清理资源、释放API Key
+    // 现在一次性完成：更新状态、清理资源（不释放API Key）
     await Promise.all([
       // 更新任务状态为完成
       setTaskStatus(taskId, 'completed', {
         cdnUrl: uploadResult.url, // 只显示我们自己的CDN URL，用户永远看不到Freepik链接
         r2OptimizedKey: uploadResult.key
       }),
-      // 并行释放API Key
-      apiKeyId ? releaseApiKey(apiKeyId) : Promise.resolve(),
-      // 并行清理Redis临时数据
+      // 清理Redis临时数据
       redis ? Promise.all([
         redis.del(`task:${taskId}:user_id`),
         redis.del(`task:${taskId}:api_key_id`),
@@ -279,10 +277,7 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
       await refundUserCredits(userId, taskInfo.scaleFactor, taskId);
     }
 
-    // 释放 API Key
-    if (apiKeyId) {
-      await releaseApiKey(apiKeyId);
-    }
+    // 不释放 API Key，因为 Freepik 配额已被消耗
   }
 }
 
@@ -308,10 +303,7 @@ async function handleTaskFailed(payload: FreepikWebhookPayload, taskInfo: any) {
       console.log(`Credits refunded for failed task ${taskId}: ${refunded}`);
     }
 
-    // 释放 API Key
-    if (apiKeyId) {
-      await releaseApiKey(apiKeyId);
-    }
+    // 不释放 API Key，因为 Freepik 配额已被消耗
 
     // 清理 Redis 临时数据
     if (redis) {

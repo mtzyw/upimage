@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       anonymous_tasks: {
         Row: {
+          api_key: string | null
           batch_id: string | null
           browser_fingerprint: string
           created_at: string
@@ -25,6 +26,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          api_key?: string | null
           batch_id?: string | null
           browser_fingerprint: string
           created_at?: string
@@ -34,6 +36,7 @@ export type Database = {
           status?: string
         }
         Update: {
+          api_key?: string | null
           batch_id?: string | null
           browser_fingerprint?: string
           created_at?: string
@@ -514,13 +517,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "subscriptions_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "pricing_plans"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "subscriptions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -658,12 +654,20 @@ export type Database = {
         Returns: number
       }
       create_individual_anonymous_task: {
-        Args: {
-          p_freepik_task_id: string
-          p_browser_fingerprint: string
-          p_batch_id: string
-          p_scale_factor: string
-        }
+        Args:
+          | {
+              p_freepik_task_id: string
+              p_browser_fingerprint: string
+              p_batch_id: string
+              p_scale_factor: string
+            }
+          | {
+              p_freepik_task_id: string
+              p_browser_fingerprint: string
+              p_batch_id: string
+              p_scale_factor: string
+              p_api_key?: string
+            }
         Returns: boolean
       }
       deduct_credits_and_log: {
@@ -679,6 +683,16 @@ export type Database = {
         Returns: {
           id: string
           key: string
+        }[]
+      }
+      get_available_freepik_api_key_without_count: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          key: string
+          name: string
+          daily_limit: number
+          used_today: number
         }[]
       }
       get_batch_tasks_status: {

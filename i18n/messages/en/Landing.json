@@ -431,7 +431,7 @@
     "scaleEnhancement": "{scale} Enhancement",
     "clickToView": "Click to view large image",
     "processingInProgress": "Processing...",
-    "processingFailed": "Processing failed",
+    "processingFailed": "Quota exceeded, please login",
     "waitingProcess": "Waiting to process",
     "notStarted": "Not started",
     "completed": "✓ Completed",
@@ -443,7 +443,7 @@
       "selectImageFirst": "Please select an image first",
       "fingerprintFailed": "Browser fingerprint failed, please refresh and try again",
       "trialFailed": "Batch trial failed, please try again",
-      "allProcessingFailed": "All image processing failed, please try again"
+      "allProcessingFailed": "Insufficient free trial resources, please login for full service"
     },
     "trialUsedDevice": "This device has used the free trial",
     "pleaseLogin": "Please",

@@ -5,11 +5,55 @@ import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { getTaskStatus } from '@/lib/freepik/utils';
 import { redis } from '@/lib/upstash';
+import { processCompletedImageTask } from '@/lib/freepik/utils';
 
 const supabaseAdmin = createAdminClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+// Active query to Freepik API for task status
+async function queryFreepikTaskStatus(taskId: string, apiKey: string): Promise<{
+  status: string;
+  result?: any;
+  error?: string;
+} | null> {
+  try {
+    const response = await fetch(`https://api.freepik.com/v1/ai/image-upscaler/${taskId}`, {
+      method: 'GET',
+      headers: {
+        'x-freepik-api-key': apiKey,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`❌ [ENHANCE_QUERY] ${taskId} HTTP ${response.status}:`, await response.text());
+      return null;
+    }
+
+    const result = await response.json();
+    const taskData = result.data;
+    console.log(`🔍 [ENHANCE_QUERY] ${taskId} status:`, taskData?.status);
+
+    if (!taskData || !taskData.status) {
+      console.error(`❌ [ENHANCE_QUERY] ${taskId} invalid response:`, result);
+      return null;
+    }
+
+    // Freepik returns uppercase status, convert to lowercase
+    const normalizedStatus = taskData.status.toLowerCase();
+
+    return {
+      status: normalizedStatus,
+      result: normalizedStatus === 'completed' ? taskData : undefined,
+      error: normalizedStatus === 'failed' ? taskData.error : undefined
+    };
+  } catch (error) {
+    console.error(`❌ [ENHANCE_QUERY] ${taskId} failed:`, error);
+    return null;
+  }
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -98,13 +142,145 @@ export async function GET(req: NextRequest) {
       return apiResponse.forbidden('无权访问此任务');
     }
 
-    // 4. 直接使用数据库状态，因为它是最权威的
-    // 不再依赖 getTaskStatus 的 Redis 缓存，避免缓存不一致问题
+    // 4. 检查任务超时并执行 fallback 查询
     const currentStatus = taskData.status;
+    const taskCreatedAt = new Date(taskData.created_at);
+    const timeoutMinutes = 2;
+    const isTimeout = currentStatus === 'processing' && 
+                     (Date.now() - taskCreatedAt.getTime()) > (timeoutMinutes * 60 * 1000);
+    
+    if (isTimeout) {
+      console.log(`⏰ [ENHANCE_FALLBACK] ${taskId} timed out after ${Math.round((Date.now() - taskCreatedAt.getTime()) / 60000)}min, starting fallback`);
+      
+      // Get task with API key for fallback query
+      const { data: taskWithApiKey } = await supabaseAdmin
+        .from('image_enhancement_tasks')
+        .select('api_key, scale_factor')
+        .eq('id', taskId)
+        .single();
+        
+      if (taskWithApiKey?.api_key) {
+        // Set status to uploading to prevent concurrent processing
+        const { data: updateResult, error: updateError } = await supabaseAdmin.rpc('update_image_enhancement_task_status', {
+          p_task_id: taskId,
+          p_status: 'uploading'
+        });
+        
+        if (updateError) {
+          console.error(`❌ [ENHANCE_FALLBACK] ${taskId} status update failed:`, updateError);
+        } else if (!updateResult) {
+          console.error(`❌ [ENHANCE_FALLBACK] ${taskId} task not found for status update`);
+        } else {
+          console.log(`🔒 [ENHANCE_FALLBACK] ${taskId} status locked to uploading, querying...`);
+          
+          // Query Freepik API
+          const queryResult = await queryFreepikTaskStatus(taskId, taskWithApiKey.api_key);
+          
+          if (queryResult && queryResult.status === 'completed' && queryResult.result?.generated?.[0]) {
+            console.log(`🔄 [ENHANCE_FALLBACK] ${taskId} Freepik status: completed`);
+            console.log(`💾 [ENHANCE_FALLBACK] ${taskId} starting image processing`);
+            
+            try {
+              // Process the completed image
+              const cdnUrl = await processCompletedImageTask(queryResult.result.generated[0], taskId, 'authenticated');
+              
+              // Update final status
+              const { error: finalUpdateError } = await supabaseAdmin.rpc('update_image_enhancement_task_status', {
+                p_task_id: taskId,
+                p_status: 'completed',
+                p_cdn_url: cdnUrl,
+                p_completed_at: new Date().toISOString()
+              });
+              
+              if (finalUpdateError) {
+                console.error(`❌ [ENHANCE_FALLBACK] ${taskId} final status update failed:`, finalUpdateError);
+              }
+              
+              console.log(`✅ [ENHANCE_FALLBACK] ${taskId} processing completed`);
+              
+              // Update taskData to reflect new status
+              taskData.status = 'completed';
+              taskData.cdn_url = cdnUrl;
+              taskData.completed_at = new Date().toISOString();
+              
+            } catch (processError) {
+              console.error(`❌ [ENHANCE_FALLBACK] ${taskId} image processing failed:`, processError);
+              
+              // Update status to failed
+              await supabaseAdmin.rpc('update_image_enhancement_task_status', {
+                p_task_id: taskId,
+                p_status: 'failed',
+                p_error_message: 'Image processing failed after Freepik completion'
+              });
+            }
+          } else if (queryResult && queryResult.status === 'failed') {
+            // Freepik task failed
+            console.log(`❌ [ENHANCE_FALLBACK] ${taskId} Freepik task failed`);
+            
+            const { error: failedUpdateError } = await supabaseAdmin.rpc('update_image_enhancement_task_status', {
+              p_task_id: taskId,
+              p_status: 'failed',
+              p_error_message: 'Task failed on Freepik service',
+              p_completed_at: new Date().toISOString()
+            });
+            
+            if (failedUpdateError) {
+              console.error(`❌ [ENHANCE_FALLBACK] ${taskId} failed status update error:`, failedUpdateError);
+            }
+            
+            // Refund credits for failed task
+            try {
+              const { refundUserCredits } = await import('@/lib/freepik/credits');
+              const refunded = await refundUserCredits(user.id, taskWithApiKey.scale_factor, taskId);
+              console.log(`💳 [ENHANCE_FALLBACK] ${taskId} credits refund result:`, refunded);
+            } catch (refundError) {
+              console.error(`❌ [ENHANCE_FALLBACK] ${taskId} credits refund failed:`, refundError);
+            }
+            
+            // Update taskData to reflect new status
+            taskData.status = 'failed';
+            taskData.error_message = 'Task failed on Freepik service';
+            taskData.completed_at = new Date().toISOString();
+            
+          } else {
+            // Query failed completely or status still processing - mark as failed after timeout
+            console.log(`❌ [ENHANCE_FALLBACK] ${taskId} query failed completely, marking task as failed`);
+            
+            const { error: queryFailedError } = await supabaseAdmin.rpc('update_image_enhancement_task_status', {
+              p_task_id: taskId,
+              p_status: 'failed',
+              p_error_message: 'Unable to retrieve task status from Freepik after timeout',
+              p_completed_at: new Date().toISOString()
+            });
+            
+            if (queryFailedError) {
+              console.error(`❌ [ENHANCE_FALLBACK] ${taskId} query failed status update error:`, queryFailedError);
+            }
+            
+            // Refund credits for timeout failure
+            try {
+              const { refundUserCredits } = await import('@/lib/freepik/credits');
+              const refunded = await refundUserCredits(user.id, taskWithApiKey.scale_factor, taskId);
+              console.log(`💳 [ENHANCE_FALLBACK] ${taskId} credits refund result:`, refunded);
+            } catch (refundError) {
+              console.error(`❌ [ENHANCE_FALLBACK] ${taskId} credits refund failed:`, refundError);
+            }
+            
+            // Update taskData to reflect new status
+            taskData.status = 'failed';
+            taskData.error_message = 'Unable to retrieve task status from Freepik after timeout';
+            taskData.completed_at = new Date().toISOString();
+          }
+        }
+      }
+    }
+    
+    // Use updated status after potential fallback processing
+    const finalStatus = taskData.status;
     
     // 5. 获取进度信息（如果有）
     let progress: number | undefined;
-    if (redis && currentStatus === 'processing') {
+    if (redis && finalStatus === 'processing') {
       const progressStr = await redis.get(`task:${taskId}:progress`);
       if (progressStr !== null) {
         progress = parseInt(progressStr as string);
@@ -120,14 +296,14 @@ export async function GET(req: NextRequest) {
     
     const baseResponse = {
       taskId,
-      status: currentStatus,
+      status: finalStatus,
       createdAt: taskData.created_at,
       scaleFactor: taskData.scale_factor,
       creditsConsumed: taskData.credits_consumed,
       originalUrl
     };
 
-    switch (currentStatus) {
+    switch (finalStatus) {
       case 'processing':
         return apiResponse.success({
           ...baseResponse,

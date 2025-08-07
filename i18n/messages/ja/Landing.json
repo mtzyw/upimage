@@ -431,7 +431,7 @@
     "scaleEnhancement": "{scale} 拡大",
     "clickToView": "クリックして大きな画像を表示",
     "processingInProgress": "処理中...",
-    "processingFailed": "処理失敗",
+    "processingFailed": "枠不足、ログイン要",
     "waitingProcess": "処理待ち",
     "notStarted": "未開始",
     "completed": "✓ 完了",
@@ -443,7 +443,7 @@
       "selectImageFirst": "まず画像を選択してください",
       "fingerprintFailed": "ブラウザフィンガープリント取得失敗、ページを更新して再試行してください",
       "trialFailed": "バッチトライアル開始失敗、再試行してください",
-      "allProcessingFailed": "すべての画像処理が失敗、再試行してください"
+      "allProcessingFailed": "無料試用リソース不足、フルサービスにはログインしてください"
     },
     "trialUsedDevice": "このデバイスは既に無料トライアルを使用しました",
     "pleaseLogin": "",

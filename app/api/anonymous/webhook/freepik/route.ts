@@ -156,14 +156,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 5. 释放 API Key (仅在任务完成或失败时)
-    if (apiKeyId && (status === 'DONE' || status === 'COMPLETED' || status === 'FAILED')) {
-      try {
-        await releaseApiKey(apiKeyId);
-      } catch (releaseError) {
-        console.error(`❌ [WEBHOOK-${taskIdShort}] API密钥释放失败:`, releaseError);
-      }
-    }
+    // 5. API 密钥不在 Webhook 中释放
+    // 一旦 Freepik API 被调用，配额已被消耗，不应该减少计数
 
     // 6. 清理 Redis 缓存 (仅在任务完成或失败时)
     if (redis && (status === 'DONE' || status === 'COMPLETED' || status === 'FAILED')) {
@@ -182,15 +176,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('💥 [WEBHOOK] 处理异常:', error);
     
-    // 尝试释放 API Key
-    if (apiKeyId) {
-      try {
-        await releaseApiKey(apiKeyId);
-      } catch (releaseError) {
-        console.error('❌ [WEBHOOK] API密钥释放失败:', releaseError);
-      }
-    }
-    
+    // Webhook 异常不释放 API Key，因为 Freepik 配额已被消耗
     return apiResponse.serverError('Webhook processing failed');
   }
 }

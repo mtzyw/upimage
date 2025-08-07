@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { apiResponse } from '@/lib/api-response';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
-import { getAvailableFreepikApiKey, releaseApiKey } from '@/lib/freepik/api-key-manager';
+import { getAvailableFreepikApiKeyWithoutCount, releaseApiKey, incrementApiKeyUsage } from '@/lib/freepik/api-key-manager';
 import { redis } from '@/lib/upstash';
 
 const supabaseAdmin = createAdminClient<Database>(
@@ -99,11 +99,20 @@ export async function POST(req: NextRequest) {
     }
 
     // 4. 获取API密钥和检查试用资格
-    const apiKey = await getAvailableFreepikApiKey();
+    console.log(`🔑 [TRIAL-${batchId.slice(-4)}] 获取 API 密钥（不计数）...`);
+    const apiKey = await getAvailableFreepikApiKeyWithoutCount();
     if (!apiKey) {
       console.log(`❌ [TRIAL-${batchId.slice(-4)}] 没有可用的API密钥`);
       return apiResponse.error('服务暂时不可用，请稍后重试', 503);
     }
+    
+    console.log(`🔑 [TRIAL-${batchId.slice(-4)}] 获得 API 密钥:`, {
+      id: apiKey.id,
+      name: apiKey.name,
+      used_today: apiKey.used_today,
+      daily_limit: apiKey.daily_limit,
+      remaining: apiKey.remaining
+    });
     
     usedApiKeys.push(apiKey.id);
 
@@ -117,7 +126,7 @@ export async function POST(req: NextRequest) {
 
     if (trialCheckError || !result?.success) {
       console.error(`❌ [TRIAL-${batchId.slice(-4)}] 试用资格验证失败:`, trialCheckError || result?.message);
-      await releaseApiKey(apiKey.id);
+      // 不需要 releaseApiKey，因为还没有调用 API，计数也没有增加
       return apiResponse.badRequest(result?.message || '试用资格验证失败');
     }
 
@@ -142,18 +151,27 @@ export async function POST(req: NextRequest) {
 
         const taskId = await createFreepikTask(freepikPayload, apiKey);
         
-        // 立即插入数据库记录
-        const { error: dbError } = await supabaseAdmin
+        // API 调用成功后立即增加使用计数
+        await incrementApiKeyUsage(apiKey.id);
+        console.log(`🔢 [TRIAL-${batchId.slice(-4)}] ${scaleFactor} API 调用计数 +1`);
+        
+        // 立即插入数据库记录，包含使用的API key
+        const { data: dbSuccess, error: dbError } = await supabaseAdmin
           .rpc('create_individual_anonymous_task', {
             p_freepik_task_id: taskId,
             p_browser_fingerprint: browserFingerprint,
             p_batch_id: batchId,
-            p_scale_factor: scaleFactor
+            p_scale_factor: scaleFactor,
+            p_api_key: apiKey.key  // 直接存储 API key 字符串，如 FPSXd078fd5f8654e3612a7da3d4297efd2f
           });
 
-        if (dbError) {
-          console.error(`❌ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} DB error:`, dbError);
+        if (dbError || !dbSuccess) {
+          console.error(`❌ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} 任务创建失败 - DB error:`, dbError, 'success:', dbSuccess);
+          // 数据库记录创建失败时，不应该继续处理
+          throw new Error(`数据库任务记录创建失败: ${scaleFactor}`);
         }
+        
+        console.log(`✅ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} 任务记录已创建: ${taskId}`);
         
         // 保存Redis缓存
         if (redis) {
@@ -169,12 +187,14 @@ export async function POST(req: NextRequest) {
         
       } catch (error) {
         console.error(`❌ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} failed:`, error);
+        console.log(`❌ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} Freepik API 调用失败，无需释放计数（因为未成功调用）`);
+        // 注意：不需要 releaseApiKey，因为只有成功调用后才会增加计数
       }
     }
 
     if (createdTasks.length === 0) {
       console.error(`❌ [TRIAL-${batchId.slice(-4)}] 所有任务创建失败`);
-      await releaseApiKey(apiKey.id);
+      // 注意：这里不需要再释放 API key，因为上面的循环中已经为每个失败的任务释放了
       return apiResponse.error('所有图片处理任务创建失败，请稍后重试');
     }
 

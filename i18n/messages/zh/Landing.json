@@ -431,7 +431,7 @@
     "scaleEnhancement": "{scale} 增强",
     "clickToView": "点击查看大图",
     "processingInProgress": "处理中...",
-    "processingFailed": "处理失败",
+    "processingFailed": "额度不足，请登录",
     "waitingProcess": "等待处理",
     "notStarted": "未开始",
     "completed": "✓ 完成",
@@ -443,7 +443,7 @@
       "selectImageFirst": "请先选择图片",
       "fingerprintFailed": "浏览器指纹获取失败，请刷新页面重试",
       "trialFailed": "开始批量试用失败，请重试",
-      "allProcessingFailed": "所有图片处理失败，请重试"
+      "allProcessingFailed": "免费试用资源不足，请登录获取完整服务"
     },
     "trialUsedDevice": "该设备已使用过免费试用",
     "pleaseLogin": "请",

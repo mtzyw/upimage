@@ -159,6 +159,7 @@ export async function POST(req: NextRequest) {
         fractality: validatedParams.fractality,
         engine: validatedParams.engine,
         api_key_id: apiKey.id,
+        api_key: apiKey.key, // Store actual API key for fallback queries
         credits_consumed: creditValidation.requiredCredits
       });
 
@@ -284,8 +285,9 @@ export async function POST(req: NextRequest) {
         });
       }
       
-      // 其他网络错误，释放 API key
+      // Freepik API 调用失败，释放 API key（因为配额未被消耗）
       if (apiKey?.id) {
+        console.log('🔄 [API_KEY_RELEASE] Freepik API 调用失败，释放 API key:', apiKey.id);
         await releaseApiKey(apiKey.id);
       }
       
@@ -378,6 +380,7 @@ export async function POST(req: NextRequest) {
         fractality: tempTask.fractality,
         engine: tempTask.engine,
         api_key_id: tempTask.api_key_id,
+        api_key: tempTask.api_key, // Copy API key to new record
         credits_consumed: tempTask.credits_consumed,
         created_at: tempTask.created_at
       });
