@@ -163,9 +163,7 @@ export default function ImageProcessingDemo() {
             const completedCount = batchStatus.completedCount;
             const failedCount = batchStatus.failedCount;
             
-            if (completedCount > 0) {
-              toast.success(`批量图片处理完成！成功 ${completedCount} 个${failedCount > 0 ? `，失败 ${failedCount} 个` : ''}`);
-            } else {
+            if (completedCount === 0) {
               toast.error(t('errors.allProcessingFailed', { default: 'All image processing failed, please try again' }));
             }
           }

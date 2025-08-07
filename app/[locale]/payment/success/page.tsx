@@ -78,6 +78,9 @@ function SuccessContent() {
           subscriptionId: result.data.subscriptionId,
           planName: result.data.planName,
         });
+        
+        // 触发积分更新事件，通知导航栏积分组件刷新
+        window.dispatchEvent(new CustomEvent('credits-updated'));
       } catch (error) {
         setStatus("error");
         setPaymentData({
