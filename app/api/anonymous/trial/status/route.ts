@@ -19,46 +19,36 @@ const statusRequestSchema = z.object({
  * POST /api/anonymous/trial/status
  */
 export async function POST(req: NextRequest) {
-  console.log('📊 [ANONYMOUS BATCH TRIAL STATUS] ===== 查询批量任务状态 =====');
-  
   try {
-    // 1. 解析请求参数
+    // 1. 解析和验证参数
     const body = await req.json();
-    console.log('📝 [ANONYMOUS BATCH TRIAL STATUS] 请求参数:', { 
-      batchId: body.batchId
-    });
-
-    // 2. 验证参数
     const validationResult = statusRequestSchema.safeParse(body);
     if (!validationResult.success) {
       const errors = validationResult.error.flatten().fieldErrors;
-      console.log('❌ [ANONYMOUS BATCH TRIAL STATUS] 参数验证失败:', errors);
+      console.log('❌ [STATUS] 参数验证失败:', errors);
       return apiResponse.badRequest(`参数验证失败: ${JSON.stringify(errors)}`);
     }
 
     const { batchId } = validationResult.data;
-    console.log('✅ [ANONYMOUS BATCH TRIAL STATUS] 参数验证成功:', { batchId });
+    const batchIdShort = batchId.slice(-4);
 
-    // 3. 调用数据库函数查询批量任务状态
-    console.log('🔍 [ANONYMOUS BATCH TRIAL STATUS] 调用数据库函数查询批量任务状态...');
+    // 2. 查询批量任务状态
     const { data: statusResult, error: statusError } = await supabaseAdmin
       .rpc('get_batch_tasks_status', {
         p_batch_id: batchId
       });
 
     if (statusError) {
-      console.error('❌ [ANONYMOUS BATCH TRIAL STATUS] 数据库查询失败:', statusError);
+      console.error(`❌ [STATUS-${batchIdShort}] 数据库查询失败:`, statusError);
       return apiResponse.error('查询批量任务状态失败，请重试');
     }
 
-    console.log('✅ [ANONYMOUS BATCH TRIAL STATUS] 批量任务状态查询结果:', statusResult);
-
     if (!statusResult.found) {
-      console.log('❌ [ANONYMOUS BATCH TRIAL STATUS] 批量任务不存在');
+      console.log(`❌ [STATUS-${batchIdShort}] 批量任务不存在`);
       return apiResponse.notFound('批量任务不存在或已过期');
     }
 
-    // 4. 格式化返回数据
+    // 3. 格式化返回数据
     const tasks = statusResult.tasks.map((task: any) => ({
       taskId: task.task_id,
       scaleFactor: task.scale_factor,
@@ -78,16 +68,16 @@ export async function POST(req: NextRequest) {
       isAllComplete: statusResult.completed_count + statusResult.failed_count >= statusResult.total_count
     };
 
-    console.log('🎉 [ANONYMOUS BATCH TRIAL STATUS] 返回结果:', response);
-    console.log('🎉 [ANONYMOUS BATCH TRIAL STATUS] ===== 批量任务状态查询完成 =====');
+    // 只在任务状态变化时输出日志
+    const newCompleted = tasks.filter(t => t.isCompleted).length;
+    if (newCompleted > 0) {
+      console.log(`📊 [STATUS-${batchIdShort}] ${newCompleted}/${statusResult.total_count} completed`);
+    }
 
     return apiResponse.success(response);
 
   } catch (error) {
-    console.error('💥 [ANONYMOUS BATCH TRIAL STATUS] ===== 查询过程中发生异常 =====');
-    console.error('💥 [ANONYMOUS BATCH TRIAL STATUS] 错误详情:', error);
-    console.error('💥 [ANONYMOUS BATCH TRIAL STATUS] 错误堆栈:', error instanceof Error ? error.stack : 'No stack trace');
-    
+    console.error('💥 [STATUS] 查询异常:', error);
     return apiResponse.serverError('批量任务状态查询服务内部错误');
   }
 }

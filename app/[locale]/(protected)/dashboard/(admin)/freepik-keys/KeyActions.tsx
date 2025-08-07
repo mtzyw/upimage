@@ -89,20 +89,20 @@ export function KeyActions({ apiKey }: KeyActionsProps) {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+        <DropdownMenuContent align="end" className="bg-slate-800 border-slate-600 text-white">
+          <DropdownMenuLabel className="text-white">Actions</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => setShowEditDialog(true)} className="text-white hover:bg-slate-700 focus:bg-slate-700">
             <Pencil className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleToggleStatus} disabled={loading}>
+          <DropdownMenuItem onClick={handleToggleStatus} disabled={loading} className="text-white hover:bg-slate-700 focus:bg-slate-700">
             <Power className="mr-2 h-4 w-4" />
             {apiKey.is_active ? "Deactivate" : "Activate"}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => setShowDeleteDialog(true)}
-            className="text-red-600"
+            className="text-red-400 hover:bg-slate-700 focus:bg-slate-700 hover:text-red-300"
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete

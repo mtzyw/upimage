@@ -281,7 +281,7 @@ export default function ImageProcessingDemo() {
           isAllComplete: false
         });
         
-        toast.success(batchData.message || `免费试用已开始！正在处理 ${batchData.taskCount} 种倍数...`);
+        // 已移除弹窗提示
       } else {
         setIsGenerating(false);
         setCurrentBatch(null); // 清除占位符

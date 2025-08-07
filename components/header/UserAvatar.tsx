@@ -27,10 +27,10 @@ export function UserAvatar() {
           <AvatarFallback>{fallbackLetter}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-600 text-white">
         <UserInfo
           renderContainer={(children) => (
-            <DropdownMenuLabel className="font-normal">
+            <DropdownMenuLabel className="font-normal text-white">
               <div className="flex flex-col space-y-1">{children}</div>
             </DropdownMenuLabel>
           )}

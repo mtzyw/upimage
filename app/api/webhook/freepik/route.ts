@@ -248,28 +248,24 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
 
     console.log(`🚀 Upload completed to R2: ${uploadResult.url}`);
 
-    // 现在更新为真正完成状态，显示我们自己的R2 CDN URL
-    await setTaskStatus(taskId, 'completed', {
-      cdnUrl: uploadResult.url, // 只显示我们自己的CDN URL，用户永远看不到Freepik链接
-      r2OptimizedKey: uploadResult.key
-    });
-    console.log(`✅ Task completed with R2 CDN URL: ${uploadResult.url}`);
-
-    // 释放 API Key
-    if (apiKeyId) {
-      await releaseApiKey(apiKeyId);
-    }
-
-    // 清理 Redis 临时数据
-    if (redis) {
-      await Promise.all([
+    // 现在一次性完成：更新状态、清理资源、释放API Key
+    await Promise.all([
+      // 更新任务状态为完成
+      setTaskStatus(taskId, 'completed', {
+        cdnUrl: uploadResult.url, // 只显示我们自己的CDN URL，用户永远看不到Freepik链接
+        r2OptimizedKey: uploadResult.key
+      }),
+      // 并行释放API Key
+      apiKeyId ? releaseApiKey(apiKeyId) : Promise.resolve(),
+      // 并行清理Redis临时数据
+      redis ? Promise.all([
         redis.del(`task:${taskId}:user_id`),
         redis.del(`task:${taskId}:api_key_id`),
         redis.del(`task:${taskId}:r2_key`)
-      ]);
-    }
+      ]) : Promise.resolve()
+    ]);
 
-    console.log(`[handleTaskCompleted] Task ${taskId} completed successfully`);
+    console.log(`✅ Task completed with R2 CDN URL: ${uploadResult.url}`);
   } catch (error) {
     console.error(`[handleTaskCompleted] Error handling completed task ${taskId}:`, error);
     
@@ -389,7 +385,7 @@ export async function POST(req: NextRequest) {
       case 'PROCESSING':
       case 'IN_PROGRESS':
       case 'CREATED':
-        // 更新进度（如果有）
+        // 仅更新进度到Redis，不更新数据库状态（减少不必要的数据库写入）
         if (payload.progress !== undefined) {
           console.log(`Task ${payload.task_id} progress: ${payload.progress}%`);
           
@@ -402,9 +398,8 @@ export async function POST(req: NextRequest) {
           }
         }
         
-        // 更新任务状态为处理中
-        await setTaskStatus(payload.task_id, 'processing');
-        console.log(`Task ${payload.task_id} is in progress (status: ${payload.status})`);
+        // 跳过数据库状态更新，只记录日志（减少不必要的DB写入）
+        console.log(`⚡ Task ${payload.task_id} is in progress (${payload.status}) - DB update skipped for performance`);
         break;
 
       default:

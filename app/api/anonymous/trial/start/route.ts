@@ -73,86 +73,56 @@ async function createFreepikTask(
  * POST /api/anonymous/trial/start
  */
 export async function POST(req: NextRequest) {
-  console.log('🚀 [ANONYMOUS BATCH TRIAL START] ===== 开始批量匿名试用 =====');
-  
   const usedApiKeys: string[] = [];
   
   try {
-    // 1. 解析请求参数
+    // 1. 解析和验证参数
     const body = await req.json();
-    console.log('📝 [ANONYMOUS TRIAL START] 请求参数:', {
-      hasBrowserFingerprint: !!body.browserFingerprint,
-      fingerprintLength: body.browserFingerprint?.length || 0,
-      hasImage: !!body.image,
-      imageLength: body.image?.length || 0,
-      scaleFactor: body.scaleFactor,
-      optimizedFor: body.optimizedFor
-    });
-
-    // 2. 验证参数
     const validationResult = startTrialSchema.safeParse(body);
     if (!validationResult.success) {
       const errors = validationResult.error.flatten().fieldErrors;
-      console.log('❌ [ANONYMOUS TRIAL START] 参数验证失败:', errors);
+      console.log('❌ [TRIAL] 参数验证失败:', errors);
       return apiResponse.badRequest(`参数验证失败: ${JSON.stringify(errors)}`);
     }
 
     const { browserFingerprint, image: base64Image, ...validatedParams } = validationResult.data;
-    console.log('✅ [ANONYMOUS BATCH TRIAL START] 参数验证成功');
-
-    // 3. 生成批量任务ID
-    const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    console.log(`🎯 [ANONYMOUS BATCH TRIAL START] 生成批量任务ID: ${batchId}`);
-
-    // 4. 验证 webhook URL
-    const webhookUrl = `${process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL}/api/anonymous/webhook/freepik`;
-    console.log('🔗 [ANONYMOUS BATCH TRIAL START] Webhook URL:', webhookUrl);
     
+    // 2. 生成批量任务ID
+    const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    console.log(`🎯 [TRIAL-${batchId.slice(-4)}] Starting batch trial`);
+
+    // 3. 验证 webhook URL
+    const webhookUrl = `${process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL}/api/anonymous/webhook/freepik`;
     if (!webhookUrl || webhookUrl.includes('localhost') || webhookUrl.includes('127.0.0.1')) {
-      console.error('❌ [ANONYMOUS BATCH TRIAL START] 无效的 webhook URL:', webhookUrl);
+      console.error(`❌ [TRIAL-${batchId.slice(-4)}] 无效的 webhook URL:`, webhookUrl);
       return apiResponse.error('服务配置错误：需要公开的 webhook URL', 500);
     }
 
-    // 5. 获取一个API密钥用于所有任务
-    console.log('🔑 [ANONYMOUS BATCH TRIAL START] 获取API密钥...');
+    // 4. 获取API密钥和检查试用资格
     const apiKey = await getAvailableFreepikApiKey();
     if (!apiKey) {
-      console.log('❌ [ANONYMOUS BATCH TRIAL START] 没有可用的API密钥');
+      console.log(`❌ [TRIAL-${batchId.slice(-4)}] 没有可用的API密钥`);
       return apiResponse.error('服务暂时不可用，请稍后重试', 503);
     }
     
     usedApiKeys.push(apiKey.id);
-    console.log(`✅ [ANONYMOUS BATCH TRIAL START] 使用API密钥: ${apiKey.name} (剩余 ${apiKey.remaining} 次)`);
 
-    // 6. 先检查试用资格
-    console.log('🔍 [ANONYMOUS BATCH TRIAL START] 检查试用资格...');
     const { data: trialCheckResult, error: trialCheckError } = await supabaseAdmin
       .rpc('use_trial_for_batch', {
         p_browser_fingerprint: browserFingerprint
       });
 
-    if (trialCheckError) {
-      console.error('❌ [ANONYMOUS BATCH TRIAL START] 试用资格检查失败:', trialCheckError);
+    if (trialCheckError || !trialCheckResult.success) {
+      console.error(`❌ [TRIAL-${batchId.slice(-4)}] 试用资格验证失败:`, trialCheckError || trialCheckResult.message);
       await releaseApiKey(apiKey.id);
-      return apiResponse.error('试用资格检查失败，请重试');
+      return apiResponse.badRequest(trialCheckResult?.message || '试用资格验证失败');
     }
 
-    if (!trialCheckResult.success) {
-      console.log('❌ [ANONYMOUS BATCH TRIAL START] 试用资格验证失败:', trialCheckResult);
-      await releaseApiKey(apiKey.id);
-      return apiResponse.badRequest(trialCheckResult.message || '试用资格验证失败');
-    }
-
-    console.log('✅ [ANONYMOUS BATCH TRIAL START] 试用资格验证通过');
-
-    // 7. 批量创建 Freepik 任务（使用同一个API密钥）
-    console.log('🚀 [ANONYMOUS BATCH TRIAL START] 开始批量创建Freepik任务...');
+    // 5. 批量创建 Freepik 任务
     const createdTasks: Array<{ task_id: string; scale_factor: string }> = [];
 
     // 为每个倍数创建任务（串行处理避免并发问题）
     for (const scaleFactor of SCALE_FACTORS) {
-      console.log(`🎯 [ANONYMOUS BATCH TRIAL START] 创建 ${scaleFactor} 任务...`);
-      
       try {
         const freepikPayload = {
           image: base64Image,
@@ -168,11 +138,9 @@ export async function POST(req: NextRequest) {
         };
 
         const taskId = await createFreepikTask(freepikPayload, apiKey);
-        console.log(`✅ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务创建成功: ${taskId}`);
         
-        // 立即插入数据库记录，确保webhook能找到任务
-        console.log(`💾 [ANONYMOUS BATCH TRIAL START] 立即创建 ${scaleFactor} 任务数据库记录...`);
-        const { data: dbResult, error: dbError } = await supabaseAdmin
+        // 立即插入数据库记录
+        const { error: dbError } = await supabaseAdmin
           .rpc('create_individual_anonymous_task', {
             p_freepik_task_id: taskId,
             p_browser_fingerprint: browserFingerprint,
@@ -181,81 +149,64 @@ export async function POST(req: NextRequest) {
           });
 
         if (dbError) {
-          console.error(`❌ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务数据库记录创建失败:`, dbError);
-          // 继续处理，不中断整个流程
-        } else {
-          console.log(`✅ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务数据库记录创建成功`);
+          console.error(`❌ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} DB error:`, dbError);
         }
         
-        // 立即保存该任务的Redis缓存，确保webhook能找到信息
+        // 保存Redis缓存
         if (redis) {
-          console.log(`💾 [ANONYMOUS BATCH TRIAL START] 立即保存 ${scaleFactor} 任务Redis缓存...`);
           await Promise.all([
             redis.set(`anon_task:${taskId}:fingerprint`, browserFingerprint, { ex: 3600 }),
             redis.set(`anon_task:${taskId}:batch_id`, batchId, { ex: 3600 }),
             redis.set(`anon_task:${taskId}:api_key_id`, apiKey.id, { ex: 3600 })
           ]);
-          console.log(`✅ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务Redis缓存保存完成`);
         }
         
         createdTasks.push({ task_id: taskId, scale_factor: scaleFactor });
+        console.log(`✅ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} → ${taskId.slice(0, 8)}`);
         
       } catch (error) {
-        console.error(`❌ [ANONYMOUS BATCH TRIAL START] ${scaleFactor} 任务创建失败:`, error);
-        // 继续处理其他倍数，不中断整个流程
+        console.error(`❌ [TRIAL-${batchId.slice(-4)}] ${scaleFactor} failed:`, error);
       }
     }
 
     if (createdTasks.length === 0) {
-      console.error('❌ [ANONYMOUS BATCH TRIAL START] 所有任务创建失败');
-      // 释放API key
+      console.error(`❌ [TRIAL-${batchId.slice(-4)}] 所有任务创建失败`);
       await releaseApiKey(apiKey.id);
       return apiResponse.error('所有图片处理任务创建失败，请稍后重试');
     }
 
-    console.log(`✅ [ANONYMOUS BATCH TRIAL START] 成功创建 ${createdTasks.length} 个任务:`, createdTasks);
-
-    // 7. 保存批量任务信息到Redis（单个任务缓存已在循环中保存）
+    // 6. 保存批量任务信息到Redis
     if (redis) {
-      console.log('💾 [ANONYMOUS BATCH TRIAL START] 保存批量任务Redis缓存...')
-      
       await Promise.all([
         redis.set(`anon_batch:${batchId}:fingerprint`, browserFingerprint, { ex: 3600 }),
         redis.set(`anon_batch:${batchId}:tasks`, JSON.stringify(createdTasks), { ex: 3600 }),
         redis.set(`anon_batch:${batchId}:api_key_id`, apiKey.id, { ex: 3600 })
-      ])
-      
-      console.log('✅ [ANONYMOUS BATCH TRIAL START] 批量任务Redis缓存保存完成')
+      ]);
     }
 
-    console.log('✅ [ANONYMOUS BATCH TRIAL START] 所有任务和数据库记录创建完成');
+    console.log(`🎉 [TRIAL-${batchId.slice(-4)}] Created ${createdTasks.length}/4 tasks`);
 
-    // 9. 返回成功响应
+    // 7. 返回成功响应
     const response = {
       batchId,
       tasks: createdTasks,
       taskCount: createdTasks.length,
       status: 'processing',
-      message: `免费试用已开始，正在处理您的图片 (${createdTasks.length} 种倍数)...`,
+      message: '',
       estimatedTime: '预计 2-10 分钟完成所有处理'
     };
-    
-    console.log('🎉 [ANONYMOUS BATCH TRIAL START] 成功响应数据:', response);
-    console.log('🎉 [ANONYMOUS BATCH TRIAL START] ===== 批量匿名试用开始完成 =====');
 
     return apiResponse.success(response);
 
   } catch (error) {
-    console.error('💥 [ANONYMOUS BATCH TRIAL START] ===== 处理过程中发生异常 =====');
-    console.error('💥 [ANONYMOUS BATCH TRIAL START] 错误详情:', error);
-    console.error('💥 [ANONYMOUS BATCH TRIAL START] 错误堆栈:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('💥 [TRIAL] 处理异常:', error);
     
     // 释放使用的API key
     for (const keyId of usedApiKeys) {
       try {
         await releaseApiKey(keyId);
       } catch (releaseError) {
-        console.error('💥 [ANONYMOUS BATCH TRIAL START] 释放API密钥失败:', keyId, releaseError);
+        console.error(`❌ [TRIAL] API Key清理失败: ${keyId}`);
       }
     }
     

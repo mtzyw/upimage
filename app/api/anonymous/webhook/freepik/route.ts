@@ -59,8 +59,6 @@ async function verifyWebhookSignature(request: NextRequest, body: string): Promi
  * POST /api/anonymous/webhook/freepik
  */
 export async function POST(req: NextRequest) {
-  console.log('🔗 [ANONYMOUS WEBHOOK] ===== 收到 Freepik Webhook =====');
-  
   let apiKeyId: string | undefined;
   
   try {
@@ -68,15 +66,8 @@ export async function POST(req: NextRequest) {
     const body = await req.text();
     const payload: FreepikWebhookPayload = JSON.parse(body);
     
-    console.log('📝 [ANONYMOUS WEBHOOK] Webhook 载荷:', {
-      task_id: payload.task_id,
-      status: payload.status,
-      hasImageUrl: !!payload.image_url,
-      hasGenerated: !!(payload.generated && payload.generated.length > 0),
-      generatedCount: payload.generated?.length || 0,
-      hasError: !!payload.error,
-      progress: payload.progress
-    });
+    const taskIdShort = payload.task_id.slice(0, 8);
+    console.log(`🔗 [WEBHOOK-${taskIdShort}] ${payload.status}${payload.progress ? ` (${payload.progress}%)` : ''}`);
 
     // 2. 验证签名（可选）
     const isValidSignature = await verifyWebhookSignature(req, body);
@@ -91,7 +82,6 @@ export async function POST(req: NextRequest) {
     const resultImageUrl = (generated && generated.length > 0) ? generated[0] : imageUrl;
 
     // 3. 从 Redis 获取任务相关信息
-    console.log('💾 [ANONYMOUS WEBHOOK] 从Redis获取任务信息...');
     let browserFingerprint: string | null = null;
     
     if (redis) {
@@ -103,51 +93,26 @@ export async function POST(req: NextRequest) {
         
         browserFingerprint = fingerprintResult as string;
         apiKeyId = apiKeyResult as string;
-        
-        console.log('💾 [ANONYMOUS WEBHOOK] Redis 信息:', {
-          hasFingerprint: !!browserFingerprint,
-          hasApiKeyId: !!apiKeyId
-        });
       } catch (redisError) {
-        console.error('❌ [ANONYMOUS WEBHOOK] Redis 查询失败:', redisError);
+        console.error(`❌ [WEBHOOK-${taskIdShort}] Redis查询失败:`, redisError);
       }
     }
 
     // 4. 根据状态处理
-    console.log(`🔄 [ANONYMOUS WEBHOOK] 处理状态: ${status}`);
-    
     if (status === 'DONE' || status === 'COMPLETED') {
-      // 任务成功完成
-      console.log('✅ [ANONYMOUS WEBHOOK] 任务完成，开始处理结果...');
-      console.log('🖼️ [ANONYMOUS WEBHOOK] 图片URL:', resultImageUrl);
-      
       if (!resultImageUrl) {
-        console.error('❌ [ANONYMOUS WEBHOOK] 任务完成但没有图片URL');
-        console.error('❌ [ANONYMOUS WEBHOOK] 原始载荷:', JSON.stringify(payload, null, 2));
+        console.error(`❌ [WEBHOOK-${taskIdShort}] 任务完成但没有图片URL`);
         await updateTaskStatus(taskId, 'failed', { error: '任务完成但未返回图片' });
         return apiResponse.success({ message: 'Task completed without image' });
       }
 
       try {
-        // 步骤1: 开始处理图片上传
-        console.log('📤 [ANONYMOUS WEBHOOK] 步骤1: 开始上传Freepik处理后的图片到R2...');
-        console.log('🖼️ [ANONYMOUS WEBHOOK] 步骤1: 原始Freepik图片URL:', resultImageUrl);
-        
-        let r2Key: string | undefined;
-        let cdnUrl: string | undefined;
-
-        // 步骤2: 下载Freepik处理后的图片
-        console.log('📥 [ANONYMOUS WEBHOOK] 步骤2: 开始下载Freepik图片...');
+        // 下载并上传图片到R2
         const imageResponse = await fetch(resultImageUrl);
         if (!imageResponse.ok) {
-          throw new Error(`步骤2失败: 无法下载图片 ${imageResponse.status} ${imageResponse.statusText}`);
+          throw new Error(`无法下载图片 ${imageResponse.status} ${imageResponse.statusText}`);
         }
         
-        const contentLength = imageResponse.headers.get('content-length');
-        console.log('✅ [ANONYMOUS WEBHOOK] 步骤2: 图片下载成功, 大小:', contentLength, 'bytes');
-        
-        // 步骤3: 上传到R2存储
-        console.log('☁️ [ANONYMOUS WEBHOOK] 步骤3: 开始上传到R2存储...');
         const localUploadResult = await uploadOptimizedImageLocalToR2(
           imageResponse,
           `anonymous`,
@@ -155,31 +120,22 @@ export async function POST(req: NextRequest) {
           getImageExtension(resultImageUrl)
         );
         
-        r2Key = localUploadResult.key;
-        cdnUrl = localUploadResult.url;
-        
-        console.log('✅ [ANONYMOUS WEBHOOK] 步骤3: R2上传成功');
-        console.log('🔑 [ANONYMOUS WEBHOOK] 步骤3: R2 Key:', r2Key);
-        console.log('🌐 [ANONYMOUS WEBHOOK] 步骤3: CDN URL:', cdnUrl);
+        const r2Key = localUploadResult.key;
+        const cdnUrl = localUploadResult.url;
 
-        console.log('🎉 [ANONYMOUS WEBHOOK] 步骤4: 图片处理完成:', { r2Key, cdnUrl });
+        console.log(`🎉 [WEBHOOK-${taskIdShort}] 图片处理完成`);
 
-        // 步骤4: 更新数据库任务状态为完成
-        console.log('💾 [ANONYMOUS WEBHOOK] 步骤4: 更新数据库任务状态...');
+        // 更新数据库任务状态为完成
         const resultData = {
           cdnUrl,
           r2Key,
           originalImageUrl: resultImageUrl,
           completedAt: new Date().toISOString()
         };
-        console.log('💾 [ANONYMOUS WEBHOOK] 步骤4: 准备写入数据库的结果:', JSON.stringify(resultData, null, 2));
-        
         await updateTaskStatus(taskId, 'completed', resultData);
 
-        console.log('✅ [ANONYMOUS WEBHOOK] 步骤4: 数据库状态更新完成');
-
       } catch (uploadError) {
-        console.error('❌ [ANONYMOUS WEBHOOK] 图片处理失败:', uploadError);
+        console.error(`❌ [WEBHOOK-${taskIdShort}] 图片处理失败:`, uploadError);
         await updateTaskStatus(taskId, 'failed', { 
           error: '图片处理失败',
           originalImageUrl: resultImageUrl 
@@ -188,14 +144,13 @@ export async function POST(req: NextRequest) {
 
     } else if (status === 'FAILED') {
       // 任务失败
-      console.log('❌ [ANONYMOUS WEBHOOK] 任务失败');
+      console.log(`❌ [WEBHOOK-${taskIdShort}] 任务失败`);
       await updateTaskStatus(taskId, 'failed', { 
         error: error || 'Freepik processing failed' 
       });
 
     } else {
       // 处理中状态
-      console.log('🔄 [ANONYMOUS WEBHOOK] 任务处理中...');
       await updateTaskStatus(taskId, 'processing', { 
         progress: payload.progress 
       });
@@ -203,43 +158,36 @@ export async function POST(req: NextRequest) {
 
     // 5. 释放 API Key (仅在任务完成或失败时)
     if (apiKeyId && (status === 'DONE' || status === 'COMPLETED' || status === 'FAILED')) {
-      console.log('🔑 [ANONYMOUS WEBHOOK] 释放API密钥...');
       try {
         await releaseApiKey(apiKeyId);
-        console.log('✅ [ANONYMOUS WEBHOOK] API密钥释放成功');
       } catch (releaseError) {
-        console.error('❌ [ANONYMOUS WEBHOOK] API密钥释放失败:', releaseError);
+        console.error(`❌ [WEBHOOK-${taskIdShort}] API密钥释放失败:`, releaseError);
       }
     }
 
     // 6. 清理 Redis 缓存 (仅在任务完成或失败时)
     if (redis && (status === 'DONE' || status === 'COMPLETED' || status === 'FAILED')) {
-      console.log('🧹 [ANONYMOUS WEBHOOK] 清理Redis缓存...');
       try {
         await Promise.all([
           redis.del(`anon_task:${taskId}:fingerprint`),
           redis.del(`anon_task:${taskId}:api_key_id`)
         ]);
-        console.log('✅ [ANONYMOUS WEBHOOK] Redis缓存清理完成');
       } catch (cleanupError) {
-        console.error('❌ [ANONYMOUS WEBHOOK] Redis缓存清理失败:', cleanupError);
+        console.error(`❌ [WEBHOOK-${taskIdShort}] Redis缓存清理失败:`, cleanupError);
       }
     }
 
-    console.log('🎉 [ANONYMOUS WEBHOOK] ===== Webhook 处理完成 =====');
     return apiResponse.success({ message: 'Webhook processed successfully' });
 
   } catch (error) {
-    console.error('💥 [ANONYMOUS WEBHOOK] ===== Webhook 处理异常 =====');
-    console.error('💥 [ANONYMOUS WEBHOOK] 错误详情:', error);
-    console.error('💥 [ANONYMOUS WEBHOOK] 错误堆栈:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('💥 [WEBHOOK] 处理异常:', error);
     
     // 尝试释放 API Key
     if (apiKeyId) {
       try {
         await releaseApiKey(apiKeyId);
       } catch (releaseError) {
-        console.error('❌ [ANONYMOUS WEBHOOK] 异常情况下API密钥释放失败:', releaseError);
+        console.error('❌ [WEBHOOK] API密钥释放失败:', releaseError);
       }
     }
     
@@ -255,9 +203,6 @@ async function updateTaskStatus(
   status: 'processing' | 'completed' | 'failed', 
   data?: any
 ): Promise<void> {
-  console.log(`📝 [updateTaskStatus] 开始更新任务状态: ${taskId} -> ${status}`);
-  console.log(`📝 [updateTaskStatus] 更新数据:`, JSON.stringify(data, null, 2));
-  
   try {
     const { data: result, error } = await supabaseAdmin
       .rpc('update_batch_task_status', {
@@ -267,19 +212,15 @@ async function updateTaskStatus(
       });
 
     if (error) {
-      console.error('❌ [updateTaskStatus] 数据库RPC调用失败:', error);
+      console.error(`❌ [updateTaskStatus] ${taskId.slice(0, 8)} DB错误:`, error);
       throw error;
     }
 
-    console.log('✅ [updateTaskStatus] 数据库RPC调用成功, 返回结果:', result);
-    
     if (!result) {
-      console.error('❌ [updateTaskStatus] RPC返回false，任务状态更新失败');
-    } else {
-      console.log('✅ [updateTaskStatus] 任务状态更新成功');
+      console.error(`❌ [updateTaskStatus] ${taskId.slice(0, 8)} 更新失败`);
     }
   } catch (error) {
-    console.error('❌ [updateTaskStatus] 更新任务状态时出错:', error);
+    console.error(`❌ [updateTaskStatus] ${taskId.slice(0, 8)} 异常:`, error);
     throw error;
   }
 }

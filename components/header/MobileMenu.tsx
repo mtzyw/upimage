@@ -38,8 +38,8 @@ export default function MobileMenu() {
         <DropdownMenuTrigger className="p-2" aria-label="Open menu">
           <Menu className="h-5 w-5" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64">
-          <DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-64 bg-slate-800 border-slate-600 text-white">
+          <DropdownMenuLabel className="text-white">
             <I18nLink
               href="/"
               title={t("title")}
@@ -62,21 +62,21 @@ export default function MobileMenu() {
               <UserInfo
                 mobile
                 renderContainer={(children) => (
-                  <DropdownMenuLabel className="font-normal">
+                  <DropdownMenuLabel className="font-normal text-white">
                     {children}
                   </DropdownMenuLabel>
                 )}
               />
             </>
           ) : (
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="text-white">
               <UserInfo mobile />
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             {headerLinks.map((link) => (
-              <DropdownMenuItem key={link.name}>
+              <DropdownMenuItem key={link.name} className="text-white hover:bg-slate-700 focus:bg-slate-700">
                 <I18nLink
                   href={link.href}
                   title={link.name}

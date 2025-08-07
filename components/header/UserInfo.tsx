@@ -79,10 +79,10 @@ export function UserInfo({ mobile = false, renderContainer }: UserInfoProps) {
             <AvatarFallback>{fallbackLetter}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col space-y-0.5">
-            <p className="text-sm font-medium leading-none">
+            <p className="text-sm font-medium leading-none text-white">
               {user.user_metadata?.full_name || "User"}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
+            <p className="text-xs leading-none text-slate-300">
               {user.email}
             </p>
           </div>
@@ -111,7 +111,7 @@ export function UserInfo({ mobile = false, renderContainer }: UserInfoProps) {
               router.push(menu.href);
             }
           }}
-          className="cursor-pointer"
+          className="cursor-pointer text-white hover:bg-slate-700 focus:bg-slate-700"
         >
           {menu.name}
           {menu.target && <ExternalLink className="w-4 h-4" />}
@@ -122,14 +122,14 @@ export function UserInfo({ mobile = false, renderContainer }: UserInfoProps) {
 
       {user.role === "admin" && (
         <>
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
+          <DropdownMenuLabel className="text-xs font-semibold text-slate-300">
             Admin Menu
           </DropdownMenuLabel>
           {adminMenus.map((menu) => (
             <DropdownMenuItem
               key={menu.name}
               onClick={() => router.push(menu.href)}
-              className="cursor-pointer"
+              className="cursor-pointer text-white hover:bg-slate-700 focus:bg-slate-700"
             >
               {menu.name}
             </DropdownMenuItem>
@@ -139,7 +139,7 @@ export function UserInfo({ mobile = false, renderContainer }: UserInfoProps) {
 
       <DropdownMenuItem
         onClick={() => signOut()}
-        className="cursor-pointer text-red-600 dark:text-red-400"
+        className="cursor-pointer text-red-400 hover:bg-slate-700 focus:bg-slate-700 hover:text-red-300"
       >
         {t("Button.signOut")}
       </DropdownMenuItem>
