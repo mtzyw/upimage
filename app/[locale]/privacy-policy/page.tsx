@@ -1,4 +1,5 @@
 import MDXComponents from "@/components/mdx/MDXComponents";
+import { BG1 } from "@/components/shared/BGs";
 import { Locale, LOCALES } from "@/i18n/routing";
 import { constructMetadata } from "@/lib/metadata";
 import fs from "fs/promises";
@@ -60,13 +61,18 @@ export default async function AboutPage({ params }: { params: Params }) {
   const content = await getMDXContent(locale);
 
   return (
-    <article className="w-full md:w-3/5 px-2 md:px-12">
-      <MDXRemote
-        source={content}
-        components={MDXComponents}
-        options={options}
-      />
-    </article>
+    <div className="min-h-screen relative">
+      <BG1 />
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-12">
+        <article className="prose prose-invert lg:prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-white prose-p:text-gray-200 prose-li:text-gray-200 prose-a:text-cyan-400 prose-strong:text-white prose-code:text-cyan-300 prose-blockquote:text-gray-300 prose-blockquote:border-cyan-500 max-w-none">
+          <MDXRemote
+            source={content}
+            components={MDXComponents}
+            options={options}
+          />
+        </article>
+      </div>
+    </div>
   );
 }
 

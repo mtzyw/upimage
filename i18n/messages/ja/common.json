@@ -42,14 +42,14 @@
         "invalidEmail": "メールアドレスの形式が正しくありません",
         "defaultErrorMessage": "登録処理に失敗しました。恐れ入りますが、時間をおいて再度お試しください",
         "successMessage": "ニュースレターの登録が完了いたしました",
-        "emailSubject": "【Nexty】ニュースレターのご登録ありがとうございます",
+        "emailSubject": "【ImgEnhancer.ai】ニュースレターのご登録ありがとうございます",
         "multipleSubmissions": "アクセスが集中しております。24時間後に再度お試しください"
       },
       "unsubscribe": {
         "title": "ニュースレター配信停止",
-        "success": "Nextyニュースレターの配信停止が完了しました。",
+        "success": "ImgEnhancer.aiニュースレターの配信停止が完了しました。",
         "emailPrefix": "メールアドレス：",
-        "regretMessage": "いつでも再登録して、Nextyの最新アップデートやチュートリアルを受け取ることができます。",
+        "regretMessage": "いつでも再登録して、ImgEnhancer.aiの最新アップデートやチュートリアルを受け取ることができます。",
         "errorGeneric": "配信停止の処理中にエラーが発生しました",
         "errorNoToken": "配信停止トークンが提供されていません",
         "errorMessage": "正しい配信停止リンクを使用していることをご確認ください。問題が解決しない場合は、サポートチームまでお問い合わせください。",
@@ -92,8 +92,8 @@
           "title": "サポート",
           "links": [
             {
-              "name": "Docs",
-              "href": "https://docs.nexty.dev/ja/docs",
+              "name": "ヘルプ",
+              "href": "/help",
               "target": "_blank"
             },
             {
@@ -101,7 +101,7 @@
               "href": "/roadmap"
             },
             {
-              "href": "mailto:hi@nexty.dev",
+              "href": "mailto:hi@imgenhancer.ai",
               "name": "お問い合わせ"
             }
           ]
@@ -202,7 +202,7 @@
   },
   "Blogs": {
     "title": "ブログ記事",
-    "description": "Next.jsエコシステムとNexty.devテンプレートの最新情報をお届けします。",
+    "description": "AI画像強化技術に関する洞察とImgEnhancer.aiの更新情報。",
     "emptyState": {
       "title": "記事がありません",
       "description": "現在コンテンツを作成中です。もうしばらくお待ちください！"

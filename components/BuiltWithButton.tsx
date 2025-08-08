@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function BuiltWithButton() {
   return (
     <Link
-      href="https://nexty.dev"
+      href="https://imgenhancer.ai"
       title="Built with Nexty.dev"
       prefetch={false}
       target="_blank"

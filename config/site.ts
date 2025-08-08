@@ -1,21 +1,21 @@
 import { SiteConfig } from "@/types/siteConfig";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nexty.dev";
+export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imgenhancer.ai";
 
 const GITHUB_URL = 'https://github.com/wenextdev'
 const TWITTER_EN = 'https://x.com/judewei_dev'
 const TWITTER_ZH = 'https://x.com/weijunext'
 const BSKY_URL = 'https://bsky.app/profile/judewei.bsky.social'
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_INVITE_URL
-const EMAIL_URL = 'mailto:hi@nexty.dev'
+const EMAIL_URL = 'mailto:hi@imgenhancer.ai'
 
 export const siteConfig: SiteConfig = {
-  name: "Nexty.dev",
+  name: "ImgEnhancer.ai",
   url: BASE_URL,
   authors: [
     {
-      name: "nexty.dev",
-      url: "https://nexty.dev",
+      name: "ImgEnhancer.ai",
+      url: "https://imgenhancer.ai",
     }
   ],
   creator: '@judewei_dev',
