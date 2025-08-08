@@ -98,8 +98,8 @@ export default async function LocaleLayout({
   // 获取当前路径
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
-  const isHomePage = pathname === "/home" || pathname.endsWith("/home");
-  const isWorkspacePage = pathname.includes("/home") || pathname.includes("workspace") || pathname.includes("dashboard") || pathname === "/" || pathname.endsWith("/en") || pathname.endsWith("/zh") || pathname.endsWith("/ja");
+  // 只在 /home 页面（包括多语言）不显示 Footer
+  const isHomePage = pathname === "/home" || pathname.match(/^\/(en|zh|ja)\/home$/);
 
   return (
     <html lang={locale || DEFAULT_LOCALE} suppressHydrationWarning>
@@ -135,7 +135,7 @@ export default async function LocaleLayout({
                     {children}
                   </main>
 
-                  {messages.Footer && !isHomePage && !isWorkspacePage && <Footer />}
+                  {messages.Footer && !isHomePage && <Footer />}
                 </PricingProvider>
               </BenefitsProvider>
             </ThemeProvider>
