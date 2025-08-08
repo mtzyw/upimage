@@ -265,6 +265,109 @@ export async function syncSubscriptionData(
 /**
  * Sends a notification email using the configured email provider (Resend).
  */
+/**
+ * 取消用户的订阅，在当前计费周期结束时生效
+ * 这样用户可以继续使用服务直到付费期结束，但不会续费
+ */
+export async function cancelSubscriptionAtPeriodEnd(userId: string): Promise<{
+  success: boolean;
+  message: string;
+  subscriptionId?: string;
+}> {
+  try {
+    const supabase = await createClient();
+    
+    // 验证用户身份
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user || user.id !== userId) {
+      return {
+        success: false,
+        message: '用户身份验证失败'
+      };
+    }
+
+    if (!stripe) {
+      console.error('Stripe is not initialized. Please check your environment variables.');
+      return {
+        success: false,
+        message: 'Stripe 服务不可用'
+      };
+    }
+
+    // 获取用户的活跃订阅
+    const { data: activeSubscriptions, error: subscriptionError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('stripe_subscription_id, status, cancel_at_period_end')
+      .eq('user_id', userId)
+      .in('status', ['active', 'trialing'])
+      .order('created_at', { ascending: false });
+
+    if (subscriptionError) {
+      console.error('Error fetching user subscriptions:', subscriptionError);
+      return {
+        success: false,
+        message: '获取订阅信息失败'
+      };
+    }
+
+    if (!activeSubscriptions || activeSubscriptions.length === 0) {
+      return {
+        success: false,
+        message: '未找到活跃的订阅'
+      };
+    }
+
+    const subscription = activeSubscriptions[0];
+    
+    // 检查是否已经设置了周期结束时取消
+    if (subscription.cancel_at_period_end) {
+      return {
+        success: true,
+        message: '订阅已设置为在当前周期结束时取消',
+        subscriptionId: subscription.stripe_subscription_id
+      };
+    }
+
+    // 在 Stripe 中设置订阅在周期结束时取消
+    const updatedSubscription = await stripe.subscriptions.update(
+      subscription.stripe_subscription_id,
+      {
+        cancel_at_period_end: true
+      }
+    );
+
+    // 更新本地数据库
+    const { error: updateError } = await supabaseAdmin
+      .from('subscriptions')
+      .update({ 
+        cancel_at_period_end: true,
+        updated_at: new Date().toISOString()
+      })
+      .eq('stripe_subscription_id', subscription.stripe_subscription_id);
+
+    if (updateError) {
+      console.error('Error updating local subscription data:', updateError);
+      // Stripe 已经更新了，但本地数据库更新失败
+      // 这不是致命错误，因为 webhook 会同步数据
+      console.warn('Local database update failed, but Stripe subscription was updated. Webhook will sync the data.');
+    }
+
+    return {
+      success: true,
+      message: '订阅已成功设置为在当前周期结束时取消。您可以继续使用服务直到付费期结束。',
+      subscriptionId: subscription.stripe_subscription_id
+    };
+
+  } catch (error) {
+    console.error('Error cancelling subscription at period end:', error);
+    const errorMessage = getErrorMessage(error);
+    return {
+      success: false,
+      message: `取消订阅失败: ${errorMessage}`
+    };
+  }
+}
+
 export async function sendInvoicePaymentFailedEmail({
   invoice,
   subscriptionId,
