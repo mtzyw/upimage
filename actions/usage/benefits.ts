@@ -16,6 +16,7 @@ export interface UserBenefits {
   totalAvailableCredits: number;
   subscriptionCreditsBalance: number;
   oneTimeCreditsBalance: number;
+  cancelAtPeriodEnd: boolean; // 新增字段：是否在周期结束时取消
   // Add other plan-specific benefits if needed, fetched via planId
 }
 
@@ -29,6 +30,7 @@ interface SubscriptionData {
   plan_id: string;
   status: string;
   current_period_end: string | null;
+  cancel_at_period_end: boolean;
 }
 
 const defaultUserBenefits: UserBenefits = {
@@ -39,6 +41,7 @@ const defaultUserBenefits: UserBenefits = {
   totalAvailableCredits: 0,
   subscriptionCreditsBalance: 0,
   oneTimeCreditsBalance: 0,
+  cancelAtPeriodEnd: false,
 };
 
 function createUserBenefitsFromData(
@@ -58,6 +61,10 @@ function createUserBenefitsFromData(
     finalStatus = 'inactive_period_ended';
   }
 
+  const cancelAtPeriodEnd = subscription?.cancel_at_period_end ?? false;
+  
+  // 如果订阅设置了在周期结束时取消，仍然保持活跃状态直到周期结束
+  // 但需要在UI中区分显示
   return {
     activePlanId: (finalStatus === 'active' || finalStatus === 'trialing') ? subscription?.plan_id ?? null : null,
     subscriptionStatus: finalStatus,
@@ -66,6 +73,7 @@ function createUserBenefitsFromData(
     totalAvailableCredits: totalCredits,
     subscriptionCreditsBalance: subCredits,
     oneTimeCreditsBalance: oneTimeCredits,
+    cancelAtPeriodEnd,
   };
 }
 

@@ -50,6 +50,9 @@ export default function SubscriptionPage() {
   const isMember =
     benefits.subscriptionStatus === "active" ||
     benefits.subscriptionStatus === "trialing";
+  
+  // 检查订阅是否正在取消中（设置了在周期结束时取消）
+  const isSubscriptionCanceling = benefits.cancelAtPeriodEnd === true;
 
   // 处理取消订阅确认
   const handleCancelClick = () => {
@@ -85,6 +88,34 @@ export default function SubscriptionPage() {
     }
   };
 
+  // 重新激活订阅
+  const handleReactivateSubscription = async () => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/subscription/reactivate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // 刷新页面以显示更新后的订阅状态
+        window.location.reload();
+      } else {
+        // 这里可以添加 toast 通知或其他UI反馈
+        console.error('Failed to reactivate subscription:', result.message);
+      }
+    } catch (error) {
+      console.error('Error reactivating subscription:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -108,17 +139,31 @@ export default function SubscriptionPage() {
                 Upgrade Plan
               </Button>
               
-              <Button 
-                onClick={handleCancelClick}
-                disabled={isLoading}
-                className="bg-pink-600 hover:bg-pink-700 text-white"
-              >
-                {isLoading ? "Processing..." : "Cancel Subscription"}
-              </Button>
+              {/* 根据取消状态显示不同按钮 */}
+              {!isSubscriptionCanceling ? (
+                <Button 
+                  onClick={handleCancelClick}
+                  disabled={isLoading}
+                  className="bg-pink-600 hover:bg-pink-700 text-white"
+                >
+                  {isLoading ? "Processing..." : "Cancel Subscription"}
+                </Button>
+              ) : (
+                <Button 
+                  onClick={handleReactivateSubscription}
+                  disabled={isLoading}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  {isLoading ? "Processing..." : "Reactivate Subscription"}
+                </Button>
+              )}
             </div>
             
             <p className="text-xs text-slate-300">
-              Upgrade your plan or cancel your subscription. Cancelling will stop future billing but preserve access until the end of the current period.
+              {isSubscriptionCanceling 
+                ? "Your subscription has been cancelled and will expire at the end of the current billing period. You can still upgrade to a different plan."
+                : "Upgrade your plan or cancel your subscription. Cancelling will stop future billing but preserve access until the end of the current period."
+              }
             </p>
           </>
         ) : (

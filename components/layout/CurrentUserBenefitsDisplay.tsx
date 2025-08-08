@@ -30,9 +30,9 @@ export default function CurrentUserBenefitsDisplay() {
       <div className="flex flex-col gap-2 text-sm text-white">
         {benefits.currentPeriodEnd ? (
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-cyan-400" />
+            <Calendar className={`w-4 h-4 ${benefits.cancelAtPeriodEnd ? 'text-orange-400' : 'text-cyan-400'}`} />
             <span>
-              Renewal: {dayjs(benefits.currentPeriodEnd).format("YYYY-MM-DD")}
+              {benefits.cancelAtPeriodEnd ? 'Expires' : 'Renewal'}: {dayjs(benefits.currentPeriodEnd).format("YYYY-MM-DD")}
             </span>
           </div>
         ) : (

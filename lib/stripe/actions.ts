@@ -368,6 +368,100 @@ export async function cancelSubscriptionAtPeriodEnd(userId: string): Promise<{
   }
 }
 
+/**
+ * 重新激活已取消的订阅，移除 cancel_at_period_end 设置
+ */
+export async function reactivateSubscription(userId: string): Promise<{
+  success: boolean;
+  message: string;
+  subscriptionId?: string;
+}> {
+  try {
+    const supabase = await createClient();
+    
+    // 验证用户身份
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user || user.id !== userId) {
+      return {
+        success: false,
+        message: 'User authentication failed'
+      };
+    }
+
+    if (!stripe) {
+      console.error('Stripe is not initialized. Please check your environment variables.');
+      return {
+        success: false,
+        message: 'Stripe service unavailable'
+      };
+    }
+
+    // 获取用户的订阅，查找设置了 cancel_at_period_end 的活跃订阅
+    const { data: subscriptions, error: subscriptionError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('stripe_subscription_id, status, cancel_at_period_end')
+      .eq('user_id', userId)
+      .in('status', ['active', 'trialing'])
+      .eq('cancel_at_period_end', true)
+      .order('created_at', { ascending: false });
+
+    if (subscriptionError) {
+      console.error('Error fetching user subscriptions:', subscriptionError);
+      return {
+        success: false,
+        message: 'Failed to fetch subscription information'
+      };
+    }
+
+    if (!subscriptions || subscriptions.length === 0) {
+      return {
+        success: false,
+        message: 'No cancelled subscription found to reactivate'
+      };
+    }
+
+    const subscription = subscriptions[0];
+
+    // 在 Stripe 中移除 cancel_at_period_end 设置
+    const updatedSubscription = await stripe.subscriptions.update(
+      subscription.stripe_subscription_id,
+      {
+        cancel_at_period_end: false
+      }
+    );
+
+    // 更新本地数据库
+    const { error: updateError } = await supabaseAdmin
+      .from('subscriptions')
+      .update({ 
+        cancel_at_period_end: false,
+        updated_at: new Date().toISOString()
+      })
+      .eq('stripe_subscription_id', subscription.stripe_subscription_id);
+
+    if (updateError) {
+      console.error('Error updating local subscription data:', updateError);
+      // Stripe 已经更新了，但本地数据库更新失败
+      // 这不是致命错误，因为 webhook 会同步数据
+      console.warn('Local database update failed, but Stripe subscription was updated. Webhook will sync the data.');
+    }
+
+    return {
+      success: true,
+      message: 'Subscription has been successfully reactivated. It will continue to renew automatically.',
+      subscriptionId: subscription.stripe_subscription_id
+    };
+
+  } catch (error) {
+    console.error('Error reactivating subscription:', error);
+    const errorMessage = getErrorMessage(error);
+    return {
+      success: false,
+      message: `Failed to reactivate subscription: ${errorMessage}`
+    };
+  }
+}
+
 export async function sendInvoicePaymentFailedEmail({
   invoice,
   subscriptionId,
