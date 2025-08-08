@@ -175,12 +175,12 @@ export default async function BlogPage({ params }: { params: Params }) {
         </article>
 
         <div className="mt-16 pt-8 border-t border-gray-700">
-          <Button asChild variant="outline" size="sm" className="text-white border-gray-600 hover:bg-white/10 hover:text-gray-200">
+          <Button asChild variant="outline" size="sm" className="bg-white border-gray-300 hover:bg-gray-100 text-black hover:text-black">
             <I18nLink
               href="/blogs"
               title={t("BlogDetail.backToBlogs")}
               prefetch={false}
-              className="inline-flex items-center"
+              className="inline-flex items-center text-black hover:text-black"
             >
               <ArrowLeftIcon className="mr-2 h-4 w-4" />
               {t("BlogDetail.backToBlogs")}
