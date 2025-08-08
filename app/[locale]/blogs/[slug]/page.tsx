@@ -11,7 +11,6 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ContentRestrictionMessage } from "./ContentRestrictionMessage";
 
 type Params = Promise<{
   locale: string;
@@ -59,33 +58,10 @@ export default async function BlogPage({ params }: { params: Params }) {
   const locale = await getLocale();
 
   const { slug } = await params;
-  const { post, errorCode } = await getPostBySlug(slug, locale);
+  const { post } = await getPostBySlug(slug, locale);
 
   if (!post) {
     notFound();
-  }
-
-  let showRestrictionMessageInsteadOfContent = false;
-  let messageTitle = "";
-  let messageContent = "";
-  let actionText = "";
-  let actionLink = "";
-
-  if (errorCode) {
-    showRestrictionMessageInsteadOfContent = true;
-    const redirectUrl = `/blogs/${slug}`;
-
-    if (errorCode === "unauthorized") {
-      messageTitle = t("BlogDetail.accessRestricted");
-      messageContent = t("BlogDetail.unauthorized");
-      actionText = t("BlogDetail.signIn");
-      actionLink = `/login?next=${encodeURIComponent(redirectUrl)}`;
-    } else if (errorCode === "notSubscriber") {
-      messageTitle = t("BlogDetail.premium");
-      messageContent = t("BlogDetail.premiumContent");
-      actionText = t("BlogDetail.upgrade");
-      actionLink = process.env.NEXT_PUBLIC_PRICING_PATH!;
-    }
   }
 
   const tagsArray = post.tags
@@ -191,20 +167,9 @@ export default async function BlogPage({ params }: { params: Params }) {
         </div>
       )}
 
-      {showRestrictionMessageInsteadOfContent ? (
-        <ContentRestrictionMessage
-          title={messageTitle}
-          message={messageContent}
-          actionText={actionText}
-          actionLink={actionLink}
-          backText={t("BlogDetail.backToBlogs")}
-          backLink={`/blogs`}
-        />
-      ) : (
-        <article className="prose dark:prose-invert lg:prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-img:rounded-xl prose-img:shadow-md max-w-none">
-          <MDXRemote source={post?.content || ""} components={MDXComponents} />
-        </article>
-      )}
+      <article className="prose dark:prose-invert lg:prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-img:rounded-xl prose-img:shadow-md max-w-none">
+        <MDXRemote source={post?.content || ""} components={MDXComponents} />
+      </article>
 
       <div className="mt-16 pt-8 border-t">
         <Button asChild variant="outline" size="sm">

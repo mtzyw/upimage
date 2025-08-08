@@ -593,36 +593,14 @@ export async function getPublishedPostBySlugAction({
     let finalContent = restOfPostBase.content ?? '';
     let restrictionCustomCode: string | undefined = undefined;
 
-    if (post.visibility === 'logged_in' || post.visibility === 'subscribers') {
-      const supabase = await createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        finalContent = "";
-        restrictionCustomCode = 'unauthorized';
-      } else {
-        const userIsAdmin = await isAdmin();
-        if (!userIsAdmin && post.visibility === 'subscribers') {
-          // --- TODO: [custom] check user subscription or custom logic --- 
-          const isSubscriber = await checkUserSubscription(user.id);
-          if (!isSubscriber) {
-            finalContent = "";
-            restrictionCustomCode = 'notSubscriber';
-          }
-          // --- End: [custom] check user subscription or custom logic
-        }
-      }
-    }
+    // Since all articles are public for SEO, we don't need authentication checks
+    // Just return the full content for all posts
 
     const postResultData: PublicPostWithContent = {
       ...restOfPostBase,
       content: finalContent,
       tags: tagNames
     };
-
-    if (restrictionCustomCode) {
-      return actionResponse.success({ post: postResultData }, restrictionCustomCode);
-    }
 
     return actionResponse.success({ post: postResultData });
 
@@ -632,46 +610,3 @@ export async function getPublishedPostBySlugAction({
     return actionResponse.error(errorMessage);
   }
 }
-
-// --- TODO: [custom] check user subscription or custom logic ---
-async function checkUserSubscription(userId: string): Promise<boolean> {
-  if (!userId) {
-    console.warn("checkUserSubscription called with no userId");
-    return false;
-  }
-
-  const supabaseAdmin = createAdminClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-
-  try {
-    const { data: latestSubscription, error: queryError } = await supabaseAdmin
-      .from('subscriptions')
-      .select('status, current_period_end')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (queryError) {
-      console.error(`Error fetching user subscription status for ${userId}:`, queryError.message);
-      return false;
-    }
-
-    if (!latestSubscription) {
-      return false;
-    }
-
-    const isActive = latestSubscription.status === 'active' || latestSubscription.status === 'trialing';
-    const isWithinPeriod = latestSubscription.current_period_end && new Date(latestSubscription.current_period_end) > new Date();
-
-    return !!(isActive && isWithinPeriod);
-
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : String(err);
-    console.error(`Exception in checkUserSubscription for user ${userId}:`, errorMessage);
-    return false;
-  }
-}
-// --- End: [custom] check user subscription or custom logic
