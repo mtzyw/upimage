@@ -1,5 +1,6 @@
 import { listPublishedPostsAction } from "@/actions/blogs/posts";
 import MDXComponents from "@/components/mdx/MDXComponents";
+import { BG1 } from "@/components/shared/BGs";
 import { Button } from "@/components/ui/button";
 import { Link as I18nLink, Locale, LOCALES } from "@/i18n/routing";
 import { getPostBySlug, getPosts } from "@/lib/getBlogs";
@@ -94,19 +95,21 @@ export default async function BlogPage({ params }: { params: Params }) {
   const visibilityInfo = getVisibilityInfo();
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="mb-8">
-        <Button asChild variant="ghost" size="sm" className="group">
-          <I18nLink
-            href="/blogs"
-            title={t("BlogDetail.backToBlogs")}
-            prefetch={false}
-          >
-            <ArrowLeftIcon className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            {t("BlogDetail.backToBlogs")}
-          </I18nLink>
-        </Button>
-      </div>
+    <div className="min-h-screen relative">
+      <BG1 />
+      <div className="relative z-10 max-w-4xl mx-auto px-4 py-12">
+        <div className="mb-8">
+          <Button asChild variant="ghost" size="sm" className="group text-white hover:text-gray-300 hover:bg-white/10">
+            <I18nLink
+              href="/blogs"
+              title={t("BlogDetail.backToBlogs")}
+              prefetch={false}
+            >
+              <ArrowLeftIcon className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              {t("BlogDetail.backToBlogs")}
+            </I18nLink>
+          </Button>
+        </div>
 
       <header className="mb-12">
         {post.visibility !== "public" && (
@@ -117,25 +120,25 @@ export default async function BlogPage({ params }: { params: Params }) {
           </div>
         )}
 
-        <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+        <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6 text-white">
           {post.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-8">
           <div className="flex items-center">
             <CalendarIcon className="mr-2 h-4 w-4" />
             {dayjs(post.published_at).format("MMMM D, YYYY")}
           </div>
 
           {post.is_pinned && (
-            <div className="flex items-center bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 px-2 py-0.5 rounded-md text-xs">
+            <div className="flex items-center bg-amber-900/30 text-amber-400 px-2 py-0.5 rounded-md text-xs">
               {t("BlogDetail.featured")}
             </div>
           )}
         </div>
 
         {post.description && (
-          <div className="bg-muted rounded-lg p-6 text-lg mb-8">
+          <div className="bg-gray-800/50 rounded-lg p-6 text-lg mb-8 text-gray-200">
             {post.description}
           </div>
         )}
@@ -154,35 +157,36 @@ export default async function BlogPage({ params }: { params: Params }) {
         </div>
       )}
 
-      {tagsArray.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-10">
-          {tagsArray.map((tag) => (
-            <div
-              key={tag}
-              className="rounded-full bg-secondary/80 hover:bg-secondary px-3 py-1 text-sm font-medium transition-colors"
+        {tagsArray.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-10">
+            {tagsArray.map((tag) => (
+              <div
+                key={tag}
+                className="rounded-full bg-gray-700/60 hover:bg-gray-600/60 px-3 py-1 text-sm font-medium transition-colors text-gray-200"
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        )}
+
+        <article className="prose prose-invert lg:prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-white prose-p:text-gray-200 prose-li:text-gray-200 prose-a:text-cyan-400 prose-img:rounded-xl prose-img:shadow-md prose-strong:text-white prose-code:text-cyan-300 prose-blockquote:text-gray-300 prose-blockquote:border-cyan-500 max-w-none">
+          <MDXRemote source={post?.content || ""} components={MDXComponents} />
+        </article>
+
+        <div className="mt-16 pt-8 border-t border-gray-700">
+          <Button asChild variant="outline" size="sm" className="text-white border-gray-600 hover:bg-white/10 hover:text-gray-200">
+            <I18nLink
+              href="/blogs"
+              title={t("BlogDetail.backToBlogs")}
+              prefetch={false}
+              className="inline-flex items-center"
             >
-              {tag}
-            </div>
-          ))}
+              <ArrowLeftIcon className="mr-2 h-4 w-4" />
+              {t("BlogDetail.backToBlogs")}
+            </I18nLink>
+          </Button>
         </div>
-      )}
-
-      <article className="prose dark:prose-invert lg:prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-img:rounded-xl prose-img:shadow-md max-w-none">
-        <MDXRemote source={post?.content || ""} components={MDXComponents} />
-      </article>
-
-      <div className="mt-16 pt-8 border-t">
-        <Button asChild variant="outline" size="sm">
-          <I18nLink
-            href="/blogs"
-            title={t("BlogDetail.backToBlogs")}
-            prefetch={false}
-            className="inline-flex items-center"
-          >
-            <ArrowLeftIcon className="mr-2 h-4 w-4" />
-            {t("BlogDetail.backToBlogs")}
-          </I18nLink>
-        </Button>
       </div>
     </div>
   );
