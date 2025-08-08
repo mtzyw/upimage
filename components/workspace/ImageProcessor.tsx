@@ -10,7 +10,9 @@ import LeftControlPanel from "./LeftControlPanel";
 import ResultDisplayPanel from "./ResultDisplayPanel";
 
 interface UserBenefits {
-  credits: number;
+  totalAvailableCredits: number;
+  subscriptionCreditsBalance: number;
+  oneTimeCreditsBalance: number;
 }
 
 interface TaskStatus {
@@ -144,7 +146,7 @@ export default function ImageProcessor() {
 
     // 检查积分
     const requiredCredits = getRequiredCredits(scaleFactor);
-    if (userBenefits.credits < requiredCredits) {
+    if (userBenefits.totalAvailableCredits < requiredCredits) {
       toast.error(t('credits.insufficient'));
       return;
     }

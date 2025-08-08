@@ -9,7 +9,9 @@ import { useTranslations } from "next-intl";
 import ImageUploader from "@/components/upload/ImageUploader";
 
 interface UserBenefits {
-  credits: number;
+  totalAvailableCredits: number;
+  subscriptionCreditsBalance: number;
+  oneTimeCreditsBalance: number;
 }
 
 interface LeftControlPanelProps {
@@ -96,7 +98,7 @@ export default function LeftControlPanel({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {['2x', '4x', '8x', '16x'].map((scale) => {
                 const credits = getRequiredCredits(scale);
-                const canAfford = userBenefits ? userBenefits.credits >= credits : true;
+                const canAfford = userBenefits ? userBenefits.totalAvailableCredits >= credits : true;
                 const isSelected = scaleFactor === scale;
                 
                 return (
