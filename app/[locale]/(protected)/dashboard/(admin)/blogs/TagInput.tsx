@@ -68,7 +68,7 @@ export function TagInput({ value, onChange, disabled }: TagInputProps) {
               aria-label={`Remove ${tag.name}`}
               disabled={disabled}
             >
-              <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+              <X className="h-3 w-3 text-gray-400 hover:text-white" />
             </button>
           </Badge>
         ))}

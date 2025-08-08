@@ -162,8 +162,8 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
         />
         {isLoading ? (
           <div className="flex flex-col items-center justify-center h-32">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">
+            <Loader2 className="h-8 w-8 animate-spin text-white" />
+            <p className="mt-2 text-sm text-white">
               {t("uploading")}
             </p>
           </div>
@@ -192,13 +192,13 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
           </div>
         ) : (
           <div className="text-center">
-            <UploadCloud className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-600">
+            <UploadCloud className="mx-auto h-12 w-12 text-gray-300" />
+            <p className="mt-2 text-sm text-white">
               {isDragActive
                 ? "Drop the image here..."
                 : "Drag & drop or click to upload"}
             </p>
-            <p className="text-xs text-gray-500">PNG, JPG, WEBP up to 5MB</p>
+            <p className="text-xs text-gray-300">PNG, JPG, WEBP up to 5MB</p>
           </div>
         )}
         {!isLoading && !previewUrl && (

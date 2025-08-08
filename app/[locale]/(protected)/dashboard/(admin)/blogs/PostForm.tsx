@@ -386,7 +386,7 @@ export function PostForm({
               name="language"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.language.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.language.label")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -418,7 +418,7 @@ export function PostForm({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.title.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.title.label")}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t("fields.title.placeholder")}
@@ -426,7 +426,7 @@ export function PostForm({
                       disabled={isSubmitting}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-300">
                     {t("fields.title.description")} (
                     {`${field.value?.length || 0} / ${t(
                       "fields.title.recommendedLength"
@@ -444,7 +444,7 @@ export function PostForm({
               name="slug"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.slug.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.slug.label")}</FormLabel>
                   <div className="flex gap-2">
                     <FormControl>
                       <Input
@@ -463,7 +463,7 @@ export function PostForm({
                       {t("fields.slug.generateButton")}
                     </Button>
                   </div>
-                  <FormDescription>
+                  <FormDescription className="text-gray-300">
                     {t("fields.slug.description")}
                   </FormDescription>
                   <FormMessage />
@@ -477,7 +477,7 @@ export function PostForm({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.description.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.description.label")}</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder={t("fields.description.placeholder")}
@@ -486,7 +486,7 @@ export function PostForm({
                       disabled={isSubmitting}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-300">
                     {t("fields.description.description")} (
                     {`${field.value?.length || 0} / ${t(
                       "fields.description.recommendedLength"
@@ -503,7 +503,7 @@ export function PostForm({
               name="tags"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.tags.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.tags.label")}</FormLabel>
                   <FormControl>
                     <TagInput
                       value={field.value || []}
@@ -511,7 +511,7 @@ export function PostForm({
                       disabled={isSubmitting}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-300">
                     {t("fields.tags.description")}
                   </FormDescription>
                   <FormMessage />
@@ -525,7 +525,7 @@ export function PostForm({
               name="featured_image_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.featuredImageUrl.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.featuredImageUrl.label")}</FormLabel>
                   <FormControl>
                     <ImageUpload
                       value={field.value ?? undefined}
@@ -533,7 +533,7 @@ export function PostForm({
                       disabled={isSubmitting}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-300">
                     {t("fields.featuredImageUrl.description")}
                   </FormDescription>
                   <FormMessage />
@@ -547,7 +547,7 @@ export function PostForm({
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.content.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.content.label")}</FormLabel>
                   <FormControl>
                     <MDXEditor
                       ref={mdxEditorRef}
@@ -578,10 +578,10 @@ export function PostForm({
                       readOnly={isSubmitting || isTranslating}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-300">
                     {t("fields.content.description")}
                     {isTranslating && (
-                      <span className="ml-2 text-sm text-muted-foreground">
+                      <span className="ml-2 text-sm text-gray-400">
                         ({t("translate.loading")})
                       </span>
                     )}
@@ -600,7 +600,7 @@ export function PostForm({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.status.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.status.label")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -636,7 +636,7 @@ export function PostForm({
               name="visibility"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.visibility.label")}</FormLabel>
+                  <FormLabel className="text-white">{t("fields.visibility.label")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -673,10 +673,10 @@ export function PostForm({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
+                    <FormLabel className="text-base text-white">
                       {t("fields.isPinned.label")}
                     </FormLabel>
-                    <FormDescription>
+                    <FormDescription className="text-gray-300">
                       {t("fields.isPinned.description")}
                     </FormDescription>
                   </div>

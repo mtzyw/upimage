@@ -86,8 +86,8 @@ export default function CreateBlogClient() {
   if (isLoadingDuplicate) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        <p className="ml-2">{t("loadingDuplicateMessage")}</p>
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
+        <p className="ml-2 text-white">{t("loadingDuplicateMessage")}</p>
       </div>
     );
   }
@@ -95,8 +95,8 @@ export default function CreateBlogClient() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">{t("pageTitle")}</h1>
-        <p className="text-muted-foreground">{t("pageDescription")}</p>
+        <h1 className="text-2xl font-semibold text-white">{t("pageTitle")}</h1>
+        <p className="text-gray-300">{t("pageDescription")}</p>
       </div>
       <PostForm
         initialData={initialData}
