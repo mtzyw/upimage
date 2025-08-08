@@ -274,6 +274,12 @@ export async function handleInvoicePaid(invoice: Stripe.Invoice) {
       // --- [custom] Upgrade the user's benefits ---
       upgradeSubscriptionCredits(userId, planId, invoiceId, subscription);
       // --- End: [custom] Upgrade the user's benefits ---
+
+      // --- [custom] Cancel old subscriptions for subscription upgrade ---
+      if (orderType === 'subscription_initial') {
+        await cancelOldSubscriptions(userId, subscriptionId, subscription);
+      }
+      // --- End: [custom] Cancel old subscriptions ---
     } else {
       console.warn(`Cannot grant subscription credits for invoice ${invoiceId} because planId (${planId}) or userId (${userId}) is unknown.`);
     }
@@ -839,4 +845,80 @@ export async function revokeOneTimeCredits(charge: Stripe.Charge, originalOrder:
     }
   }
   // --- End: [custom] Revoke the user's one time purchase benefits ---
+}
+
+/**
+ * Cancels old active subscriptions for a user when they upgrade to a new subscription.
+ * This prevents users from having multiple active subscriptions simultaneously.
+ * 
+ * @param userId The user ID who just created a new subscription
+ * @param newSubscriptionId The new subscription ID (to exclude from cancellation)
+ * @param newSubscription The new Stripe subscription object for logging
+ */
+export async function cancelOldSubscriptions(
+  userId: string, 
+  newSubscriptionId: string, 
+  newSubscription: Stripe.Subscription
+): Promise<void> {
+  console.log(`[SUBSCRIPTION_UPGRADE] 检查用户 ${userId} 的旧订阅，新订阅: ${newSubscriptionId}`);
+  
+  try {
+    // 查找该用户的其他活跃订阅（排除当前新订阅）
+    const { data: oldSubscriptions, error: queryError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('stripe_subscription_id, status, plan_id, created_at')
+      .eq('user_id', userId)
+      .in('status', ['active', 'trialing', 'past_due'])
+      .neq('stripe_subscription_id', newSubscriptionId) // 排除新订阅
+      .order('created_at', { ascending: false });
+
+    if (queryError) {
+      console.error(`[SUBSCRIPTION_UPGRADE] 查询用户 ${userId} 旧订阅失败:`, queryError);
+      return;
+    }
+
+    if (!oldSubscriptions || oldSubscriptions.length === 0) {
+      console.log(`[SUBSCRIPTION_UPGRADE] 用户 ${userId} 没有需要取消的旧订阅`);
+      return;
+    }
+
+    console.log(`[SUBSCRIPTION_UPGRADE] 找到 ${oldSubscriptions.length} 个旧订阅需要取消:`, 
+      oldSubscriptions.map(sub => sub.stripe_subscription_id));
+
+    if (!stripe) {
+      console.error('[SUBSCRIPTION_UPGRADE] Stripe 未初始化，无法取消旧订阅');
+      return;
+    }
+
+    // 逐一取消旧订阅
+    for (const oldSub of oldSubscriptions) {
+      try {
+        console.log(`[SUBSCRIPTION_UPGRADE] 取消旧订阅: ${oldSub.stripe_subscription_id}`);
+        
+        const canceledSubscription = await stripe.subscriptions.cancel(oldSub.stripe_subscription_id, {
+          prorate: false // 不按比例退款，立即取消
+        });
+
+        console.log(`[SUBSCRIPTION_UPGRADE] 成功取消旧订阅 ${oldSub.stripe_subscription_id}，状态: ${canceledSubscription.status}`);
+
+        // 升级场景不撤销积分，让用户享受新套餐的完整积分权益
+        // 注释掉积分撤销逻辑，因为升级应该让用户获得新套餐的完整权益，而不是减少积分
+        // if (oldSub.plan_id) {
+        //   await revokeSubscriptionCredits(userId, oldSub.plan_id, oldSub.stripe_subscription_id);
+        // }
+        
+        console.log(`[SUBSCRIPTION_UPGRADE] 跳过旧订阅积分撤销，用户升级享受新套餐完整权益`);
+
+      } catch (cancelError) {
+        console.error(`[SUBSCRIPTION_UPGRADE] 取消旧订阅 ${oldSub.stripe_subscription_id} 失败:`, cancelError);
+        // 继续处理下一个订阅，不中断整个流程
+      }
+    }
+
+    console.log(`[SUBSCRIPTION_UPGRADE] 用户 ${userId} 订阅升级处理完成，新订阅: ${newSubscriptionId}`);
+
+  } catch (error) {
+    console.error(`[SUBSCRIPTION_UPGRADE] 处理用户 ${userId} 订阅升级时发生异常:`, error);
+    // 不抛出异常，避免影响主要的订阅创建流程
+  }
 }
