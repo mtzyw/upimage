@@ -213,7 +213,7 @@ export default function LeftControlPanel({
       <div className="p-4 sm:p-6 space-y-3">
         <Button
           onClick={onProcess}
-          disabled={isProcessing || !uploadedImage || !userBenefits || userBenefits.credits < getRequiredCredits(scaleFactor)}
+          disabled={isProcessing || !uploadedImage || !userBenefits || userBenefits.totalAvailableCredits < getRequiredCredits(scaleFactor)}
           className="w-full bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-600 hover:to-cyan-600 text-white py-3 text-sm font-medium rounded-lg"
         >
           {isProcessing ? (
@@ -229,7 +229,7 @@ export default function LeftControlPanel({
           )}
         </Button>
         
-        {userBenefits && uploadedImage && userBenefits.credits < getRequiredCredits(scaleFactor) && (
+        {userBenefits && uploadedImage && userBenefits.totalAvailableCredits < getRequiredCredits(scaleFactor) && (
           <p className="text-red-400 text-xs text-center">
             {t('credits.insufficient')}, {t('credits.required', {credits: getRequiredCredits(scaleFactor)})}
           </p>

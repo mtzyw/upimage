@@ -33,8 +33,8 @@ export default function HeaderCreditsDisplay() {
         const response = await fetch('/api/user/benefits');
         if (response.ok) {
           const data = await response.json();
-          if (data.success && data.data?.credits !== undefined) {
-            setCurrentCredits(data.data.credits);
+          if (data.success && data.data?.totalAvailableCredits !== undefined) {
+            setCurrentCredits(data.data.totalAvailableCredits);
           }
         }
       } catch (error) {
