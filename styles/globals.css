@@ -16,6 +16,39 @@ html {
   body {
     @apply bg-background text-foreground;
   }
+
+  /* MDX Editor styles for dark theme */
+  .mdx-editor {
+    color: white !important;
+  }
+
+  .mdx-editor .mdxeditor,
+  .mdx-editor .mdxeditor * {
+    color: white !important;
+  }
+
+  .mdx-editor [contenteditable="true"] {
+    color: white !important;
+  }
+
+  .mdx-editor textarea {
+    color: white !important;
+  }
+
+  .mdx-editor .mdxeditor-toolbar {
+    border-color: #374151 !important;
+    background-color: transparent !important;
+  }
+
+  .mdx-editor .mdxeditor-popup {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    color: white !important;
+  }
+
+  .mdx-editor .mdxeditor-popup * {
+    color: white !important;
+  }
 }
 
 @layer base {
