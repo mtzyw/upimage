@@ -2,6 +2,7 @@
 
 import LoginForm from "@/components/auth/LoginForm";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { BG1 } from "@/components/shared/BGs";
 import { useRouter } from "@/i18n/routing";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -21,24 +22,30 @@ export default function LoginPage() {
 
   if (user) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="w-4 h-4 animate-spin" />
-      </div>
+      <>
+        <BG1 />
+        <div className="flex justify-center items-center min-h-screen">
+          <Loader2 className="w-4 h-4 animate-spin text-white" />
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="flex items-center justify-center flex-1 py-12">
-      <div className="flex flex-col space-y-6">
-        <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground">{t("description")}</p>
-        </div>
+    <>
+      <BG1 />
+      <div className="flex items-center justify-center flex-1 py-12">
+        <div className="flex flex-col space-y-6">
+          <div className="flex flex-col space-y-2 text-center">
+            <h1 className="text-2xl font-semibold tracking-tight text-white">
+              {t("title")}
+            </h1>
+            <p className="text-sm text-gray-300">{t("description")}</p>
+          </div>
 
-        <LoginForm className="w-[300px]" />
+          <LoginForm className="w-[300px]" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
