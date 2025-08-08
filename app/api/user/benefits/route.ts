@@ -34,10 +34,8 @@ export async function GET(request: NextRequest) {
       return apiResponse.error('无法获取用户权益信息');
     }
 
-    // 构建响应数据 - 只保留积分验证
-    const responseData = {
-      credits: benefits.totalAvailableCredits || 0
-    };
+    // 构建响应数据 - 返回完整的 benefits 信息
+    const responseData = benefits;
 
     console.log('✅ [USER BENEFITS] 响应数据:', responseData);
     console.log('✅ [USER BENEFITS] ===== 获取用户权益信息完成 =====');

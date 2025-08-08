@@ -25,6 +25,7 @@ export default function SubscriptionPage() {
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [localBenefits, setLocalBenefits] = useState<UserBenefits | null>(null);
 
   // 只有登录用户才能访问此页面
   if (!user) {
@@ -32,7 +33,27 @@ export default function SubscriptionPage() {
   }
 
   // 获取 benefits 数据
-  const benefits: UserBenefits | null = user && benefitsPromise ? use(benefitsPromise) : null;
+  const contextBenefits: UserBenefits | null = user && benefitsPromise ? use(benefitsPromise) : null;
+  // 使用本地状态或 context 数据
+  const benefits: UserBenefits | null = localBenefits || contextBenefits;
+
+  // 刷新 benefits 数据的函数
+  const refreshBenefits = async () => {
+    if (!user) return;
+    try {
+      const response = await fetch('/api/user/benefits');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          setLocalBenefits(data.data);
+          // 触发 credits 更新事件，通知其他组件
+          window.dispatchEvent(new CustomEvent('credits-updated'));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to refresh benefits:', error);
+    }
+  };
 
   if (!benefits) {
     return (
@@ -75,8 +96,8 @@ export default function SubscriptionPage() {
       const result = await response.json();
       
       if (result.success) {
-        // 刷新页面以显示更新后的订阅状态
-        window.location.reload();
+        // 刷新 benefits 数据以显示更新后的订阅状态
+        await refreshBenefits();
       } else {
         // 这里可以添加 toast 通知或其他UI反馈
         console.error('Failed to cancel subscription:', result.message);
@@ -103,8 +124,8 @@ export default function SubscriptionPage() {
       const result = await response.json();
       
       if (result.success) {
-        // 刷新页面以显示更新后的订阅状态
-        window.location.reload();
+        // 刷新 benefits 数据以显示更新后的订阅状态
+        await refreshBenefits();
       } else {
         // 这里可以添加 toast 通知或其他UI反馈
         console.error('Failed to reactivate subscription:', result.message);
