@@ -191,7 +191,7 @@ export default function ImageProcessor() {
         // 更新用户积分（乐观更新）
         setUserBenefits(prev => prev ? {
           ...prev,
-          credits: prev.credits - requiredCredits
+          totalAvailableCredits: prev.totalAvailableCredits - requiredCredits
         } : null);
       } else {
         toast.error(result.error || t('messages.processingFailed'));
