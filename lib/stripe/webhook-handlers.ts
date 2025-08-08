@@ -382,7 +382,21 @@ export async function handleSubscriptionUpdate(subscription: Stripe.Subscription
 
     if (isDeleted && userId && planId) {
       // --- [custom] Revoke the user's benefits (only for one time purchase) ---
-      revokeSubscriptionCredits(userId, planId, subscription.id);
+      
+      // 检查是否为升级场景的订阅取消，如果是则跳过积分撤销
+      const hasNewerSubscription = await checkUserHasNewerSubscription(
+        userId, 
+        subscription.id, 
+        subscription.canceled_at
+      );
+      
+      if (hasNewerSubscription) {
+        console.log(`[SUBSCRIPTION_DELETE] 检测到升级场景，跳过积分撤销。订阅: ${subscription.id}, 用户: ${userId}`);
+      } else {
+        console.log(`[SUBSCRIPTION_DELETE] 非升级场景，执行积分撤销。订阅: ${subscription.id}, 用户: ${userId}`);
+        revokeSubscriptionCredits(userId, planId, subscription.id);
+      }
+      
       // --- End: [custom] Revoke the user's benefits ---
     }
   } catch (error) {
@@ -920,5 +934,58 @@ export async function cancelOldSubscriptions(
   } catch (error) {
     console.error(`[SUBSCRIPTION_UPGRADE] 处理用户 ${userId} 订阅升级时发生异常:`, error);
     // 不抛出异常，避免影响主要的订阅创建流程
+  }
+}
+
+/**
+ * 检查用户是否有比被取消订阅更新的活跃订阅
+ * 用于识别升级场景，避免错误撤销积分
+ * 
+ * @param userId 用户ID
+ * @param canceledSubscriptionId 被取消的订阅ID
+ * @param canceledAt 订阅取消时间戳（秒）
+ * @returns 如果有更新的订阅返回true，否则返回false
+ */
+export async function checkUserHasNewerSubscription(
+  userId: string, 
+  canceledSubscriptionId: string, 
+  canceledAt: number | null
+): Promise<boolean> {
+  try {
+    console.log(`[SUBSCRIPTION_CHECK] 检查用户 ${userId} 是否有比订阅 ${canceledSubscriptionId} 更新的活跃订阅`);
+    
+    // 如果没有取消时间，使用当前时间作为参考点
+    const referenceTime = canceledAt ? new Date(canceledAt * 1000) : new Date();
+    
+    // 查询该用户的活跃订阅，排除当前被取消的订阅
+    const { data: activeSubscriptions, error: queryError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('stripe_subscription_id, status, created_at')
+      .eq('user_id', userId)
+      .in('status', ['active', 'trialing'])
+      .neq('stripe_subscription_id', canceledSubscriptionId)
+      .gt('created_at', referenceTime.toISOString()) // 创建时间晚于取消时间
+      .order('created_at', { ascending: false });
+
+    if (queryError) {
+      console.error(`[SUBSCRIPTION_CHECK] 查询用户 ${userId} 活跃订阅失败:`, queryError);
+      // 查询失败时保守处理，不撤销积分
+      return true;
+    }
+
+    const hasNewerSubscription = activeSubscriptions && activeSubscriptions.length > 0;
+    
+    console.log(`[SUBSCRIPTION_CHECK] 用户 ${userId} ${hasNewerSubscription ? '有' : '没有'}更新的活跃订阅`);
+    if (hasNewerSubscription) {
+      console.log(`[SUBSCRIPTION_CHECK] 找到更新的订阅:`, 
+        activeSubscriptions.map(sub => `${sub.stripe_subscription_id} (${sub.status})`));
+    }
+
+    return hasNewerSubscription;
+
+  } catch (error) {
+    console.error(`[SUBSCRIPTION_CHECK] 检查用户 ${userId} 更新订阅时发生异常:`, error);
+    // 异常时保守处理，不撤销积分
+    return true;
   }
 }
