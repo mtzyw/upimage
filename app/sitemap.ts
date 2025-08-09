@@ -18,12 +18,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const pages = LOCALES.flatMap(locale => {
-    return staticPages.map(page => ({
-      url: `${siteUrl}${locale === DEFAULT_LOCALE ? '' : `/${locale}`}${page}`,
-      lastModified: new Date(),
-      changeFrequency: 'daily' as ChangeFrequency,
-      priority: page === '' ? 1.0 : 0.8,
-    }))
+    return staticPages.map(page => {
+      const localePath = locale === DEFAULT_LOCALE ? '' : `/${locale}`
+      const pagePath = page === '' ? '' : page
+      const url = `${siteUrl}${localePath}${pagePath}`
+      
+      return {
+        url: url,
+        lastModified: new Date(),
+        changeFrequency: 'daily' as ChangeFrequency,
+        priority: page === '' ? 1.0 : 0.8,
+      }
+    })
   })
 
   const allBlogSitemapEntries: MetadataRoute.Sitemap = [];
@@ -35,8 +41,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .forEach((post) => {
         const slugPart = post.slug.replace(/^\//, "").replace(/^blogs\//, "");
         if (slugPart) {
+          const localePath = locale === DEFAULT_LOCALE ? '' : `/${locale}`
           allBlogSitemapEntries.push({
-            url: `${siteUrl}${locale === DEFAULT_LOCALE ? '' : `/${locale}`}/blogs/${slugPart}`,
+            url: `${siteUrl}${localePath}/blogs/${slugPart}`,
             lastModified: post.metadata?.updatedAt || post.published_at || new Date(),
             changeFrequency: 'daily' as ChangeFrequency,
             priority: 0.7,
@@ -55,8 +62,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       serverResult.data.posts.forEach((post) => {
         const slugPart = post.slug?.replace(/^\//, "").replace(/^blogs\//, "");
         if (slugPart) {
+          const localePath = locale === DEFAULT_LOCALE ? '' : `/${locale}`
           allBlogSitemapEntries.push({
-            url: `${siteUrl}${locale === DEFAULT_LOCALE ? '' : `/${locale}`}/blogs/${slugPart}`,
+            url: `${siteUrl}${localePath}/blogs/${slugPart}`,
             lastModified: post.published_at || new Date(),
             changeFrequency: 'daily' as ChangeFrequency,
             priority: 0.7,
