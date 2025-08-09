@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     const payload: FreepikWebhookPayload = JSON.parse(body);
     
     const taskIdShort = payload.task_id.slice(0, 8);
-    console.log(`🔗 [WEBHOOK-${taskIdShort}] ${payload.status}${payload.progress ? ` (${payload.progress}%)` : ''}`);
+    console.log(`🔗 [WEBHOOK-${taskIdShort}] 收到状态: ${payload.status}${payload.progress ? ` (${payload.progress}%)` : ''}`);
 
     // 2. 验证签名（可选）
     const isValidSignature = await verifyWebhookSignature(req, body);
@@ -77,6 +77,12 @@ export async function POST(req: NextRequest) {
     }
 
     const { task_id: taskId, status, image_url: imageUrl, generated, error } = payload;
+    
+    // 只处理最终状态，忽略中间状态避免竞态条件
+    if (!['COMPLETED', 'DONE', 'FAILED'].includes(status)) {
+      console.log(`🔗 [WEBHOOK-${taskIdShort}] 忽略中间状态: ${status}`);
+      return apiResponse.success({ message: 'Intermediate status ignored' });
+    }
     
     // 获取图片URL（优先使用 generated 数组，向后兼容 image_url）
     const resultImageUrl = (generated && generated.length > 0) ? generated[0] : imageUrl;
@@ -98,7 +104,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 4. 根据状态处理
+    // 4. 根据状态处理（现在只处理最终状态）
     if (status === 'DONE' || status === 'COMPLETED') {
       if (!resultImageUrl) {
         console.error(`❌ [WEBHOOK-${taskIdShort}] 任务完成但没有图片URL`);
@@ -147,12 +153,6 @@ export async function POST(req: NextRequest) {
       console.log(`❌ [WEBHOOK-${taskIdShort}] 任务失败`);
       await updateTaskStatus(taskId, 'failed', { 
         error: error || 'Freepik processing failed' 
-      });
-
-    } else {
-      // 处理中状态
-      await updateTaskStatus(taskId, 'processing', { 
-        progress: payload.progress 
       });
     }
 

@@ -177,7 +177,7 @@ export async function POST(req: NextRequest) {
 
     // 4. 检测超时任务并主动查询
     const now = new Date();
-    const timeoutMinutes = 2; // 2分钟超时阈值
+    const timeoutMinutes = 3; // 3分钟超时阈值
     let hasUpdatedTasks = false;
 
     if (tasks && tasks.length > 0) {
@@ -187,7 +187,7 @@ export async function POST(req: NextRequest) {
           const createdAt = new Date(task.createdAt);
           const minutesElapsed = (now.getTime() - createdAt.getTime()) / (1000 * 60);
           
-          // 如果超过2分钟，主动查询 Freepik
+          // 如果超过3分钟，主动查询 Freepik
           if (minutesElapsed > timeoutMinutes) {
             console.log(`⏰ [FALLBACK-${batchIdShort}] ${task.scaleFactor} task ${task.taskId.slice(0, 8)} 超时 ${minutesElapsed.toFixed(1)}min，开始处理`);
             
@@ -212,10 +212,11 @@ export async function POST(req: NextRequest) {
             
             const freepikStatus = await queryFreepikTaskStatus(task.taskId, task.apiKey);
             
-            if (freepikStatus && freepikStatus.status !== 'processing') {
+            if (freepikStatus && freepikStatus.status !== 'processing' && freepikStatus.status !== 'in_progress') {
               console.log(`🔄 [FALLBACK-${batchIdShort}] ${task.scaleFactor} Freepik 状态: ${freepikStatus.status}`);
               
               let finalResultData = freepikStatus.result || freepikStatus.error || null;
+              // 映射 Freepik 状态到数据库状态（这里已经排除了 in_progress）
               let finalStatus = freepikStatus.status;
 
               // 如果任务完成，处理图片上传到 R2
@@ -262,8 +263,13 @@ export async function POST(req: NextRequest) {
                 console.error(`❌ [FALLBACK-${batchIdShort}] ${task.scaleFactor} 失败状态更新错误:`, failedUpdateError);
               }
               
+            } else if (freepikStatus && (freepikStatus.status === 'in_progress' || freepikStatus.status === 'processing')) {
+              // Freepik 仍在处理中 - 保持 uploading 状态防止重复查询
+              console.log(`⏳ [FALLBACK-${batchIdShort}] ${task.scaleFactor} Freepik 仍在处理中 (${freepikStatus.status})，保持 uploading 状态`);
+              // 不更新状态，保持 uploading 锁定
+              
             } else {
-              // 查询完全失败或状态仍然是 processing - 超时后标记为失败
+              // 查询完全失败 - 超时后标记为失败
               console.log(`❌ [FALLBACK-${batchIdShort}] ${task.scaleFactor} 查询完全失败，标记任务为失败`);
               
               const { error: queryFailedError } = await supabaseAdmin.rpc('update_batch_task_status', {
