@@ -459,6 +459,9 @@
     "modalScaleLabel": "{scale} 增强",
     "modalDownloadButton": "下载 {scale}",
     "modalCloseHint": "按 ESC 或点击背景关闭",
-    "canUseTrial": "可以使用免费试用"
+    "canUseTrial": "可以使用免费试用",
+    "demoImage": "示例图片",
+    "demoImageHint": "已加载示例图片，点击上传您自己的图片",
+    "uploadHint": "点击上传您的图片或拖放到这里"
   }
 }

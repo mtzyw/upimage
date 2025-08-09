@@ -459,6 +459,9 @@
     "modalScaleLabel": "{scale} Enhancement",
     "modalDownloadButton": "Download {scale}",
     "modalCloseHint": "Press ESC or click background to close",
-    "canUseTrial": "Free trial available"
+    "canUseTrial": "Free trial available",
+    "demoImage": "Demo Image",
+    "demoImageHint": "Demo image loaded, click to upload your own",
+    "uploadHint": "Click to upload your image or drag and drop here"
   }
 }

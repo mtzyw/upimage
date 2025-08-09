@@ -38,6 +38,8 @@ export default function ImageProcessingDemo() {
   const [preview, setPreview] = useState<string | null>(null);
   const [mode, setMode] = useState('standard');
   const [prompt, setPrompt] = useState('');
+  const [defaultImageBase64, setDefaultImageBase64] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   
   // 匿名试用状态 - 批量版本
@@ -91,8 +93,15 @@ export default function ImageProcessingDemo() {
     }
   };
 
-  // 初始化浏览器指纹
+  // 客户端标记
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // 初始化浏览器指纹和默认图片
+  useEffect(() => {
+    if (!isClient) return; // 只在客户端执行
+    
     const initFingerprint = async () => {
       try {
         const { fingerprint } = await generateBrowserFingerprint();
@@ -116,8 +125,10 @@ export default function ImageProcessingDemo() {
       }
     };
     
+    // 同时加载默认图片和初始化指纹
     initFingerprint();
-  }, []);
+    loadDefaultImage();
+  }, [isClient]);
 
   // 轮询批量任务状态
   useEffect(() => {
@@ -202,7 +213,8 @@ export default function ImageProcessingDemo() {
   };
 
   const handleGenerate = async () => {
-    if (!selectedImage) {
+    // 检查是否有图片（用户上传的或默认图片）
+    if (!selectedImage && !defaultImageBase64) {
       toast.error(t('errors.selectImageFirst', { default: 'Please select an image first' }));
       return;
     }
@@ -239,8 +251,10 @@ export default function ImageProcessingDemo() {
     setCurrentBatch(placeholderBatch);
     
     try {
-      // 转换图片为 base64
-      const base64Image = await fileToBase64(selectedImage);
+      // 转换图片为 base64：优先使用用户上传的图片，否则使用默认图片
+      const base64Image = selectedImage 
+        ? await fileToBase64(selectedImage)
+        : defaultImageBase64;
       
       const response = await fetch('/api/anonymous/trial/start', {
         method: 'POST',
@@ -310,6 +324,40 @@ export default function ImageProcessingDemo() {
     });
   };
 
+  // 工具函数：URL转base64
+  const urlToBase64 = async (url: string): Promise<string> => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error('URL转base64失败:', error);
+      throw error;
+    }
+  };
+
+  // 加载默认图片
+  const loadDefaultImage = async () => {
+    try {
+      // 使用public目录下的示例图片，你需要放置一张demo.jpg到public/images/目录
+      const defaultImageUrl = '/images/demo-image.jpg';
+      
+      // 转换为base64并设置预览
+      const base64 = await urlToBase64(defaultImageUrl);
+      setDefaultImageBase64(base64);
+      setPreview(defaultImageUrl);
+      
+    } catch (error) {
+      console.error('加载默认图片失败:', error);
+    }
+  };
+
   // 处理图片点击，显示大图弹窗
   const handleImageClick = (url: string, scaleFactor: string) => {
     setModalImage({ url, scaleFactor });
@@ -343,6 +391,48 @@ export default function ImageProcessingDemo() {
     };
   }, [modalImage]);
 
+  // 防止 hydration 错误，在客户端准备好之前显示加载状态
+  if (!isClient) {
+    return (
+      <div className="container mx-auto px-6 py-16">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-white text-xl font-semibold">
+                {t('uploadTitle', { default: 'Upload Image' })}
+              </h3>
+              <p className="text-gray-400 text-sm">
+                {t('uploadHint', { default: 'Click to upload your image or drag and drop here' })}
+              </p>
+            </div>
+            
+            <div className="relative border-2 border-dashed rounded-lg p-8 cursor-pointer transition-all duration-200 min-h-[300px] flex flex-col items-center justify-center border-gray-600 bg-gray-900/50">
+              <div className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center">
+                  <ImageIcon className="w-8 h-8 text-gray-400" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-white font-medium text-lg">
+                    {t('uploadPrompt', { default: 'Upload Image' })}
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    {t('supportedFormats', { default: 'Supports JPEG, PNG, WebP formats' })}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <h3 className="text-white text-xl font-semibold">
+              {t('settingsTitle', { default: 'Processing Settings' })}
+            </h3>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-6 py-16">
       {/* 试用状态提示 */}
@@ -374,9 +464,17 @@ export default function ImageProcessingDemo() {
       <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {/* 左侧：上传图片区域 */}
         <div className="space-y-4">
-          <h3 className="text-white text-xl font-semibold">
-            {t('uploadTitle', { default: '上传图片' })}
-          </h3>
+          <div className="space-y-1">
+            <h3 className="text-white text-xl font-semibold">
+              {t('uploadTitle', { default: 'Upload Image' })}
+            </h3>
+            <p className="text-gray-400 text-sm">
+              {isClient && preview && !selectedImage 
+                ? t('demoImageHint', { default: 'Demo image loaded, click to upload your own' })
+                : t('uploadHint', { default: 'Click to upload your image or drag and drop here' })
+              }
+            </p>
+          </div>
           
           <div
             className={`
@@ -412,7 +510,7 @@ export default function ImageProcessingDemo() {
                   className="max-w-full max-h-full object-contain rounded-lg"
                 />
                 <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-sm">
-                  {t('selected', { default: '已选择' })}
+                  {selectedImage ? t('selected', { default: 'Selected' }) : (isClient ? t('demoImage', { default: 'Demo Image' }) : '')}
                 </div>
               </div>
             ) : (
@@ -505,7 +603,7 @@ export default function ImageProcessingDemo() {
           <div className="pt-4" style={{ marginTop: '0px', paddingTop: '0px' }}>
             <Button
               onClick={handleGenerate}
-              disabled={!selectedImage || trialEligible === false || isGenerating}
+              disabled={(!selectedImage && !defaultImageBase64) || trialEligible === false || isGenerating}
               className="w-full bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-600 hover:to-cyan-600 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white py-4 text-lg font-medium rounded-xl"
               size="lg"
             >

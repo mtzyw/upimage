@@ -459,6 +459,9 @@
     "modalScaleLabel": "{scale} 拡張",
     "modalDownloadButton": "{scale}をダウンロード",
     "modalCloseHint": "ESCキーまたは背景クリックで閉じる",
-    "canUseTrial": "無料トライアル利用可能"
+    "canUseTrial": "無料トライアル利用可能",
+    "demoImage": "デモ画像",
+    "demoImageHint": "デモ画像が読み込まれました、クリックして独自の画像をアップロード",
+    "uploadHint": "クリックして画像をアップロードするか、ここにドラッグ&ドロップ"
   }
 }

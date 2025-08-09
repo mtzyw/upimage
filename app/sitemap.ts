@@ -4,7 +4,7 @@ import { DEFAULT_LOCALE, LOCALES } from '@/i18n/routing'
 import { getPosts } from '@/lib/getBlogs'
 import { MetadataRoute } from 'next'
 
-const siteUrl = siteConfig.url
+const siteUrl = "https://imgenhancer.ai" // 临时硬编码调试
 
 type ChangeFrequency = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never' | undefined
 
