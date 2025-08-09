@@ -9,7 +9,7 @@ const siteUrl = siteConfig.url
 type ChangeFrequency = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never' | undefined
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static pages
+  // Static pages - 触发全新构建 2025-08-09
   const staticPages = [
     '',
     // '/about',
