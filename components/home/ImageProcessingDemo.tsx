@@ -1,16 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Upload, Image as ImageIcon, Loader2, CheckCircle, XCircle, X, Download } from "lucide-react";
+import { Sparkles, Upload, Image as ImageIcon, Loader2, CheckCircle, XCircle, X, Download, Shield, Brain } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { generateBrowserFingerprint } from "@/lib/browser-fingerprint";
 import { toast } from "sonner";
 import { LoginModal } from "@/components/auth/LoginModal";
+import { BehaviorTracker, BehaviorDetector } from "@/lib/security/behavior-detector";
+import TurnstileVerification from "@/components/security/TurnstileVerification";
 
 // 单个任务状态
 interface SingleTaskStatus {
@@ -50,6 +52,14 @@ export default function ImageProcessingDemo() {
   const [resultImages, setResultImages] = useState<Record<string, string>>({});
   const [modalImage, setModalImage] = useState<{ url: string; scaleFactor: string } | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  
+  // 智能检测和安全验证状态
+  const [behaviorTracker, setBehaviorTracker] = useState<BehaviorTracker | null>(null);
+  const [showTurnstile, setShowTurnstile] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [lastAnalysis, setLastAnalysis] = useState<any>(null);
+  const pendingGeneration = useRef<boolean>(false);
 
   const handleImageSelect = (file: File) => {
     setSelectedImage(file);
@@ -58,6 +68,9 @@ export default function ImageProcessingDemo() {
       setPreview(reader.result as string);
     };
     reader.readAsDataURL(file);
+    
+    // 标记用户上传了文件
+    behaviorTracker?.markFileUploaded();
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -98,9 +111,13 @@ export default function ImageProcessingDemo() {
     setIsClient(true);
   }, []);
 
-  // 初始化浏览器指纹和默认图片
+  // 初始化浏览器指纹、行为跟踪器和默认图片
   useEffect(() => {
     if (!isClient) return; // 只在客户端执行
+    
+    // 初始化行为跟踪器
+    const tracker = new BehaviorTracker();
+    setBehaviorTracker(tracker);
     
     const initFingerprint = async () => {
       try {
@@ -117,7 +134,7 @@ export default function ImageProcessingDemo() {
         const data = await response.json();
         if (data.success) {
           setTrialEligible(data.data.eligible);
-          // 删除弹窗，静默处理
+          console.log('🔍 [BEHAVIOR] 试用资格检查完成:', data.data);
         }
       } catch (error) {
         console.error('初始化浏览器指纹失败:', error);
@@ -128,6 +145,11 @@ export default function ImageProcessingDemo() {
     // 同时加载默认图片和初始化指纹
     initFingerprint();
     loadDefaultImage();
+    
+    // 清理函数
+    return () => {
+      tracker.cleanup();
+    };
   }, [isClient]);
 
   // 轮询批量任务状态
@@ -229,7 +251,70 @@ export default function ImageProcessingDemo() {
       setIsLoginModalOpen(true);
       return;
     }
+    
+    // 智能检测：分析用户行为是否需要验证
+    if (!turnstileToken && behaviorTracker) {
+      setIsAnalyzing(true);
+      
+      const analysis = behaviorTracker.analyzeCurrent();
+      setLastAnalysis(analysis);
+      
+      console.log('🧠 [SMART DETECTION] 用户行为分析:', {
+        ...analysis,
+        behaviorSummary: BehaviorDetector.getBehaviorSummary(behaviorTracker.getBehavior())
+      });
+      
+      if (analysis.needsVerification) {
+        console.log('🛡️ [SMART DETECTION] 检测到可疑行为，需要验证:', analysis.reasons);
+        setIsAnalyzing(false);
+        setShowTurnstile(true);
+        pendingGeneration.current = true;
+        return;
+      } else {
+        console.log('✅ [SMART DETECTION] 正常用户行为，直接执行生成');
+        setIsAnalyzing(false);
+        // 为正常用户设置一个虚拟token，直接执行生成
+        setTurnstileToken('trusted_user_bypass');
+        // 直接使用虚拟token执行生成，不依赖状态更新
+        await executeGenerationWithToken('trusted_user_bypass');
+        return;
+      }
+    }
 
+    // 执行实际的生成逻辑
+    await executeGeneration();
+  };
+  
+  // Turnstile 验证成功回调
+  const handleTurnstileSuccess = async (token: string) => {
+    console.log('✅ [TURNSTILE] 验证成功，获得 token:', token.substring(0, 20) + '...');
+    setTurnstileToken(token);
+    setShowTurnstile(false);
+    
+    // 如果有待处理的生成请求，立即使用新token执行
+    if (pendingGeneration.current) {
+      pendingGeneration.current = false;
+      await executeGenerationWithToken(token);
+    }
+  };
+
+  // Turnstile 验证失败回调
+  const handleTurnstileError = (error: string) => {
+    console.error('❌ [TURNSTILE] 验证失败:', error);
+    setShowTurnstile(false);
+    pendingGeneration.current = false;
+    toast.error('安全验证失败，请刷新页面重试');
+  };
+
+  // 执行图片生成的核心逻辑（使用当前状态的token）
+  const executeGeneration = async () => {
+    await executeGenerationWithToken(turnstileToken);
+  };
+
+  // 执行图片生成的核心逻辑（使用指定的token）
+  const executeGenerationWithToken = async (token: string | null) => {
+    console.log('🎯 [GENERATION] 开始执行图片生成，token:', token?.substring(0, 20) + '...');
+    
     setIsGenerating(true);
     setResultImages({});
     
@@ -262,6 +347,7 @@ export default function ImageProcessingDemo() {
         body: JSON.stringify({
           browserFingerprint,
           image: base64Image,
+          turnstileToken: token,
           // 移除 scaleFactor，后端会创建 2x/4x/8x/16x 所有倍数
           optimizedFor: mode,
           prompt: prompt || undefined,
@@ -553,7 +639,11 @@ export default function ImageProcessingDemo() {
             <label className="text-yellow-400 font-medium">
               {t('modeLabel', { default: '优化类型' })}
             </label>
-            <Select value={mode} onValueChange={setMode}>
+            <Select value={mode} onValueChange={(value) => {
+              setMode(value);
+              // 标记用户修改了设置
+              behaviorTracker?.markSettingsChanged();
+            }}>
               <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white h-12">
                 <SelectValue />
               </SelectTrigger>
@@ -587,7 +677,13 @@ export default function ImageProcessingDemo() {
             </label>
             <Textarea
               value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
+              onChange={(e) => {
+                setPrompt(e.target.value);
+                // 标记用户输入了提示词
+                if (e.target.value.length > 0) {
+                  behaviorTracker?.markPromptTyped();
+                }
+              }}
               placeholder={t('promptPlaceholder', { default: '描述您想要的效果，例如：增强细节，提高清晰度，保持自然色彩...' })}
               className="bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 resize-none min-h-[120px]"
               style={{ height: '108px', marginTop: '4px' }}
@@ -603,11 +699,16 @@ export default function ImageProcessingDemo() {
           <div className="pt-4" style={{ marginTop: '0px', paddingTop: '0px' }}>
             <Button
               onClick={handleGenerate}
-              disabled={(!selectedImage && !defaultImageBase64) || trialEligible === false || isGenerating}
+              disabled={(!selectedImage && !defaultImageBase64) || trialEligible === false || isGenerating || isAnalyzing}
               className="w-full bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-600 hover:to-cyan-600 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white py-4 text-lg font-medium rounded-xl"
               size="lg"
             >
-              {isGenerating ? (
+              {isAnalyzing ? (
+                <>
+                  <Brain className="mr-2 h-5 w-5 animate-pulse" />
+                  {t('analyzing', { default: '智能检测中...' })}
+                </>
+              ) : isGenerating ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   {t('processing', { completed: currentBatch?.completedCount || 0, total: currentBatch?.totalCount || 4, default: 'Processing ({completed}/{total})' })}
@@ -803,6 +904,19 @@ export default function ImageProcessingDemo() {
           </div>
         </div>
       )}
+
+      {/* Turnstile 安全验证弹窗 */}
+      <TurnstileVerification
+        isOpen={showTurnstile}
+        onClose={() => {
+          setShowTurnstile(false);
+          pendingGeneration.current = false;
+        }}
+        onSuccess={handleTurnstileSuccess}
+        onError={handleTurnstileError}
+        reason={lastAnalysis?.reasons.join('、')}
+        suspiciousScore={lastAnalysis?.suspiciousScore}
+      />
 
       {/* Login Modal */}
       <LoginModal 

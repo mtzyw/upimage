@@ -5,16 +5,18 @@ import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { getAvailableFreepikApiKeyWithoutCount, releaseApiKey, incrementApiKeyUsage } from '@/lib/freepik/api-key-manager';
 import { redis } from '@/lib/upstash';
+import { verifyTurnstileToken, extractUserIP } from '@/lib/security/turnstile';
 
 const supabaseAdmin = createAdminClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 请求参数验证 - 改为批量生成，移除scaleFactor参数
+// 请求参数验证 - 改为批量生成，移除scaleFactor参数，添加 Turnstile token
 const startTrialSchema = z.object({
   browserFingerprint: z.string().min(8, '浏览器指纹无效'),
   image: z.string().min(1, 'base64 图片数据不能为空'),
+  turnstileToken: z.string().nullable().optional(), // 智能检测场景下可为 null 或 undefined
   optimizedFor: z.enum([
     'standard', 
     'soft_portraits', 
@@ -85,10 +87,27 @@ export async function POST(req: NextRequest) {
       return apiResponse.badRequest(`参数验证失败: ${JSON.stringify(errors)}`);
     }
 
-    const { browserFingerprint, image: base64Image, ...validatedParams } = validationResult.data;
+    const { browserFingerprint, image: base64Image, turnstileToken, ...validatedParams } = validationResult.data;
     
     // 2. 生成批量任务ID
     const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // 3. Turnstile 安全验证
+    if (turnstileToken) {
+      console.log(`🛡️ [TRIAL-${batchId.slice(-4)}] 开始 Turnstile 验证...`);
+      const userIP = extractUserIP(req);
+      const turnstileResult = await verifyTurnstileToken(turnstileToken, userIP);
+      
+      if (!turnstileResult.success) {
+        console.log(`❌ [TRIAL-${batchId.slice(-4)}] Turnstile 验证失败:`, turnstileResult.errorCodes);
+        return apiResponse.badRequest('安全验证失败，请刷新页面重试');
+      }
+      
+      console.log(`✅ [TRIAL-${batchId.slice(-4)}] Turnstile 验证成功`);
+    } else {
+      console.log(`⚠️  [TRIAL-${batchId.slice(-4)}] 跳过 Turnstile 验证（向后兼容）`);
+    }
+    
     console.log(`🎯 [TRIAL-${batchId.slice(-4)}] Starting batch trial`);
 
     // 3. 验证 webhook URL

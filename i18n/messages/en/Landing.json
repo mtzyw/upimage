@@ -427,6 +427,7 @@
     "processing": "Processing ({completed}/{total})",
     "trialCompleted": "Free Trial Completed",
     "freeTrial": "Free Trial",
+    "analyzing": "Smart Detection...",
     "processingResults": "Processing Results",
     "scaleEnhancement": "{scale} Enhancement",
     "clickToView": "Click to view large image",
@@ -463,5 +464,18 @@
     "demoImage": "Demo Image",
     "demoImageHint": "Demo image loaded, click to upload your own",
     "uploadHint": "Click to upload your image or drag and drop here"
+  },
+  "Security": {
+    "title": "Security Verification",
+    "detectionReason": "Following behavior detected:",
+    "suspiciousScore": "Suspicious Score: {score}/100",
+    "verificationDescription": "Please complete security verification to confirm you are a real user. This will only take a few seconds.",
+    "defaultDescription": "To ensure service quality, please complete security verification.",
+    "verificationSuccess": "Verification successful! Processing...",
+    "loading": "Loading verification component...",
+    "errorMessage": "Verification failed: {error}",
+    "retry": "Refresh and retry",
+    "privacyNotice": "This verification is provided by Cloudflare to protect your privacy",
+    "securityInfo": "We use intelligent algorithms to identify malicious behavior, normal users can usually pass verification quickly"
   }
 }

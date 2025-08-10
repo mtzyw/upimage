@@ -427,6 +427,7 @@
     "processing": "处理中 ({completed}/{total})",
     "trialCompleted": "免费试用已完成",
     "freeTrial": "免费试用",
+    "analyzing": "智能检测中...",
     "processingResults": "处理结果",
     "scaleEnhancement": "{scale} 增强",
     "clickToView": "点击查看大图",
@@ -463,5 +464,18 @@
     "demoImage": "示例图片",
     "demoImageHint": "已加载示例图片，点击上传您自己的图片",
     "uploadHint": "点击上传您的图片或拖放到这里"
+  },
+  "Security": {
+    "title": "安全验证",
+    "detectionReason": "检测到以下情况：",
+    "suspiciousScore": "可疑评分：{score}/100",
+    "verificationDescription": "请完成安全验证以确认您是真实用户。这只需要几秒钟时间。",
+    "defaultDescription": "为了确保服务质量，请完成安全验证。",
+    "verificationSuccess": "验证成功！正在处理...",
+    "loading": "正在加载验证组件...",
+    "errorMessage": "验证失败：{error}",
+    "retry": "刷新重试",
+    "privacyNotice": "此验证由 Cloudflare 提供，保护您的隐私安全",
+    "securityInfo": "我们使用智能算法识别恶意行为，正常用户通常可以快速通过验证"
   }
 }
