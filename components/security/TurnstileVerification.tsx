@@ -29,7 +29,7 @@ export default function TurnstileVerification({
   const [error, setError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAABqNZwYgsnylt_jZ';
 
   useEffect(() => {
     if (isOpen) {
@@ -138,13 +138,15 @@ export default function TurnstileVerification({
 
               <div className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
                 <Turnstile
-                  sitekey={siteKey}
-                  onVerify={handleSuccess}
+                  siteKey={siteKey}
+                  onSuccess={handleSuccess}
                   onError={handleError}
-                  onLoad={handleLoad}
-                  theme="dark"
-                  size="normal"
-                  retry="auto"
+                  onWidgetLoad={handleLoad}
+                  options={{
+                    theme: "dark",
+                    size: "normal",
+                    retry: "auto"
+                  }}
                 />
               </div>
 
