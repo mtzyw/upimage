@@ -354,16 +354,42 @@ export async function POST(req: NextRequest) {
       return apiResponse.unauthorized('Invalid signature');
     }
 
-    // 获取任务信息
+    // 对于非最终状态，提前处理以避免数据库查询失败
+    if (['CREATED', 'PROCESSING', 'IN_PROGRESS'].includes(payload.status)) {
+      console.log(`📝 [WEBHOOK] Task ${payload.task_id} is in intermediate status: ${payload.status}`);
+      
+      // 仅更新进度到Redis（如果有）
+      if (payload.progress !== undefined && redis) {
+        await redis.set(
+          `task:${payload.task_id}:progress`, 
+          payload.progress, 
+          { ex: 3600 }
+        );
+        console.log(`📊 [WEBHOOK] Progress updated: ${payload.progress}%`);
+      }
+      
+      // 返回成功响应，不查询数据库
+      return apiResponse.success({ 
+        message: 'Intermediate status acknowledged',
+        taskId: payload.task_id,
+        status: payload.status
+      });
+    }
+
+    // 获取任务信息（只对最终状态查询）
     console.log('Getting task info for:', payload.task_id);
     const taskInfo = await getTaskInfo(payload.task_id);
     if (!taskInfo) {
       console.error(`Task not found: ${payload.task_id}`);
-      return apiResponse.notFound('Task not found');
+      // 对于早期webhook，任务可能还未创建，返回成功避免重试
+      return apiResponse.success({ 
+        message: 'Task not yet in database, webhook acknowledged',
+        taskId: payload.task_id
+      });
     }
     console.log('Task info retrieved:', taskInfo);
 
-    // 根据状态处理
+    // 根据最终状态处理（中间状态已在上面处理）
     switch (payload.status) {
       case 'DONE':
       case 'COMPLETED':
@@ -372,26 +398,6 @@ export async function POST(req: NextRequest) {
 
       case 'FAILED':
         await handleTaskFailed(payload, taskInfo);
-        break;
-
-      case 'PROCESSING':
-      case 'IN_PROGRESS':
-      case 'CREATED':
-        // 仅更新进度到Redis，不更新数据库状态（减少不必要的数据库写入）
-        if (payload.progress !== undefined) {
-          console.log(`Task ${payload.task_id} progress: ${payload.progress}%`);
-          
-          if (redis) {
-            await redis.set(
-              `task:${payload.task_id}:progress`, 
-              payload.progress, 
-              { ex: 3600 }
-            );
-          }
-        }
-        
-        // 跳过数据库状态更新，只记录日志（减少不必要的DB写入）
-        console.log(`⚡ Task ${payload.task_id} is in progress (${payload.status}) - DB update skipped for performance`);
         break;
 
       default:

@@ -254,9 +254,21 @@ async function handlePollRequest(req: Request | NextRequest) {
           })
           .eq('id', taskId);
         
-        // 清理 Redis 缓存
+        // 更新 Redis 缓存而不是删除（避免前端查询时缓存旧数据）
         if (redis) {
-          await redis.del(`task_cache:${taskId}`);
+          const updatedTaskData = {
+            user_id: task.user_id,
+            status: 'completed',
+            created_at: task.created_at,
+            completed_at: new Date().toISOString(),
+            error_message: null,
+            r2_original_key: task.r2_original_key,
+            cdn_url: cdnUrl,
+            scale_factor: task.scale_factor,
+            credits_consumed: task.credits_consumed
+          };
+          await redis.set(`task_cache:${taskId}`, updatedTaskData, { ex: 300 });
+          console.log(`📝 [POLL_TASK] Task cache updated for ${taskId}`);
         }
         
         console.log(`🎉 [POLL_TASK] Task ${taskId} successfully processed`);
