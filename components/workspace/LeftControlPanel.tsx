@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Wand2, History, Sparkles, Loader2, Coins } from "lucide-react";
-import { useTranslations } from "next-intl";
 import ImageUploader from "@/components/upload/ImageUploader";
+import { Loader2, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface UserBenefits {
   totalAvailableCredits: number;
@@ -68,7 +68,7 @@ export default function LeftControlPanel({
       <div className="flex-1 px-4 sm:px-6 space-y-4 sm:space-y-5 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-900/50 [&::-webkit-scrollbar-thumb]:bg-gray-700/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-600/80">
         {/* 模型选择 */}
         <div className="space-y-3">
-          <label className="text-white font-medium text-sm">Freepik AI</label>
+          <label className="text-white font-medium text-sm">Imgenhancer AI</label>
           <div className="bg-gray-800/60 rounded-lg p-3 border border-gray-700/50">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="h-4 w-4 text-cyan-400" />
@@ -91,7 +91,7 @@ export default function LeftControlPanel({
         {/* 增强设置 */}
         <div className="space-y-5">
           <h3 className="text-cyan-400 text-lg font-semibold">{t('settings.scaleFactor')}</h3>
-          
+
           {/* 放大倍数选择 */}
           <div className="space-y-3">
             <label className="text-cyan-400 font-medium">{t('settings.scaleFactor')}</label>
@@ -100,7 +100,7 @@ export default function LeftControlPanel({
                 const credits = getRequiredCredits(scale);
                 const canAfford = userBenefits ? userBenefits.totalAvailableCredits >= credits : true;
                 const isSelected = scaleFactor === scale;
-                
+
                 return (
                   <button
                     key={scale}
@@ -108,16 +108,16 @@ export default function LeftControlPanel({
                     disabled={!canAfford || isProcessing}
                     className={`
                       p-3 rounded border text-center transition-all
-                      ${isSelected 
-                        ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400' 
-                        : canAfford 
-                          ? 'border-gray-600 hover:border-cyan-400/50 text-white' 
+                      ${isSelected
+                        ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400'
+                        : canAfford
+                          ? 'border-gray-600 hover:border-cyan-400/50 text-white'
                           : 'border-gray-700 text-gray-500 cursor-not-allowed'
                       }
                     `}
                   >
                     <div className="font-bold">{scale}</div>
-                    <div className="text-xs">{t('credits.required', {credits})}</div>
+                    <div className="text-xs">{t('credits.required', { credits })}</div>
                   </button>
                 );
               })}
@@ -202,7 +202,7 @@ export default function LeftControlPanel({
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">{t('credits.consumed')}:</span>
               <span className="text-cyan-400 font-medium">
-                {t('credits.required', {credits: getRequiredCredits(scaleFactor)})}
+                {t('credits.required', { credits: getRequiredCredits(scaleFactor) })}
               </span>
             </div>
           </div>
@@ -228,10 +228,10 @@ export default function LeftControlPanel({
             </div>
           )}
         </Button>
-        
+
         {userBenefits && uploadedImage && userBenefits.totalAvailableCredits < getRequiredCredits(scaleFactor) && (
           <p className="text-red-400 text-xs text-center">
-            {t('credits.insufficient')}, {t('credits.required', {credits: getRequiredCredits(scaleFactor)})}
+            {t('credits.insufficient')}, {t('credits.required', { credits: getRequiredCredits(scaleFactor) })}
           </p>
         )}
       </div>
