@@ -52,11 +52,12 @@ const enhanceRequestSchema = z.object({
 type EnhanceRequest = z.infer<typeof enhanceRequestSchema>;
 
 // 删除限流配置 - 只依赖积分验证
+// 简化架构：直接使用 Freepik task_id 作为数据库主键，无需复杂的ID映射
 
 export async function POST(req: NextRequest) {
   console.log('🚀 [ENHANCE START] ===== 收到图像增强请求 =====');
   
-  let temporaryTaskId: string | undefined;
+  let apiKeyToRelease: string | undefined;
   
   try {
     // 1. 用户认证
@@ -136,64 +137,23 @@ export async function POST(req: NextRequest) {
     }
 
     console.log(`✅ [ENHANCE START] 使用API密钥: ${apiKey.name} (剩余 ${apiKey.remaining} 次)`);
+    apiKeyToRelease = apiKey.id;
 
-    // 6. 生成临时任务ID并创建数据库记录
-    console.log('🆔 [ENHANCE START] 步骤6: 生成临时任务ID并创建数据库记录...');
-    temporaryTaskId = generateTaskIdentifier(user.id, '');
-    console.log(`🆔 [ENHANCE START] 临时任务ID: ${temporaryTaskId}`);
-
-    // 先创建数据库记录（使用临时ID）
-    const { error: insertError } = await supabaseAdmin
-      .from('image_enhancement_tasks')
-      .insert({
-        id: temporaryTaskId,
-        user_id: user.id,
-        status: 'processing',
-        r2_original_key: null, // 稍后异步上传
-        scale_factor: validatedParams.scaleFactor,
-        optimized_for: validatedParams.optimizedFor,
-        prompt: validatedParams.prompt || null,
-        creativity: validatedParams.creativity,
-        hdr: validatedParams.hdr,
-        resemblance: validatedParams.resemblance,
-        fractality: validatedParams.fractality,
-        engine: validatedParams.engine,
-        api_key_id: apiKey.id,
-        api_key: apiKey.key, // Store actual API key for fallback queries
-        credits_consumed: creditValidation.requiredCredits
-      });
-
-    if (insertError) {
-      console.error('❌ [ENHANCE START] 数据库记录创建失败:', insertError);
-      return apiResponse.error('任务创建失败，请重试');
-    }
-    console.log('✅ [ENHANCE START] 临时数据库记录创建成功');
-
-    // 8. 暂存 base64 到 Redis（15分钟TTL）
-    if (redis) {
-      await redis.set(`tmp:img:${temporaryTaskId}`, base64Image, { ex: 900 });
-      console.log('✅ [ENHANCE START] base64 已暂存到 Redis');
-    }
-
-    // 7. 扣减积分
-    console.log('💰 [ENHANCE START] 步骤7: 扣减用户积分...');
-    const deductResult = await deductUserCredits(user.id, validatedParams.scaleFactor, temporaryTaskId);
+    // 6. 扣减积分（使用临时ID用于记录）
+    console.log('💰 [ENHANCE START] 步骤6: 扣减用户积分...');
+    const tempTaskId = generateTaskIdentifier(user.id, ''); // 仅用于积分扣减记录
+    const deductResult = await deductUserCredits(user.id, validatedParams.scaleFactor, tempTaskId);
     console.log('💰 [ENHANCE START] 积分扣减结果:', deductResult);
     
     if (!deductResult.success) {
-      console.log('❌ [ENHANCE START] 积分扣减失败，删除临时记录');
-      // 删除刚创建的记录
-      await supabaseAdmin
-        .from('image_enhancement_tasks')
-        .delete()
-        .eq('id', temporaryTaskId);
+      console.log('❌ [ENHANCE START] 积分扣减失败');
       return apiResponse.error(`积分扣减失败: ${deductResult.error}`);
     }
 
     console.log(`✅ [ENHANCE START] 积分扣减成功，用户: ${user.id}`);
 
-    // 8. 调用 Freepik API
-    console.log('🚀 [ENHANCE START] 步骤8: 调用Freepik API...');
+    // 7. 调用 Freepik API
+    console.log('🚀 [ENHANCE START] 步骤7: 调用Freepik API...');
     
     // 确保 webhook URL 是公开可访问的
     const webhookUrl = `${process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL}/api/webhook/freepik`;
@@ -247,58 +207,16 @@ export async function POST(req: NextRequest) {
     } catch (error) {
       console.error('❌ [ENHANCE START] Freepik API 请求失败:', error);
       
-      // 处理超时错误 - 不释放API key，因为Freepik可能已经接收到请求
-      if (error instanceof Error && error.message.includes('timeout')) {
-        console.log('⚠️ [ENHANCE START] API请求超时，但Freepik可能已接收请求，保留任务记录等待webhook');
-        
-        // 更新任务状态为等待webhook
-        await supabaseAdmin
-          .from('image_enhancement_tasks')
-          .update({ 
-            status: 'processing',
-            error_message: '请求超时，等待处理结果...' 
-          })
-          .eq('id', temporaryTaskId);
-        
-        // 设置Redis缓存（使用临时ID）- 不包含 r2_key 因为还未上传
-        if (redis) {
-          await Promise.all([
-            redis.set(`task:${temporaryTaskId}:user_id`, user.id, { ex: 3600 }),
-            redis.set(`task:${temporaryTaskId}:api_key_id`, apiKey.id, { ex: 3600 })
-          ]);
-        }
-        
-        // 返回临时任务ID，让前端可以轮询状态
-        const updatedBenefits = await import('@/actions/usage/benefits')
-          .then(m => m.getUserBenefits(user.id));
-        
-        return apiResponse.success({
-          taskId: temporaryTaskId,
-          status: 'processing',
-          creditsConsumed: creditValidation.requiredCredits,
-          remainingCredits: updatedBenefits?.totalAvailableCredits || 0,
-          estimatedTime: `${validatedParams.scaleFactor === '2x' ? '30-60秒' : 
-                           validatedParams.scaleFactor === '4x' ? '1-2分钟' : 
-                           validatedParams.scaleFactor === '8x' ? '2-5分钟' : 
-                           '5-10分钟'}`,
-          message: '请求已提交，正在等待处理结果...'
-        });
-      }
-      
       // Freepik API 调用失败，释放 API key（因为配额未被消耗）
-      if (apiKey?.id) {
-        console.log('🔄 [API_KEY_RELEASE] Freepik API 调用失败，释放 API key:', apiKey.id);
-        await releaseApiKey(apiKey.id);
+      if (apiKeyToRelease) {
+        console.log('🔄 [API_KEY_RELEASE] Freepik API 调用失败，释放 API key:', apiKeyToRelease);
+        await releaseApiKey(apiKeyToRelease);
+        apiKeyToRelease = undefined;
       }
       
-      // 删除临时记录并退回积分
-      await supabaseAdmin
-        .from('image_enhancement_tasks')
-        .delete()
-        .eq('id', temporaryTaskId);
-      
+      // 退回积分
       const { refundUserCredits } = await import('@/lib/freepik/credits');
-      await refundUserCredits(user.id, validatedParams.scaleFactor, temporaryTaskId);
+      await refundUserCredits(user.id, validatedParams.scaleFactor, tempTaskId);
       
       return apiResponse.error('无法连接到图像增强服务，请稍后重试', 503);
     }
@@ -313,10 +231,14 @@ export async function POST(req: NextRequest) {
       const errorText = await freepikResponse.text();
       console.error('❌ [ENHANCE START] Freepik API错误:', freepikResponse.status, errorText);
       
-      // API 调用失败，退回积分
-      console.log('💰 [ENHANCE START] API调用失败，退回积分...');
+      // API 调用失败，释放 API key 并退回积分
+      if (apiKeyToRelease) {
+        await releaseApiKey(apiKeyToRelease);
+        apiKeyToRelease = undefined;
+      }
+      
       const { refundUserCredits } = await import('@/lib/freepik/credits');
-      await refundUserCredits(user.id, validatedParams.scaleFactor, 'api-error');
+      await refundUserCredits(user.id, validatedParams.scaleFactor, tempTaskId);
       
       return apiResponse.error(
         `图像处理服务暂时不可用: ${freepikResponse.status}`,
@@ -332,85 +254,60 @@ export async function POST(req: NextRequest) {
     if (!freepikTaskId) {
       console.error('❌ [ENHANCE START] Freepik API未返回task_id:', freepikData);
       
-      // 没有获到 task_id，退回积分
-      console.log('💰 [ENHANCE START] 未获取到task_id，退回积分...');
+      // 没有获到 task_id，释放 API key 并退回积分
+      if (apiKeyToRelease) {
+        await releaseApiKey(apiKeyToRelease);
+        apiKeyToRelease = undefined;
+      }
+      
       const { refundUserCredits } = await import('@/lib/freepik/credits');
-      await refundUserCredits(user.id, validatedParams.scaleFactor, 'no-task-id');
+      await refundUserCredits(user.id, validatedParams.scaleFactor, tempTaskId);
       
       return apiResponse.error('图像处理请求失败，请重试');
     }
 
     console.log(`✅ [ENHANCE START] Freepik任务创建成功: ${freepikTaskId}`);
+    // API key已被使用，不再需要释放
+    apiKeyToRelease = undefined;
 
-    // 9. 保存临时ID到正式ID的映射关系到Redis（用于webhook匹配）
-    if (redis) {
-      await redis.set(`temp:${temporaryTaskId}`, freepikTaskId, { ex: 3600 });
-      console.log('✅ [ENHANCE START] ID映射关系已保存到Redis');
-    }
-
-    // 10. 立即创建正式任务记录，确保webhook能找到
-    console.log('💾 [ENHANCE START] 步骤10: 立即创建正式任务记录...');
+    // 8. 直接创建任务记录（使用Freepik task_id）
+    console.log('💾 [ENHANCE START] 步骤8: 创建任务记录...');
     
-    // 获取临时记录的数据
-    const { data: tempTask, error: fetchError } = await supabaseAdmin
-      .from('image_enhancement_tasks')
-      .select('*')
-      .eq('id', temporaryTaskId)
-      .single();
-    
-    if (fetchError || !tempTask) {
-      console.error('❌ [ENHANCE START] 获取临时记录失败:', fetchError);
-      return apiResponse.error('任务创建失败，请重试');
-    }
-    
-    // 创建新的记录（使用Freepik的task_id）
-    const { error: finalInsertError } = await supabaseAdmin
+    const { error: insertError } = await supabaseAdmin
       .from('image_enhancement_tasks')
       .insert({
-        id: freepikTaskId,
-        user_id: tempTask.user_id,
-        status: tempTask.status,
-        r2_original_key: tempTask.r2_original_key,
-        scale_factor: tempTask.scale_factor,
-        optimized_for: tempTask.optimized_for,
-        prompt: tempTask.prompt,
-        creativity: tempTask.creativity,
-        hdr: tempTask.hdr,
-        resemblance: tempTask.resemblance,
-        fractality: tempTask.fractality,
-        engine: tempTask.engine,
-        api_key_id: tempTask.api_key_id,
-        api_key: tempTask.api_key, // Copy API key to new record
-        credits_consumed: tempTask.credits_consumed,
-        created_at: tempTask.created_at
+        id: freepikTaskId, // 直接使用 Freepik task_id，没有映射复杂度
+        user_id: user.id,
+        status: 'processing',
+        r2_original_key: null, // 稍后异步上传
+        scale_factor: validatedParams.scaleFactor,
+        optimized_for: validatedParams.optimizedFor,
+        prompt: validatedParams.prompt || null,
+        creativity: validatedParams.creativity,
+        hdr: validatedParams.hdr,
+        resemblance: validatedParams.resemblance,
+        fractality: validatedParams.fractality,
+        engine: validatedParams.engine,
+        api_key_id: apiKey.id,
+        api_key: apiKey.key, // Store actual API key for fallback queries
+        credits_consumed: creditValidation.requiredCredits
       });
     
-    if (finalInsertError) {
-      console.error('❌ [ENHANCE START] 创建正式记录失败:', finalInsertError);
-      // 如果创建失败，保留临时记录但记录错误
-      console.log('⚠️ [ENHANCE START] 使用临时记录继续，但webhook可能无法匹配');
-    } else {
-      console.log('✅ [ENHANCE START] 正式任务记录创建成功');
+    if (insertError) {
+      console.error('❌ [ENHANCE START] 数据库记录创建失败:', insertError);
       
-      // 删除临时记录
-      await supabaseAdmin
-        .from('image_enhancement_tasks')
-        .delete()
-        .eq('id', temporaryTaskId);
+      // 退回积分
+      const { refundUserCredits } = await import('@/lib/freepik/credits');
+      await refundUserCredits(user.id, validatedParams.scaleFactor, tempTaskId);
       
-      console.log('✅ [ENHANCE START] 临时记录已清理');
+      return apiResponse.error('任务创建失败，请重试');
     }
-
-    // 11. 清除 Redis 临时图片数据并触发异步原图上传
-    if (redis) {
-      await redis.del(`tmp:img:${temporaryTaskId}`);
-      console.log('✅ [ENHANCE START] Redis 临时数据已清除');
-    }
+    console.log('✅ [ENHANCE START] 任务记录创建成功');
     
-    // 异步上传原图到 R2（不阻塞响应）
+    // 9. 异步上传原图到 R2（不阻塞响应）
     uploadOriginalImageAsync(base64Image, freepikTaskId, user.id);
     
-    // 12. 设置Redis缓存（使用Freepik的task_id）- 不包含 r2_key 因为异步上传
+    // 10. 设置Redis缓存（使用Freepik的task_id）
     if (redis) {
       console.log('💾 [ENHANCE START] 保存Redis缓存...');
       await Promise.all([
@@ -420,13 +317,13 @@ export async function POST(req: NextRequest) {
       console.log('✅ [ENHANCE START] Redis缓存保存完成');
     }
 
-    // 13. 设置初始状态
-    console.log('📊 [ENHANCE START] 步骤13: 设置任务初始状态...');
+    // 11. 设置初始状态
+    console.log('📊 [ENHANCE START] 步骤11: 设置任务初始状态...');
     await setTaskStatus(freepikTaskId, 'processing');
     console.log('✅ [ENHANCE START] 任务状态设置完成');
 
-    // 14. 返回成功响应
-    console.log('🎉 [ENHANCE START] 步骤14: 准备返回成功响应...');
+    // 12. 返回成功响应
+    console.log('🎉 [ENHANCE START] 步骤12: 准备返回成功响应...');
     const updatedBenefits = await import('@/actions/usage/benefits')
       .then(m => m.getUserBenefits(user.id));
     
@@ -452,9 +349,14 @@ export async function POST(req: NextRequest) {
     console.error('💥 [ENHANCE START] 错误详情:', error);
     console.error('💥 [ENHANCE START] 错误堆栈:', error instanceof Error ? error.stack : 'No stack trace');
     
-    // 清理可能的 Redis 数据
-    if (redis && temporaryTaskId) {
-      await redis.del(`tmp:img:${temporaryTaskId}`);
+    // 清理资源：释放API key
+    if (apiKeyToRelease) {
+      try {
+        await releaseApiKey(apiKeyToRelease);
+        console.log('🔄 [ENHANCE START] 异常处理中释放API key');
+      } catch (releaseError) {
+        console.error('❌ [ENHANCE START] 释放API key失败:', releaseError);
+      }
     }
     
     return apiResponse.serverError('图像增强服务内部错误');

@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 常用开发命令
 
 ### 基本命令
-- `npm run dev` - 启动开发服务器 
+- `npm run dev` - 启动开发服务器（默认端口 3000）
 - `npm run build` - 构建生产版本
 - `npm run start` - 启动生产服务器
 - `npm run lint` - 运行 ESLint 代码检查
@@ -158,7 +158,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **支付系统**：Stripe 配置（密钥、Webhook 密钥）
 - **邮件服务**：Resend API 配置
 - **存储服务**：Cloudflare R2 配置
+- **图片增强**：Freepik API 配置（用于图片处理功能）
 - **下载代理**：Cloudflare Worker 配置（用于图片下载中转，提升性能和避免CORS）
+- **安全验证**：Cloudflare Turnstile 配置
 - **分析工具**：Google Analytics、Baidu Tongji、Plausible
 - **限流服务**：Upstash Redis 配置
 
@@ -183,3 +185,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### 路由重定向
 - `/dashboard` 自动重定向到 `/dashboard/settings`
 - 支持所有语言版本的自动重定向
+
+### 特殊文件用途
+- `middleware.ts` - 处理认证和国际化路由
+- `gtag.js` - Google Analytics 跟踪
+- `monitor-webhook.sh` - Webhook 监控脚本
+- `quick-status-check.js` - 快速状态检查脚本
+- `check-task-status.js` - 任务状态检查脚本
+- `cloudflare-worker-download.js` - Cloudflare Worker 下载代理配置

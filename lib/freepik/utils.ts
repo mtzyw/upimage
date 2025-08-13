@@ -203,6 +203,7 @@ export async function setTaskStatus(
 
     if (status === 'completed') {
       updateData.completed_at = new Date().toISOString();
+      updateData.error_message = null; // 清除之前的错误消息
       if (additionalData?.cdnUrl) {
         updateData.cdn_url = additionalData.cdnUrl;
       }
