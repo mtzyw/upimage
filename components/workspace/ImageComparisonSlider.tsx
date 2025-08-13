@@ -173,7 +173,7 @@ export default function ImageComparisonSlider({
           <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
             <div className="flex items-center space-x-2 text-gray-400">
               <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-sm">加载中...</span>
+              <span className="text-sm">Loading...</span>
             </div>
           </div>
         )}
