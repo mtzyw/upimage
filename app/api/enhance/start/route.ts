@@ -162,7 +162,8 @@ export async function POST(req: NextRequest) {
     console.log('🚀 [ENHANCE START] 步骤7: 调用Freepik API...');
     
     // 确保 webhook URL 是公开可访问的
-    const webhookUrl = `${process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL}/api/webhook/freepik`;
+    const siteUrl = process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL;
+    const webhookUrl = `${siteUrl}${siteUrl?.endsWith('/') ? '' : '/'}api/webhook/freepik`;
     console.log('🔗 [ENHANCE START] Webhook URL:', webhookUrl);
     
     // 验证 webhook URL 格式
@@ -332,7 +333,8 @@ export async function POST(req: NextRequest) {
     if (qstash) {
       try {
         console.log('🔄 [ENHANCE START] 注册 QStash 延迟轮询...');
-        const pollUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/internal/poll-task`;
+        const pollSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+        const pollUrl = `${pollSiteUrl}${pollSiteUrl?.endsWith('/') ? '' : '/'}api/internal/poll-task`;
         
         await qstash.publishJSON({
           url: pollUrl,
@@ -342,13 +344,13 @@ export async function POST(req: NextRequest) {
             userId: user.id,
             scaleFactor: validatedParams.scaleFactor
           },
-          delay: 10, // 10秒后第一次查询
+          delay: 60, // 60秒后第一次查询
           headers: {
             'Content-Type': 'application/json'
           }
         });
         
-        console.log('✅ [ENHANCE START] QStash 轮询已注册，10秒后开始');
+        console.log('✅ [ENHANCE START] QStash 轮询已注册，1分钟后开始');
       } catch (qstashError) {
         console.error('⚠️ [ENHANCE START] QStash 注册失败，但不影响主流程:', qstashError);
         // QStash 失败不影响主流程，Webhook 仍然可以工作
