@@ -96,7 +96,8 @@ export async function GET(req: NextRequest) {
       return apiResponse.badRequest('缺少必需参数: taskId');
     }
 
-    console.log(`Checking status for task: ${taskId}, user: ${user.id}`);
+    // 减少日志输出
+    // console.log(`Checking status for task: ${taskId}, user: ${user.id}`);
 
     // 3. 优先从 Redis 缓存获取任务信息
     let taskData = null;
@@ -106,20 +107,20 @@ export async function GET(req: NextRequest) {
       try {
         const cachedTask = await redis.get(`task_cache:${taskId}`);
         if (cachedTask) {
-          console.log(`Raw cached data:`, typeof cachedTask, cachedTask);
+          // console.log(`Raw cached data:`, typeof cachedTask, cachedTask);
           
           // Upstash Redis 可能会自动反序列化，检查数据类型
           if (typeof cachedTask === 'object' && cachedTask !== null) {
             // 已经是对象，直接使用
             taskData = cachedTask;
             fromCache = true;
-            console.log(`Task data loaded from Redis cache (object): ${taskId}`);
+            // console.log(`Task data loaded from Redis cache (object): ${taskId}`);
           } else if (typeof cachedTask === 'string') {
             // 是字符串，尝试解析
             try {
               taskData = JSON.parse(cachedTask);
               fromCache = true;
-              console.log(`Task data loaded from Redis cache (parsed): ${taskId}`);
+              // console.log(`Task data loaded from Redis cache (parsed): ${taskId}`);
             } catch (parseError) {
               console.error(`Failed to parse cached JSON for ${taskId}:`, parseError);
               // 清除无效缓存
@@ -152,7 +153,7 @@ export async function GET(req: NextRequest) {
         try {
           // 使用 Upstash Redis，不需要手动 JSON.stringify，让它自动处理
           await redis.set(`task_cache:${taskId}`, taskData, { ex: 300 });
-          console.log(`Task data cached to Redis: ${taskId}`);
+          // console.log(`Task data cached to Redis: ${taskId}`);
         } catch (cacheError) {
           console.error(`Failed to cache task data for ${taskId}:`, cacheError);
         }
@@ -265,34 +266,37 @@ export async function GET(req: NextRequest) {
             taskData.error_message = 'Task failed on Freepik service';
             taskData.completed_at = new Date().toISOString();
             
-          } else {
-            // Query failed completely or status still processing - mark as failed after timeout
-            console.log(`❌ [ENHANCE_FALLBACK] ${taskId} query failed completely, marking task as failed`);
+          } else if (queryResult && queryResult.status === 'processing') {
+            // 任务仍在处理中，重置状态回 processing，继续等待
+            console.log(`🔄 [ENHANCE_FALLBACK] ${taskId} still processing, continue waiting`);
             
-            const { error: queryFailedError } = await supabaseAdmin.rpc('update_image_enhancement_task_status', {
+            const { error: resetError } = await supabaseAdmin.rpc('update_image_enhancement_task_status', {
               p_task_id: taskId,
-              p_status: 'failed',
-              p_error_message: 'Unable to retrieve task status from Freepik after timeout',
-              p_completed_at: new Date().toISOString()
+              p_status: 'processing'
             });
             
-            if (queryFailedError) {
-              console.error(`❌ [ENHANCE_FALLBACK] ${taskId} query failed status update error:`, queryFailedError);
+            if (resetError) {
+              console.error(`⚠️ [ENHANCE_FALLBACK] ${taskId} reset status failed:`, resetError);
             }
             
-            // Refund credits for timeout failure
-            try {
-              const { refundUserCredits } = await import('@/lib/freepik/credits');
-              const refunded = await refundUserCredits(user.id, taskWithApiKey.scale_factor, taskId);
-              console.log(`💳 [ENHANCE_FALLBACK] ${taskId} credits refund result:`, refunded);
-            } catch (refundError) {
-              console.error(`❌ [ENHANCE_FALLBACK] ${taskId} credits refund failed:`, refundError);
+            // 不改变任务状态，继续等待 webhook 或 QStash 轮询
+            console.log(`ℹ️ [ENHANCE_FALLBACK] ${taskId} will be handled by webhook or QStash polling`);
+            
+          } else {
+            // 查询完全失败，但不强制标记为失败，继续等待
+            console.log(`⚠️ [ENHANCE_FALLBACK] ${taskId} query failed, but continue waiting`);
+            
+            const { error: resetError } = await supabaseAdmin.rpc('update_image_enhancement_task_status', {
+              p_task_id: taskId,
+              p_status: 'processing'
+            });
+            
+            if (resetError) {
+              console.error(`⚠️ [ENHANCE_FALLBACK] ${taskId} reset status failed:`, resetError);
             }
             
-            // Update taskData to reflect new status
-            taskData.status = 'failed';
-            taskData.error_message = 'Unable to retrieve task status from Freepik after timeout';
-            taskData.completed_at = new Date().toISOString();
+            // 保持 processing 状态，不退还积分
+            console.log(`ℹ️ [ENHANCE_FALLBACK] ${taskId} keeping processing status, waiting for webhook/polling`);
           }
         }
       }

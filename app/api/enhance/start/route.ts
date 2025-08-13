@@ -18,11 +18,17 @@ import {
   isValidScaleFactor 
 } from '@/lib/freepik/credits';
 import { redis } from '@/lib/upstash';
+import { Client } from '@upstash/qstash';
 
 const supabaseAdmin = createAdminClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+// 初始化 QStash client
+const qstash = process.env.QSTASH_TOKEN ? new Client({
+  token: process.env.QSTASH_TOKEN
+}) : null;
 
 // 请求参数验证 schema (JSON 格式)
 const enhanceRequestSchema = z.object({
@@ -321,6 +327,35 @@ export async function POST(req: NextRequest) {
     console.log('📊 [ENHANCE START] 步骤11: 设置任务初始状态...');
     await setTaskStatus(freepikTaskId, 'processing');
     console.log('✅ [ENHANCE START] 任务状态设置完成');
+
+    // 11.5 注册 QStash 延迟轮询（兜底机制）
+    if (qstash) {
+      try {
+        console.log('🔄 [ENHANCE START] 注册 QStash 延迟轮询...');
+        const pollUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/internal/poll-task`;
+        
+        await qstash.publishJSON({
+          url: pollUrl,
+          body: {
+            taskId: freepikTaskId,
+            attempt: 1,
+            userId: user.id,
+            scaleFactor: validatedParams.scaleFactor
+          },
+          delay: 10, // 10秒后第一次查询
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        console.log('✅ [ENHANCE START] QStash 轮询已注册，10秒后开始');
+      } catch (qstashError) {
+        console.error('⚠️ [ENHANCE START] QStash 注册失败，但不影响主流程:', qstashError);
+        // QStash 失败不影响主流程，Webhook 仍然可以工作
+      }
+    } else {
+      console.log('⚠️ [ENHANCE START] QStash 未配置，仅依赖 Webhook');
+    }
 
     // 12. 返回成功响应
     console.log('🎉 [ENHANCE START] 步骤12: 准备返回成功响应...');
