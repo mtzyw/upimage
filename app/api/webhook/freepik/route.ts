@@ -275,13 +275,13 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
     
     console.log(`📥 Starting optimized download/upload, size: ${contentLength} bytes`);
 
-    // 尝试流式上传（零内存占用），失败时自动降级到本地文件上传
+    // 尝试流式上传（零内存占用）
     const uploadResult = await uploadOptimizedImageStreamToR2(
       imageResponse,
       userId,
       taskId,
       imageExtension,
-      true // 启用降级到本地文件方案
+      false // 禁用回退，测试纯流式上传
     );
 
     const uploadMethod = uploadResult.uploadMethod;

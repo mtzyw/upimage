@@ -121,13 +121,13 @@ export async function POST(req: NextRequest) {
           throw new Error(`无法下载图片 ${imageResponse.status} ${imageResponse.statusText}`);
         }
         
-        // 尝试流式上传（零内存占用），失败时自动降级到本地文件上传
+        // 尝试流式上传（零内存占用）
         const uploadResult = await uploadOptimizedImageStreamToR2(
           imageResponse,
           `anonymous`,
           taskId,
           getImageExtension(resultImageUrl),
-          true // 启用降级到本地文件方案
+          false // 禁用回退，测试纯流式上传
         );
         
         const r2Key = uploadResult.key;
