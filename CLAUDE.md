@@ -193,3 +193,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `quick-status-check.js` - 快速状态检查脚本
 - `check-task-status.js` - 任务状态检查脚本
 - `cloudflare-worker-download.js` - Cloudflare Worker 下载代理配置
+
+### Webhook 开发调试
+
+#### Freepik API 集成调试
+- 使用开发隧道（如 VS Code devtunnels）公开本地 webhook 端点
+- 匿名 webhook 端点：`/api/anonymous/webhook/freepik` 
+- 认证 webhook 端点：`/api/webhook/freepik`
+- 支持任务状态跟踪：`DONE`、`COMPLETED`、`FAILED`、`PROCESSING`、`IN_PROGRESS`、`CREATED`
+- 使用 Upstash QStash 进行异步任务状态查询和重试机制
+- API 密钥池管理确保高并发场景下的可靠性
+
+#### 开发环境配置
+- 设置 `WEBHOOK_URL` 为公开可访问的开发隧道地址
+- 配置 `FREEPIK_WEBHOOK_SECRET` 用于 webhook 签名验证
+- 使用 QStash 队列系统处理异步图片增强任务

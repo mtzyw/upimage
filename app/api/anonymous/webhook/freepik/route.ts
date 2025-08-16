@@ -1,12 +1,15 @@
 import { NextRequest } from 'next/server';
 import { apiResponse } from '@/lib/api-response';
+
+// 强制使用 Node.js runtime 以获得 Node.js Readable 支持
+export const runtime = 'nodejs';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { redis } from '@/lib/upstash';
 import { releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
-  uploadOptimizedImageToR2, 
   uploadOptimizedImageLocalToR2,
+  uploadOptimizedImageStreamToR2,
   getImageExtension 
 } from '@/lib/freepik/utils';
 
@@ -119,15 +122,25 @@ export async function POST(req: NextRequest) {
           throw new Error(`无法下载图片 ${imageResponse.status} ${imageResponse.statusText}`);
         }
         
-        const localUploadResult = await uploadOptimizedImageLocalToR2(
+        // 尝试流式上传（零内存占用），失败时自动降级到本地文件上传
+        const uploadResult = await uploadOptimizedImageStreamToR2(
           imageResponse,
           `anonymous`,
           taskId,
-          getImageExtension(resultImageUrl)
+          getImageExtension(resultImageUrl),
+          true // 启用降级到本地文件方案
         );
         
-        const r2Key = localUploadResult.key;
-        const cdnUrl = localUploadResult.url;
+        const r2Key = uploadResult.key;
+        const cdnUrl = uploadResult.url;
+        const uploadMethod = uploadResult.uploadMethod;
+
+        // 记录使用的上传方式
+        if (uploadMethod === 'stream') {
+          console.log(`🎯 [WEBHOOK-${taskIdShort}] ✨ 成功使用零内存流式上传! 节省内存和磁盘I/O`);
+        } else {
+          console.log(`📁 [WEBHOOK-${taskIdShort}] ⚠️ 使用了本地文件上传方案 (流式上传失败降级)`);
+        }
 
         console.log(`🎉 [WEBHOOK-${taskIdShort}] 图片处理完成`);
 

@@ -5,7 +5,6 @@ import { Database } from '@/lib/supabase/types';
 import { redis } from '@/lib/upstash';
 import { releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
-  uploadOptimizedImageToR2, 
   uploadOptimizedImageLocalToR2,
   setTaskStatus, 
   getImageExtension 

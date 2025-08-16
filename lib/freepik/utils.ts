@@ -1,4 +1,4 @@
-import { serverUploadFile } from '@/lib/cloudflare/r2';
+import { serverUploadFile, serverStreamUploadFile } from '@/lib/cloudflare/r2';
 import { redis } from '@/lib/upstash';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
@@ -62,47 +62,57 @@ export async function convertR2ImageToBase64(cdnUrl: string): Promise<string> {
 }
 
 /**
- * 上传优化后的图片到 R2
- * @param buffer 图片 buffer
- * @param userId 用户ID
- * @param taskId 任务ID
- * @param originalExtension 原图扩展名
- * @returns 上传结果
- */
-export async function uploadOptimizedImageToR2(
-  buffer: Buffer, 
-  userId: string, 
-  taskId: string,
-  originalExtension: string = 'jpg'
-): Promise<{ key: string; url: string }> {
-  try {
-    const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
-    
-    console.log('Uploading optimized image to R2:', key);
-    
-    const result = await serverUploadFile({
-      data: buffer,
-      contentType: `image/${originalExtension}`,
-      key: key
-    });
-
-    console.log('Optimized image uploaded successfully:', result.url);
-    return result;
-  } catch (error) {
-    console.error('Error uploading optimized image to R2:', error);
-    throw new Error(`Failed to upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
-/**
- * 流式上传优化后的图片到 R2（直接从Response流上传，节省内存）
+ * 流式上传优化后的图片到 R2（零内存占用的真正流式实现）
  * @param imageResponse Fetch Response 对象
  * @param userId 用户ID
  * @param taskId 任务ID
  * @param originalExtension 原图扩展名
+ * @param fallbackToLocal 是否在流式上传失败时降级到本地文件方案
  * @returns 上传结果
  */
-// 删除了未使用的流式上传函数
+export async function uploadOptimizedImageStreamToR2(
+  imageResponse: Response,
+  userId: string, 
+  taskId: string,
+  originalExtension: string = 'png',
+  fallbackToLocal: boolean = true
+): Promise<{ key: string; url: string; uploadMethod: 'stream' | 'local' }> {
+  const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
+  const taskIdShort = taskId.slice(0, 8);
+  
+  try {
+    console.log(`🚀 [STREAM-${taskIdShort}] 尝试流式上传到 R2: ${key}`);
+    
+    // 克隆 Response 以防需要降级处理
+    const clonedResponse = fallbackToLocal ? imageResponse.clone() : imageResponse;
+    
+    // 获取文件大小信息用于日志
+    const contentLength = clonedResponse.headers.get('content-length');
+    const fileSizeInfo = contentLength ? `${Math.round(parseInt(contentLength) / 1024)}KB` : '未知大小';
+    
+    console.log(`📊 [STREAM-${taskIdShort}] 文件信息: ${fileSizeInfo}, ContentType: image/${originalExtension}`);
+    
+    // 尝试流式上传
+    const result = await serverStreamUploadFile({
+      stream: clonedResponse,
+      contentType: `image/${originalExtension}`,
+      key: key
+    });
+    
+    console.log(`✅ [STREAM-${taskIdShort}] 🎯 零内存流式上传成功! URL: ${result.url}`);
+    return { ...result, uploadMethod: 'stream' };
+  } catch (streamError) {
+    console.warn(`⚠️ [STREAM-${taskIdShort}] 流式上传失败:`, streamError);
+    
+    if (fallbackToLocal) {
+      console.log(`🔄 [STREAM-${taskIdShort}] 降级到本地文件上传方案...`);
+      const localResult = await uploadOptimizedImageLocalToR2(imageResponse, userId, taskId, originalExtension);
+      return { ...localResult, uploadMethod: 'local' };
+    } else {
+      throw new Error(`Stream upload failed: ${streamError instanceof Error ? streamError.message : 'Unknown error'}`);
+    }
+  }
+}
 
 /**
  * 本地文件上传优化后的图片到 R2（先下载到本地文件，然后上传）
@@ -120,50 +130,61 @@ export async function uploadOptimizedImageLocalToR2(
   originalExtension: string = 'png'
 ): Promise<{ key: string; url: string }> {
   let tempFilePath: string | null = null;
+  const taskIdShort = taskId.slice(0, 8);
   
   try {
     const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
     
-    console.log(`💾 Local file uploading optimized image to R2: ${key}`);
+    console.log(`💾 [LOCAL-${taskIdShort}] 开始本地文件上传到 R2: ${key}`);
     
     // 第一步：创建临时文件路径
     const tempDir = '/tmp';
     const tempFileName = `freepik-${taskId}-${Date.now()}.${originalExtension}`;
     tempFilePath = path.join(tempDir, tempFileName);
     
-    console.log(`📁 Temp file path: ${tempFilePath}`);
+    console.log(`📁 [LOCAL-${taskIdShort}] 临时文件路径: ${tempFilePath}`);
     
-    // 第二步：下载图片到本地临时文件
+    // 第二步：下载图片到本地临时文件 (内存占用操作)
+    const startTime = Date.now();
     const arrayBuffer = await imageResponse.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const downloadTime = Date.now() - startTime;
+    
+    console.log(`🔽 [LOCAL-${taskIdShort}] 图片加载到内存: ${Math.round(buffer.length / 1024)}KB, 耗时: ${downloadTime}ms`);
+    
     fs.writeFileSync(tempFilePath, buffer);
     
     // 获取文件大小
     const stats = fs.statSync(tempFilePath);
-    console.log(`📥 Image downloaded to local file: ${stats.size} bytes`);
+    console.log(`💿 [LOCAL-${taskIdShort}] 图片写入磁盘: ${Math.round(stats.size / 1024)}KB`);
     
-    // 第三步：从本地文件读取并上传到R2
+    // 第三步：从本地文件读取并上传到R2 (再次内存占用)
     const fileBuffer = fs.readFileSync(tempFilePath);
+    console.log(`📤 [LOCAL-${taskIdShort}] 从磁盘重新读取: ${Math.round(fileBuffer.length / 1024)}KB`);
     
+    const uploadStartTime = Date.now();
     const result = await serverUploadFile({
       data: fileBuffer,
       contentType: `image/${originalExtension}`,
       key: key
     });
+    const uploadTime = Date.now() - uploadStartTime;
     
-    console.log(`✅ Local file upload completed: ${result.url}`);
+    const totalTime = Date.now() - startTime;
+    console.log(`✅ [LOCAL-${taskIdShort}] 📁 本地文件上传完成! 总耗时: ${totalTime}ms (下载: ${downloadTime}ms, 上传: ${uploadTime}ms)`);
+    console.log(`🔄 [LOCAL-${taskIdShort}] 内存使用: ${Math.round(buffer.length / 1024)}KB x2 (内存复制), 磁盘I/O: 写入+读取`);
     return result;
   } catch (error) {
-    console.error('Error local file uploading optimized image to R2:', error);
+    console.error(`❌ [LOCAL-${taskIdShort}] 本地文件上传失败:`, error);
     throw new Error(`Failed to local file upload optimized image: ${error instanceof Error ? error.message : 'Unknown error'}`);
   } finally {
     // 清理临时文件
     if (tempFilePath && fs.existsSync(tempFilePath)) {
       try {
         fs.unlinkSync(tempFilePath);
-        console.log(`🗑️ Temp file cleaned up: ${tempFilePath}`);
+        console.log(`🗑️ [LOCAL-${taskIdShort}] 临时文件已清理: ${path.basename(tempFilePath)}`);
       } catch (cleanupError) {
-        console.warn(`Failed to cleanup temp file: ${tempFilePath}`, cleanupError);
+        console.warn(`[LOCAL-${taskIdShort}] 临时文件清理失败:`, cleanupError);
       }
     }
   }
