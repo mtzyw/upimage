@@ -1,4 +1,5 @@
-import { serverUploadFile, serverStreamUploadFile } from '@/lib/cloudflare/r2';
+import { serverUploadFile } from '@/lib/cloudflare/r2';
+import { serverStreamUploadFile } from '@/lib/cloudflare/r2-stream';
 import { redis } from '@/lib/upstash';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
