@@ -279,12 +279,44 @@ async function handlePollRequest(req: Request | NextRequest) {
     if (queryResult.status === 'completed' && queryResult.result?.generated?.[0]) {
       console.log(`✅ [POLL_TASK] Task ${taskId} completed`);
       
-      // 处理图片
-      const cdnUrl = await processCompletedTask(
-        taskId,
-        queryResult.result.generated[0],
-        task.user_id
-      );
+      // 🔒 使用统一的完成处理锁，与webhook保持一致
+      let hasCompletionLock = false;
+      const completionLockKey = `completion_lock:${taskId}`;
+      
+      try {
+        if (redis) {
+          const locked = await redis.set(completionLockKey, 'poll-task', { 
+            nx: true,  // 只在不存在时设置
+            ex: 300    // 5分钟超时
+          });
+          
+          if (!locked) {
+            console.log(`🔒 [POLL_TASK] Task ${taskId} is being processed by webhook, skipping`);
+            return apiResponse.success({ message: 'Task being processed by webhook' });
+          }
+          
+          hasCompletionLock = true;
+          console.log(`🆕 [POLL_TASK] Acquired completion lock for task ${taskId}`);
+        }
+
+        // 再次检查任务状态
+        const { data: currentTask } = await supabaseAdmin
+          .from('image_enhancement_tasks')
+          .select('status, cdn_url')
+          .eq('id', taskId)
+          .single();
+
+        if (currentTask?.status === 'completed') {
+          console.log(`✅ [POLL_TASK] Task ${taskId} already completed, skipping duplicate processing`);
+          return apiResponse.success({ message: 'Task already completed' });
+        }
+
+        // 处理图片
+        const cdnUrl = await processCompletedTask(
+          taskId,
+          queryResult.result.generated[0],
+          task.user_id
+        );
       
       if (cdnUrl) {
         // 更新数据库
@@ -315,6 +347,7 @@ async function handlePollRequest(req: Request | NextRequest) {
         }
         
         console.log(`🎉 [POLL_TASK] Task ${taskId} successfully processed`);
+        
       } else {
         // 图片处理失败
         await supabaseAdmin
@@ -336,6 +369,14 @@ async function handlePollRequest(req: Request | NextRequest) {
             await redis.set(refundKey, true, { ex: 86400 });
             console.log(`💳 [POLL_TASK] Credits refunded for failed task ${taskId}`);
           }
+        }
+      }
+      
+      } finally {
+        // 🔓 释放完成处理锁
+        if (hasCompletionLock && redis) {
+          await redis.del(completionLockKey);
+          console.log(`🔓 [POLL_TASK] Released completion lock for task ${taskId}`);
         }
       }
       

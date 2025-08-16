@@ -191,7 +191,42 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
   console.log(`[handleTaskCompleted] User: ${userId}, API Key: ${apiKeyId}`);
   console.log(`[handleTaskCompleted] Payload:`, JSON.stringify(payload, null, 2));
 
+  // 🔒 添加分布式锁防止与poll-task并发处理
+  let hasLock = false;
+  const lockKey = `completion_lock:${taskId}`;
+  
   try {
+    if (redis) {
+      const locked = await redis.set(lockKey, 'webhook', { 
+        nx: true,  // 只在不存在时设置
+        ex: 300    // 5分钟超时（图片处理可能较长）
+      });
+      
+      if (!locked) {
+        console.log(`🔒 [WEBHOOK] Task ${taskId} is being processed by another handler, skipping`);
+        return;
+      }
+      
+      hasLock = true;
+      console.log(`🆕 [WEBHOOK] Acquired completion lock for task ${taskId}`);
+    }
+
+    // 再次检查任务状态，防止竞态条件
+    const { data: currentTask } = await supabaseAdmin
+      .from('image_enhancement_tasks')
+      .select('status, cdn_url')
+      .eq('id', taskId)
+      .single();
+
+    if (currentTask?.status === 'completed') {
+      console.log(`✅ [WEBHOOK] Task ${taskId} already completed, skipping duplicate processing`);
+      return;
+    }
+
+    if (currentTask?.status === 'failed') {
+      console.log(`❌ [WEBHOOK] Task ${taskId} already failed, skipping processing`);
+      return;
+    }
     // 获取图片 URL（可能在 image_url 或 generated 数组中）
     let imageUrl = payload.image_url;
     
@@ -264,6 +299,7 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
     ]);
 
     console.log(`✅ Task completed with R2 CDN URL: ${uploadResult.url}`);
+    
   } catch (error) {
     console.error(`[handleTaskCompleted] Error handling completed task ${taskId}:`, error);
     
@@ -278,6 +314,12 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
     }
 
     // 不释放 API Key，因为 Freepik 配额已被消耗
+  } finally {
+    // 🔓 释放分布式锁
+    if (hasLock && redis) {
+      await redis.del(lockKey);
+      console.log(`🔓 [WEBHOOK] Released completion lock for task ${taskId}`);
+    }
   }
 }
 
@@ -289,7 +331,43 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
 async function handleTaskFailed(payload: FreepikWebhookPayload, taskInfo: any) {
   const { taskId, userId, apiKeyId } = taskInfo;
 
+  // 🔒 添加分布式锁防止与poll-task并发处理失败状态
+  let hasLock = false;
+  const lockKey = `completion_lock:${taskId}`;
+  
   try {
+    if (redis) {
+      const locked = await redis.set(lockKey, 'webhook-fail', { 
+        nx: true,  // 只在不存在时设置
+        ex: 60     // 1分钟超时（失败处理较快）
+      });
+      
+      if (!locked) {
+        console.log(`🔒 [WEBHOOK] Task ${taskId} failure is being processed by another handler, skipping`);
+        return;
+      }
+      
+      hasLock = true;
+      console.log(`🆕 [WEBHOOK] Acquired completion lock for failed task ${taskId}`);
+    }
+
+    // 再次检查任务状态，防止竞态条件
+    const { data: currentTask } = await supabaseAdmin
+      .from('image_enhancement_tasks')
+      .select('status')
+      .eq('id', taskId)
+      .single();
+
+    if (currentTask?.status === 'completed') {
+      console.log(`✅ [WEBHOOK] Task ${taskId} already completed, skipping failure processing`);
+      return;
+    }
+
+    if (currentTask?.status === 'failed') {
+      console.log(`❌ [WEBHOOK] Task ${taskId} already failed, skipping duplicate processing`);
+      return;
+    }
+
     console.log(`Processing failed task ${taskId}:`, payload.error);
 
     // 更新任务状态为失败
@@ -317,6 +395,12 @@ async function handleTaskFailed(payload: FreepikWebhookPayload, taskInfo: any) {
     console.log(`Task ${taskId} marked as failed and credits refunded`);
   } catch (error) {
     console.error(`Error handling failed task ${taskId}:`, error);
+  } finally {
+    // 🔓 释放分布式锁
+    if (hasLock && redis) {
+      await redis.del(lockKey);
+      console.log(`🔓 [WEBHOOK] Released completion lock for failed task ${taskId}`);
+    }
   }
 }
 
