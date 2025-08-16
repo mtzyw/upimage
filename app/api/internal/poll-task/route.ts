@@ -105,15 +105,15 @@ async function processCompletedTask(
   }
 }
 
-// 计算指数退避延迟
+// 计算指数退避延迟 - 优化版本，减少轮询频率
 function calculateBackoff(attempt: number): number {
-  // 基础延迟：10秒
-  const baseDelay = 10;
-  // 指数增长，最大延迟5分钟
-  const delay = Math.min(baseDelay * Math.pow(2, attempt - 1), 300);
+  // 优化：基础延迟增加到30秒，减少系统压力
+  const baseDelay = 30;
+  // 指数增长，最大延迟10分钟（增加到600秒）
+  const delay = Math.min(baseDelay * Math.pow(2, attempt - 1), 600);
   // 添加抖动 ±20%
   const jitter = Math.floor(Math.random() * 0.4 * delay) - 0.2 * delay;
-  return Math.max(10, Math.floor(delay + jitter));
+  return Math.max(30, Math.floor(delay + jitter));
 }
 
 // POST 处理轮询请求
@@ -207,7 +207,26 @@ async function handlePollRequest(req: Request | NextRequest) {
       return apiResponse.success({ message: 'Task expired' });
     }
 
-    // 4. 查询 Freepik API 状态
+    // 4. 优化：先检查Redis缓存状态，避免无效API调用
+    if (redis) {
+      const cachedStatus = await redis.get(`task_cache:${taskId}`);
+      if (cachedStatus) {
+        try {
+          const cachedTask = typeof cachedStatus === 'string' ? JSON.parse(cachedStatus) : cachedStatus;
+          if (cachedTask.status === 'completed' || cachedTask.status === 'failed') {
+            console.log(`✅ [POLL_TASK] Task ${taskId} already ${cachedTask.status} in cache, skipping API query`);
+            return apiResponse.success({ 
+              message: `Task already ${cachedTask.status}`, 
+              status: cachedTask.status 
+            });
+          }
+        } catch (parseError) {
+          console.warn(`⚠️ [POLL_TASK] Failed to parse cached status for ${taskId}:`, parseError);
+        }
+      }
+    }
+
+    // 5. 查询 Freepik API 状态
     if (!task.api_key) {
       console.error(`❌ [POLL_TASK] No API key for task ${taskId}`);
       return apiResponse.error('No API key available');
@@ -217,10 +236,10 @@ async function handlePollRequest(req: Request | NextRequest) {
     
     if (!queryResult) {
       console.error(`❌ [POLL_TASK] Failed to query status for ${taskId}`);
-      // 查询失败，继续重试
-      if (qstash && attempt < 30) {
+      // 查询失败，继续重试（减少到5次）
+      if (qstash && attempt < 5) {
         const delay = calculateBackoff(attempt);
-        console.log(`🔄 [POLL_TASK] Scheduling retry ${attempt + 1} for ${taskId} in ${delay}s`);
+        console.log(`🔄 [POLL_TASK] Scheduling retry ${attempt + 1} for ${taskId} in ${delay}s (max 5 attempts)`);
         
         await qstash.publishJSON({
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/internal/poll-task`,
@@ -228,11 +247,35 @@ async function handlePollRequest(req: Request | NextRequest) {
           delay,
           headers: { 'Content-Type': 'application/json' }
         });
+      } else if (attempt >= 5) {
+        console.log(`❌ [POLL_TASK] Task ${taskId} reached max query attempts (5), marking as failed`);
+        
+        // 达到最大查询尝试次数，标记为失败
+        await supabaseAdmin
+          .from('image_enhancement_tasks')
+          .update({
+            status: 'failed',
+            error_message: 'Max query attempts reached - API unavailable',
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', taskId);
+        
+        // 退还积分
+        if (userId && scaleFactor && redis) {
+          const refundKey = `refund:${taskId}`;
+          const alreadyRefunded = await redis.get(refundKey);
+          
+          if (!alreadyRefunded) {
+            await refundUserCredits(userId, scaleFactor, taskId);
+            await redis.set(refundKey, true, { ex: 86400 });
+            console.log(`💳 [POLL_TASK] Credits refunded for failed task ${taskId}`);
+          }
+        }
       }
       return apiResponse.success({ message: 'Query failed, retry scheduled' });
     }
 
-    // 5. 根据状态处理
+    // 6. 根据状态处理
     if (queryResult.status === 'completed' && queryResult.result?.generated?.[0]) {
       console.log(`✅ [POLL_TASK] Task ${taskId} completed`);
       
@@ -319,10 +362,10 @@ async function handlePollRequest(req: Request | NextRequest) {
       return apiResponse.success({ message: 'Task failed' });
       
     } else {
-      // 仍在处理中，注册下次轮询
-      if (qstash && attempt < 30) {
+      // 仍在处理中，优化策略：减少轮询，更多依赖Webhook
+      if (qstash && attempt < 3) {
         const delay = calculateBackoff(attempt);
-        console.log(`🔄 [POLL_TASK] Task ${taskId} still processing, next poll in ${delay}s`);
+        console.log(`🔄 [POLL_TASK] Task ${taskId} still processing, next poll in ${delay}s (max 3 polls, then rely on webhook)`);
         
         await qstash.publishJSON({
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/internal/poll-task`,
@@ -330,30 +373,12 @@ async function handlePollRequest(req: Request | NextRequest) {
           delay,
           headers: { 'Content-Type': 'application/json' }
         });
-      } else if (attempt >= 30) {
-        console.log(`❌ [POLL_TASK] Task ${taskId} reached max attempts`);
+      } else if (attempt >= 3) {
+        console.log(`⏳ [POLL_TASK] Task ${taskId} reached max polling attempts (3), now relying on webhook`);
         
-        // 达到最大尝试次数
-        await supabaseAdmin
-          .from('image_enhancement_tasks')
-          .update({
-            status: 'failed',
-            error_message: 'Max polling attempts reached',
-            completed_at: new Date().toISOString()
-          })
-          .eq('id', taskId);
-        
-        // 退还积分（使用幂等键防止重复退还）
-        if (userId && scaleFactor && redis) {
-          const refundKey = `refund:${taskId}`;
-          const alreadyRefunded = await redis.get(refundKey);
-          
-          if (!alreadyRefunded) {
-            await refundUserCredits(userId, scaleFactor, taskId);
-            await redis.set(refundKey, true, { ex: 86400 });
-            console.log(`💳 [POLL_TASK] Credits refunded for failed task ${taskId}`);
-          }
-        }
+        // 不再创建新的QStash任务，完全依赖Webhook
+        // 任务继续在处理中，等待Webhook通知完成
+        console.log(`📞 [POLL_TASK] Task ${taskId} will complete via webhook or timeout mechanism`);
       }
       
       return apiResponse.success({ message: 'Task still processing' });

@@ -329,28 +329,55 @@ export async function POST(req: NextRequest) {
     await setTaskStatus(freepikTaskId, 'processing');
     console.log('✅ [ENHANCE START] 任务状态设置完成');
 
-    // 11.5 注册 QStash 延迟轮询（兜底机制）
+    // 11.5 注册 QStash 延迟轮询（兜底机制）- 添加Redis锁防止重复创建
     if (qstash) {
       try {
-        console.log('🔄 [ENHANCE START] 注册 QStash 延迟轮询...');
-        const pollSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-        const pollUrl = `${pollSiteUrl}${pollSiteUrl?.endsWith('/') ? '' : '/'}api/internal/poll-task`;
+        console.log('🔄 [ENHANCE START] 检查 QStash 任务锁...');
         
-        await qstash.publishJSON({
-          url: pollUrl,
-          body: {
-            taskId: freepikTaskId,
-            attempt: 1,
-            userId: user.id,
-            scaleFactor: validatedParams.scaleFactor
-          },
-          delay: 60, // 60秒后第一次查询
-          headers: {
-            'Content-Type': 'application/json'
+        // Redis锁机制：防止重复创建QStash任务
+        const qstashLockKey = `qstash_lock:${freepikTaskId}`;
+        let shouldCreateQStashTask = true;
+        
+        if (redis) {
+          // 尝试设置锁，使用 SET NX EX 原子操作
+          const lockSet = await redis.set(qstashLockKey, Date.now(), { 
+            nx: true,  // 只在不存在时设置
+            ex: 1800   // 30分钟过期（任务最大生命周期）
+          });
+          
+          if (!lockSet) {
+            console.log('🔒 [ENHANCE START] QStash任务已被其他进程调度，跳过重复创建');
+            shouldCreateQStashTask = false;
+          } else {
+            console.log('🆕 [ENHANCE START] 获得 QStash 调度锁，准备创建任务');
           }
-        });
+        } else {
+          console.log('⚠️ [ENHANCE START] Redis 未配置，无法使用任务锁');
+        }
         
-        console.log('✅ [ENHANCE START] QStash 轮询已注册，1分钟后开始');
+        if (shouldCreateQStashTask) {
+          console.log('🔄 [ENHANCE START] 注册 QStash 延迟轮询...');
+          const pollSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+          const pollUrl = `${pollSiteUrl}${pollSiteUrl?.endsWith('/') ? '' : '/'}api/internal/poll-task`;
+          
+          await qstash.publishJSON({
+            url: pollUrl,
+            body: {
+              taskId: freepikTaskId,
+              attempt: 1,
+              userId: user.id,
+              scaleFactor: validatedParams.scaleFactor
+            },
+            delay: 60, // 60秒后第一次查询
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          console.log('✅ [ENHANCE START] QStash 轮询已注册，1分钟后开始');
+        } else {
+          console.log('🔒 [ENHANCE START] QStash 任务已存在，仅依赖 Webhook + 现有轮询');
+        }
       } catch (qstashError) {
         console.error('⚠️ [ENHANCE START] QStash 注册失败，但不影响主流程:', qstashError);
         // QStash 失败不影响主流程，Webhook 仍然可以工作
