@@ -8,7 +8,6 @@ import { Database } from '@/lib/supabase/types';
 import { redis } from '@/lib/upstash';
 import { releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
-  uploadOptimizedImageLocalToR2,
   uploadOptimizedImageStreamToR2,
   getImageExtension 
 } from '@/lib/freepik/utils';

@@ -1,11 +1,14 @@
 import { NextRequest } from 'next/server';
 import { apiResponse } from '@/lib/api-response';
+
+// 强制使用 Node.js runtime 以支持流式上传
+export const runtime = 'nodejs';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { redis } from '@/lib/upstash';
 import { releaseApiKey } from '@/lib/freepik/api-key-manager';
 import { 
-  uploadOptimizedImageLocalToR2,
+  uploadOptimizedImageStreamToR2,
   setTaskStatus, 
   getImageExtension 
 } from '@/lib/freepik/utils';
@@ -272,14 +275,24 @@ async function handleTaskCompleted(payload: FreepikWebhookPayload, taskInfo: any
     
     console.log(`📥 Starting optimized download/upload, size: ${contentLength} bytes`);
 
-    // 使用本地文件上传方案（最稳定，先下载到本地文件，再上传到R2）
-    const uploadResult = await uploadOptimizedImageLocalToR2(
+    // 尝试流式上传（零内存占用），失败时自动降级到本地文件上传
+    const uploadResult = await uploadOptimizedImageStreamToR2(
       imageResponse,
       userId,
       taskId,
-      imageExtension
+      imageExtension,
+      true // 启用降级到本地文件方案
     );
 
+    const uploadMethod = uploadResult.uploadMethod;
+    
+    // 记录使用的上传方式
+    if (uploadMethod === 'stream') {
+      console.log(`🎯 [WEBHOOK] ✨ 正式用户成功使用零内存流式上传! 节省内存和磁盘I/O`);
+    } else {
+      console.log(`📁 [WEBHOOK] ⚠️ 正式用户使用了本地文件上传方案 (流式上传失败降级)`);
+    }
+    
     console.log(`🚀 Upload completed to R2: ${uploadResult.url}`);
 
     // 现在一次性完成：更新状态、清理资源（不释放API Key）

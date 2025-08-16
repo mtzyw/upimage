@@ -1,11 +1,14 @@
 import { NextRequest } from 'next/server';
 import { apiResponse } from '@/lib/api-response';
+
+// 强制使用 Node.js runtime 以支持流式上传
+export const runtime = 'nodejs';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { getTaskStatus } from '@/lib/freepik/utils';
 import { redis } from '@/lib/upstash';
-import { uploadOptimizedImageLocalToR2, getImageExtension } from '@/lib/freepik/utils';
+import { uploadOptimizedImageStreamToR2, getImageExtension } from '@/lib/freepik/utils';
 
 // Helper function to process completed image task
 async function processCompletedImageTask(imageUrl: string, taskId: string, userType: string): Promise<string> {
@@ -18,13 +21,21 @@ async function processCompletedImageTask(imageUrl: string, taskId: string, userT
     throw new Error(`无法下载图片 ${imageResponse.status} ${imageResponse.statusText}`);
   }
   
-  // Upload to R2 - for authenticated users, use their user ID path structure
-  const uploadResult = await uploadOptimizedImageLocalToR2(
+  // 尝试流式上传到 R2
+  const uploadResult = await uploadOptimizedImageStreamToR2(
     imageResponse,
     userType === 'authenticated' ? 'authenticated' : 'anonymous',
     taskId,
-    getImageExtension(imageUrl)
+    getImageExtension(imageUrl),
+    true // 启用降级到本地文件方案
   );
+  
+  // 记录使用的上传方式
+  if (uploadResult.uploadMethod === 'stream') {
+    console.log(`🎯 [ENHANCE-${taskIdShort}] ✨ 状态检查成功使用零内存流式上传!`);
+  } else {
+    console.log(`📁 [ENHANCE-${taskIdShort}] ⚠️ 状态检查使用了本地文件上传方案 (流式上传失败降级)`);
+  }
   
   console.log(`✅ [ENHANCE-${taskIdShort}] 图片处理成功: ${uploadResult.url}`);
   return uploadResult.url;

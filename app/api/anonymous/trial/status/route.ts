@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { apiResponse } from '@/lib/api-response';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
-import { uploadOptimizedImageLocalToR2 } from '@/lib/freepik/utils';
+import { uploadOptimizedImageStreamToR2 } from '@/lib/freepik/utils';
 
 const supabaseAdmin = createAdminClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -90,15 +90,24 @@ async function processCompletedImageTask(taskId: string, taskData: any): Promise
       throw new Error(`无法下载图片 ${imageResponse.status} ${imageResponse.statusText}`);
     }
     
-    const localUploadResult = await uploadOptimizedImageLocalToR2(
+    // 尝试流式上传（零内存占用），失败时自动降级到本地文件上传
+    const uploadResult = await uploadOptimizedImageStreamToR2(
       imageResponse,
       `anonymous`,
       taskId,
-      getImageExtension(resultImageUrl)
+      getImageExtension(resultImageUrl),
+      true // 启用降级到本地文件方案
     );
     
-    const r2Key = localUploadResult.key;
-    const cdnUrl = localUploadResult.url;
+    // 记录使用的上传方式
+    if (uploadResult.uploadMethod === 'stream') {
+      console.log(`🎯 [TRIAL-STATUS] ✨ 试用状态检查成功使用零内存流式上传!`);
+    } else {
+      console.log(`📁 [TRIAL-STATUS] ⚠️ 试用状态检查使用了本地文件上传方案 (流式上传失败降级)`);
+    }
+    
+    const r2Key = uploadResult.key;
+    const cdnUrl = uploadResult.url;
 
     const resultData = {
       cdnUrl,

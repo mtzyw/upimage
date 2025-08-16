@@ -1,11 +1,14 @@
 import { NextRequest } from 'next/server';
 import { Client } from '@upstash/qstash';
+
+// 强制使用 Node.js runtime 以支持流式上传
+export const runtime = 'nodejs';
 import { verifySignature } from '@upstash/qstash/nextjs';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { apiResponse } from '@/lib/api-response';
 import { redis } from '@/lib/upstash';
-import { uploadOptimizedImageLocalToR2, getImageExtension } from '@/lib/freepik/utils';
+import { uploadOptimizedImageStreamToR2, getImageExtension } from '@/lib/freepik/utils';
 import { refundUserCredits } from '@/lib/freepik/credits';
 
 const supabaseAdmin = createAdminClient<Database>(
@@ -89,13 +92,21 @@ async function processCompletedTask(
       throw new Error(`Failed to download image: ${imageResponse.status}`);
     }
     
-    // 上传到 R2
-    const uploadResult = await uploadOptimizedImageLocalToR2(
+    // 尝试流式上传到 R2
+    const uploadResult = await uploadOptimizedImageStreamToR2(
       imageResponse,
       'authenticated',
       taskId,
-      getImageExtension(imageUrl)
+      getImageExtension(imageUrl),
+      true // 启用降级到本地文件方案
     );
+    
+    // 记录使用的上传方式
+    if (uploadResult.uploadMethod === 'stream') {
+      console.log(`🎯 [POLL_TASK] ✨ 轮询任务成功使用零内存流式上传!`);
+    } else {
+      console.log(`📁 [POLL_TASK] ⚠️ 轮询任务使用了本地文件上传方案 (流式上传失败降级)`);
+    }
     
     console.log(`✅ [POLL_TASK] Image uploaded to R2 for ${taskId}: ${uploadResult.url}`);
     return uploadResult.url;
