@@ -1,0 +1,481 @@
+{
+  "Hero": {
+    "badge": {
+      "label": "Nuevo",
+      "text": "Tecnología inteligente de mejora de imágenes con IA",
+      "href": "https://nexty.dev/#pricing"
+    },
+    "title": {
+      "part1": "Ampliador ",
+      "part2": "de imágenes",
+      "part3": "Transformador",
+      "part4": "y generador",
+      "part5": "como",
+      "part6": "magia"
+    },
+    "description": "La tecnología de IA más avanzada para ampliación de imágenes de ultra alta resolución. No solo ampliación, ¡sino también mejora, transformación y generación! ImgEnhancer puede reimaginar cualquier detalle que desees según tus indicaciones y parámetros.",
+    "getStarted": "Ampliar, transformar o generar imágenes",
+    "getStartedLink": "https://nexty.dev/#pricing",
+    "goToWorkspace": "Ir al espacio de trabajo",
+    "viewDocs": "Ver documentación",
+    "viewDocsLink": "https://nexty.dev/docs"
+  },
+  "Features": {
+    "badge": {
+      "label": "Funcionalidades principales",
+      "text": "Kit de desarrollo SaaS de nivel de producción"
+    },
+    "title": "Suite de funciones que cubre escenarios completos de desarrollo SaaS",
+    "description": "Nexty proporciona todas las funciones principales necesarias para aplicaciones SaaS modernas, te permite enfocarte en la lógica de negocio principal y lograr rápidamente el avance de 0 a 1.",
+    "moreFeatures": {
+      "title": "Explorar más características",
+      "description": "Ver la hoja de ruta completa de características, documentación técnica detallada y nuevas funciones próximas a lanzarse para impulsar tu viaje de desarrollo SaaS.",
+      "button": "Ver hoja de ruta de características"
+    },
+    "items": [
+      {
+        "title": "Sistema de autenticación de usuarios",
+        "description": "Solución de autenticación de nivel empresarial basada en Supabase, admite inicio de sesión social, verificación de correo y protección anti-bot, haciendo que el registro e inicio de sesión de usuarios sea más seguro y conveniente.",
+        "details": [
+          {
+            "title": "Inicio de sesión con redes sociales",
+            "description": "Admite inicio de sesión con un clic en plataformas principales como Google, GitHub."
+          },
+          {
+            "title": "Enlace mágico de correo",
+            "description": "Verificación de inicio de sesión sin contraseña, mejora la experiencia del usuario."
+          },
+          {
+            "title": "Protección anti-bot",
+            "description": "Integra Cloudflare Turnstile para prevenir registros maliciosos."
+          }
+        ],
+        "images": [
+          "/images/features/login.png"
+        ]
+      },
+      {
+        "title": "Sistema de pagos y facturación",
+        "description": "Solución completa de pagos con Stripe, admite suscripciones, pagos únicos y facturación por uso, facilita la monetización comercial.",
+        "details": [
+          {
+            "title": "Soporte para todos los escenarios de pago",
+            "description": "Nexty admite múltiples modelos de facturación como suscripciones mensuales, anuales y compras únicas."
+          },
+          {
+            "title": "Sistema de facturación por uso",
+            "description": "Nexty admite facturación flexible basada en uso, adecuada para escenarios de pago por uso como herramientas de IA."
+          },
+          {
+            "title": "Gestión visual de precios",
+            "description": "Nexty gestiona visualmente planes de precios a través del panel de administración, vincula IDs de precios de Stripe, seguro, conveniente y con vista previa en tiempo real."
+          }
+        ],
+        "images": [
+          "/images/features/payment-1.png",
+          "/images/features/payment-2.png"
+        ]
+      },
+      {
+        "title": "Capacidades de integración de IA",
+        "description": "Kit completo de herramientas de desarrollo de IA, proporciona demostraciones interactivas, soporte multi-proveedor, además incluye una plantilla completa de sitio web de generación de imágenes con IA.",
+        "details": [
+          {
+            "title": "Centro de demostración de funciones de IA",
+            "description": "Nexty incluye demostraciones integradas de conversación, generación de texto a imagen, imagen a imagen, generación de video, ayudando a los desarrolladores a aprender rápidamente el proceso de llamadas de IA y probar modelos."
+          },
+          {
+            "title": "Acceso a IA multiplataforma",
+            "description": "Nexty admite plataformas de IA principales como GPT, Claude, Gemini, DeepSeek, Grok, OpenRouter, Replicate."
+          },
+          {
+            "title": "Bonus adicional: Plantilla de sitio web de dibujo con IA",
+            "description": "Los usuarios de pago de Nexty pueden obtener la plantilla completa del sitio web Flux Kontext AI Drawing para implementar rápidamente una plataforma de creación artística con IA."
+          }
+        ],
+        "images": [
+          "/images/features/ai-1.png",
+          "/images/features/ai-2.png"
+        ]
+      },
+      {
+        "title": "Sistema de gestión de contenido",
+        "description": "CMS avanzado que supera la gestión básica de contenido, admite protección paywall, traducción con IA y capacidades de publicación multi-escenario.",
+        "details": [
+          {
+            "title": "Control de acceso a contenido",
+            "description": "El CMS de Nexty admite control de acceso de múltiples niveles: público, usuarios registrados, suscriptores de pago, logrando la monetización del contenido."
+          },
+          {
+            "title": "Traducción inteligente con IA",
+            "description": "El CMS de Nexty incluye función de traducción con IA para creación de contenido multilingüe, además de función de copia para mejorar la eficiencia de producción de contenido."
+          },
+          {
+            "title": "Publicación de contenido multi-escenario",
+            "description": "El CMS de Nexty puede funcionar tanto como sitio de blog gratuito como plataforma de contenido de pago, admite gestión de estados como borrador, publicado, archivado."
+          }
+        ],
+        "images": [
+          "/images/features/cms-1.png",
+          "/images/features/admin-3.png",
+          "/images/features/cms-3.png",
+          "/images/features/cms-4.png",
+          "/images/features/cms-5.png"
+        ]
+      },
+      {
+        "title": "Gestión de almacenamiento de archivos",
+        "description": "Gestión de archivos de nivel empresarial basada en Cloudflare R2, operaciones visuales del panel de administración, aceleración CDN global, optimiza la experiencia de carga.",
+        "details": [
+          {
+            "title": "Gestión de archivos del panel trasero",
+            "description": "Nexty proporciona un panel de administración dedicado, admite funciones completas de gestión de archivos como carga, eliminación, organización."
+          },
+          {
+            "title": "Integración con Cloudflare R2",
+            "description": "Nexty adopta la solución de almacenamiento Cloudflare R2, costo bajo, rendimiento excelente, distribución automática de CDN global."
+          },
+          {
+            "title": "Experiencia de carga optimizada",
+            "description": "Nexty admite carga por arrastre, función de vista previa y procesamiento automático de archivos, proporcionando una experiencia de usuario sin interrupciones."
+          }
+        ],
+        "images": [
+          "/images/features/admin-4.png"
+        ]
+      },
+      {
+        "title": "Gestión visual de precios",
+        "description": "Modo pionero de gestión de precios del panel trasero de Nexty, seguro y conveniente, actualiza precios sin modificar código.",
+        "details": [
+          {
+            "title": "Función de vista previa en tiempo real",
+            "description": "El editor de tarjetas de precios de Nexty admite vista previa en tiempo real, te permite ver el efecto de visualización de las tarjetas de precios antes de guardar."
+          },
+          {
+            "title": "Sincronización de datos de Stripe",
+            "description": "Nexty verifica y obtiene datos de precios de Stripe con un clic, asegurando configuración de facturación precisa."
+          },
+          {
+            "title": "Traducción inteligente multilingüe",
+            "description": "Nexty admite traducción de tarjetas de precios impulsada por IA, gestiona fácilmente contenido de precios multilingüe."
+          }
+        ],
+        "images": [
+          "/images/features/admin-2.png",
+          "/images/features/prices-1.png",
+          "/images/features/prices-2.png",
+          "/images/features/prices-3.png",
+          "/images/features/prices-4.png",
+          "/images/features/prices-5.png"
+        ]
+      },
+      {
+        "title": "Sistema de marketing por correo",
+        "description": "Solución completa de correo, correo de dominio Cloudflare + integración de marketing Resend, comunicación profesional y gestión de suscripciones en un solo paso.",
+        "details": [
+          {
+            "title": "Correo profesional de dominio",
+            "description": "Nexty implementa correo de dominio a través de Cloudflare, hace tu marca más profesional, mejora la confianza del usuario."
+          },
+          {
+            "title": "Marketing por correo avanzado",
+            "description": "Nexty integra gestión de suscripciones y funciones de marketing por correo de Resend, módulo de suscripción integrado en el pie de página."
+          },
+          {
+            "title": "Automatización de correo integrada",
+            "description": "Nexty incluye plantillas preconstruidas como correo de bienvenida de suscripción, notificación de falla de pago, cubriendo escenarios principales de comunicación con usuarios."
+          }
+        ],
+        "images": [
+          "/images/features/email-2.png",
+          "/images/features/email-1.png"
+        ]
+      },
+      {
+        "title": "Centro de gestión de usuarios",
+        "description": "Centro completo de gestión de usuarios, proporciona una experiencia de uso fluida para los usuarios.",
+        "details": [
+          {
+            "title": "Gestión de perfil personal",
+            "description": "Nexty proporciona funciones completas de configuración personal."
+          },
+          {
+            "title": "Gestión de suscripciones",
+            "description": "Nexty proporciona gestión de suscripciones y consulta de historial de facturación a través de la integración con Stripe."
+          },
+          {
+            "title": "Historial de créditos",
+            "description": "Nexty rastrea la emisión y uso de créditos, admite modo dual de créditos únicos y créditos de suscripción."
+          }
+        ],
+        "images": [
+          "/images/features/user-1.png",
+          "/images/features/user-2.png",
+          "/images/features/user-3.png"
+        ]
+      },
+      {
+        "title": "Panel de administración",
+        "description": "Panel de administración integral, proporciona capacidades completas de gestión SaaS para usuarios, precios, contenido, archivos.",
+        "details": [
+          {
+            "title": "Gestión de usuarios",
+            "description": "Nexty proporciona funciones completas de gestión de usuarios, incluye control de roles, integración de clientes de Stripe y gestión de cuentas."
+          },
+          {
+            "title": "Gestión de precios",
+            "description": "Nexty proporciona gestión visual de planes de precios, aislamiento de entornos, integración con Stripe, vista previa en tiempo real."
+          },
+          {
+            "title": "Gestión de contenido y archivos",
+            "description": "Nexty incluye gestión de blog (soporte multilingüe, control de acceso) y gestión de archivos R2 (función de vista previa)."
+          }
+        ],
+        "images": [
+          "/images/features/admin-1.png",
+          "/images/features/admin-2.png",
+          "/images/features/admin-3.png",
+          "/images/features/admin-4.png"
+        ]
+      },
+      {
+        "title": "Herramientas de crecimiento de marketing",
+        "description": "Kit completo de herramientas de crecimiento de marketing, internacionalización, análisis de datos, publicidad, optimización SEO, impulsa el éxito del negocio global.",
+        "details": [
+          {
+            "title": "Internacionalización multilingüe",
+            "description": "Nexty incluye soporte multilingüe listo para usar, fácil expansión a la cobertura del mercado global."
+          },
+          {
+            "title": "Análisis de datos y monetización",
+            "description": "Nexty integra análisis de datos Google Analytics, Plausible y monetización publicitaria AdSense."
+          },
+          {
+            "title": "Optimización SEO para búsquedas",
+            "description": "Nexty proporciona optimización SEO integral, meta tags, sitemap para mejorar rankings de búsqueda."
+          }
+        ],
+        "images": [
+          "/images/features/other-1.png",
+          "/images/features/other-2.png",
+          "/images/features/other-3.png"
+        ]
+      }
+    ]
+  },
+  "UseCases": {
+    "badge": {
+      "label": "Casos de uso",
+      "text": "Soluciones multi-escenario"
+    },
+    "title": "Una plantilla, múltiples aplicaciones de escenario",
+    "description": "Nexty es adecuado para desarrollar sitios web de diferentes escenarios, desde sitios de contenido hasta herramientas de IA, desde servicios gratuitos hasta suscripciones de pago, todos pueden ser desarrollados e implementados rápidamente.",
+    "cases": [
+      {
+        "title": "Sitio de herramientas de IA de pago",
+        "description": "Lanza aplicaciones de IA de nivel de producción en días, ya no necesitas meses de desarrollo. Integración incorporada de plataformas de IA principales como OpenRouter, Replicate, seguimiento inteligente de uso, facturación y deducción automática, nacido para la monetización de IA.",
+        "image": "/placeholder.webp",
+        "icon": "Bot"
+      },
+      {
+        "title": "Plataforma de blog de contenido",
+        "description": "Construye rápidamente un sitio web de contenido optimizado para SEO con funciones completas de CMS avanzado. Admite edición Markdown, multilingüe, protección paywall, traducción con IA, integración AdSense. Adecuado para plataformas de contenido de pago, newsletter o SaaS impulsado por contenido.",
+        "image": "/placeholder.webp",
+        "icon": "FileText"
+      },
+      {
+        "title": "Plataforma de membresía por suscripción",
+        "description": "Construye un negocio de ingresos por suscripción estable, facturación automatizada, gestión de clientes, procesamiento de pagos todo incluido. Incluye gestión de suscripciones, facturación por uso, portal de clientes, análisis de datos. Adecuado para mercado SaaS, servicios de suscripción o plataformas de herramientas de pago.",
+        "image": "/placeholder.webp",
+        "icon": "CreditCard"
+      },
+      {
+        "title": "Sitio de herramientas gratuitas para generar tráfico",
+        "description": "Crea herramientas gratuitas de rápida propagación, trae gran cantidad de tráfico natural. Rendimiento de alta velocidad y optimización SEO, te ayuda a crear rápidamente la próxima herramienta viral, obtener clientes potenciales.",
+        "image": "/placeholder.webp",
+        "icon": "Wrench"
+      }
+    ]
+  },
+  "Testimonials": {
+    "badge": {
+      "label": "Testimonios de usuarios"
+    },
+    "title": "Qué dicen los usuarios",
+    "description": "Mira cómo ImgEnhancer está cambiando el flujo de trabajo creativo",
+    "items": [
+      {
+        "content": "¡ImgEnhancer ha cambiado completamente mi flujo de trabajo fotográfico! Ahora puedo ampliar retratos a un nivel de detalle increíble. La función de mejora con IA añade profundidad y claridad a las imágenes que antes era imposible de lograr. Esta herramienta es pura magia para fotógrafos profesionales.",
+        "author": {
+          "name": "Sarah Chen",
+          "position": "Fotógrafa profesional",
+          "avatar": "/images/users/user1.jpeg"
+        },
+        "rating": "5.0"
+      },
+      {
+        "content": "Como artista digital, ImgEnhancer ha revolucionado la forma en que manejo las imágenes generadas por IA. Puedo crear primero obras de baja resolución, luego ampliarlas a niveles de detalle asombrosos. El control de creatividad me permite añadir exactamente la cantidad correcta de mejoras.",
+        "author": {
+          "name": "Michael Rodríguez",
+          "position": "Artista digital",
+          "avatar": "/images/users/user2.jpeg"
+        },
+        "rating": "4.9"
+      },
+      {
+        "content": "Nuestro estudio de diseño ha estado usando ImgEnhancer para proyectos de clientes y los resultados son asombrosos. Podemos entregar obras de arte de ultra alta resolución que a los clientes les encantan. Se ha vuelto una herramienta indispensable en nuestro proceso creativo.",
+        "author": {
+          "name": "Emma Thompson",
+          "position": "Directora creativa",
+          "avatar": "/images/users/user3.png"
+        },
+        "rating": "5.0"
+      }
+    ]
+  },
+  "FAQ": {
+    "title": "Preguntas frecuentes",
+    "description": "Preguntas comunes sobre la tecnología de mejora de imágenes con IA y cómo revoluciona tus imágenes",
+    "items": [
+      {
+        "question": "¿Cómo funcionan el ampliador y mejorador de IA de ImgEnhancer?",
+        "answer": "¡Te sentirás como si tuvieras una varita mágica! ImgEnhancer convertirá cualquier imagen que elijas en una versión de mayor resolución, añadiendo cualquier detalle que desees. Puedes guiar el proceso de ampliación a través de descripciones y varios controles, como el control de 'creatividad', que te permite controlar el nivel de alucinaciones generadas por IA (por lo tanto, nuevos detalles)."
+      },
+      {
+        "question": "¿Es ImgEnhancer adecuado para principiantes?",
+        "answer": "ImgEnhancer.ai está diseñado para proporcionar una experiencia accesible y fácil de usar para creadores de todos los antecedentes y niveles de habilidad. Su interfaz intuitiva, tutoriales en profundidad y comunidad pueden apoyarte en tu viaje creativo."
+      },
+      {
+        "question": "¿Quién puede mejorar su flujo de trabajo y proceso creativo a través del ampliador ImgEnhancer?",
+        "answer": "ImgEnhancer está diseñado para una amplia gama de usuarios, incluidos profesionales y entusiastas en campos como fotografía, diseño gráfico, arte digital e ilustración que necesitan imágenes de alta resolución y mejora de detalles finos. También sirve a artistas y creadores de IA que generan imágenes con IA y quieren ampliarlas para obtener más resolución y profundidad."
+      },
+      {
+        "question": "¿Cuánto cuesta ImgEnhancer AI?",
+        "answer": "El precio aplicable de ImgEnhancer AI es el precio mostrado en nuestra página de precios al momento de la compra. Cuando sea posible, los precios se muestran en tu moneda local. Ten en cuenta que según tu región, el precio final puede incluir IVA y/o impuestos locales. Cuando eliges una suscripción anual, obtienes dos meses gratis."
+      },
+      {
+        "question": "¿Las imágenes ampliadas tendrán artefactos?",
+        "answer": "A veces sí. Pero en la mayoría de los casos, se pueden controlar a través de los deslizadores de creatividad, HDR y similitud, y a través del lenguaje natural mediante indicaciones de texto. La mayoría de los artefactos solo aparecen cuando los valores de creatividad o HDR están configurados demasiado altos, o cuando la similitud está mal configurada."
+      },
+      {
+        "question": "¿Es seguro el servicio de pagos?",
+        "answer": "Sí, nuestro servicio de pagos es 100% seguro. El procesamiento financiero es manejado por Stripe, no retenemos ningún detalle de tarjeta de nuestro lado. Stripe mantiene estándares de seguridad equivalentes a los bancos."
+      },
+      {
+        "question": "¿Qué métodos de pago aceptan?",
+        "answer": "Aceptamos pagos por tarjeta de crédito o débito, incluyendo VISA, MasterCard, American Express, iDeal, SOFORT, Bancontact, Przelewy24, Giropay, EPS, GrabPay, AliPay y más. Actualmente, no aceptamos PayPal o criptomonedas."
+      },
+      {
+        "question": "¿Puedo obtener un reembolso?",
+        "answer": "Desafortunadamente, debido a los enormes costos asociados con el proceso de ampliación impulsado por IA, no podemos proporcionar reembolsos. Nuestros costos son altos, particularmente el tiempo de procesamiento GPU requerido para ampliar tus imágenes. Al registrarte, aceptas renunciar a los derechos de reembolso por esta razón."
+      },
+      {
+        "question": "¿Cómo cancelo mi suscripción?",
+        "answer": "Puedes cancelar tu suscripción en cualquier momento. Después de iniciar sesión, ve a la parte superior de ImgEnhancer AI y haz clic en facturación, serás redirigido al portal de facturación de Stripe donde puedes descargar facturas, cambiar planes y cancelar suscripciones."
+      }
+    ]
+  },
+  "CTA": {
+    "title": "Lanza rápido, toma la ventaja",
+    "description": "¡No necesitas empezar desde cero! Usa la plantilla Nexty, te permite enfocarte en la creatividad principal, construir rápidamente, validar y empezar a ganar dinero.",
+    "button": "Obtener plantilla ahora",
+    "trustText": "Confiado por desarrolladores de todo el mundo",
+    "features": {
+      "deploy": "🚀 Implementación rápida",
+      "production": "🔧 Listo para producción",
+      "updates": "💎 Actualizaciones de por vida",
+      "i18n": "🌍 Internacionalización"
+    }
+  },
+  "Pricing": {
+    "badge": {
+      "label": "Precios",
+      "text": "Transforma tus imágenes inmediatamente"
+    },
+    "title": "Experimenta la magia de la mejora de imágenes con IA",
+    "description": "Elige la solución perfecta que se ajuste a tus necesidades creativas. Desde usuarios casuales hasta estudios profesionales, tenemos una solución para ti.",
+    "annual": "Anual",
+    "monthly": "Mensual",
+    "onetime": "Una vez",
+    "saveTip": "Ahorra 20%",
+    "modal": {
+      "title": "Elige tu plan",
+      "description": "Actualiza tu cuenta para obtener más créditos y características premium"
+    }
+  },
+  "ImageProcessing": {
+    "uploadTitle": "Subir imagen",
+    "settingsTitle": "Configuraciones de procesamiento",
+    "selected": "Seleccionado",
+    "uploadPrompt": "Subir imagen",
+    "dropHere": "Arrastra y suelta imagen aquí",
+    "supportedFormats": "Admite formatos JPEG, PNG, WebP",
+    "dragOrClick": "Arrastra archivos aquí o haz clic para seleccionar",
+    "modeLabel": "Tipo de optimización",
+    "modes": {
+      "standard": "Estándar",
+      "soft_portraits": "Retratos suaves",
+      "hard_portraits": "Retratos nítidos",
+      "art_n_illustration": "Arte e ilustración",
+      "nature_n_landscapes": "Naturaleza y paisajes",
+      "films_n_photography": "Cine y fotografía"
+    },
+    "promptLabel": "Campo de entrada de contenido de prompt",
+    "promptPlaceholder": "Describe el efecto que deseas, por ejemplo: mejorar detalles, aumentar claridad, mantener colores naturales...",
+    "generateButton": "Generar",
+    "processing": "Procesando ({completed}/{total})",
+    "trialCompleted": "Prueba gratuita completada",
+    "freeTrial": "Prueba gratuita",
+    "analyzing": "Detección inteligente...",
+    "processingResults": "Resultados del procesamiento",
+    "scaleEnhancement": "Mejora {scale}",
+    "clickToView": "Haz clic para ver imagen grande",
+    "processingInProgress": "Procesando...",
+    "processingFailed": "Créditos insuficientes, por favor inicia sesión",
+    "waitingProcess": "Esperando procesamiento",
+    "notStarted": "No iniciado",
+    "completed": "✓ Completado",
+    "downloadScale": "Descargar {scale}",
+    "errors": {
+      "downloadNotConfigured": "Servicio de descarga no configurado, contacta al administrador",
+      "downloadStarted": "Comenzar descarga de imagen mejorada",
+      "downloadFailed": "Descarga fallida, inténtalo de nuevo",
+      "selectImageFirst": "Por favor selecciona una imagen primero",
+      "fingerprintFailed": "Error al obtener huella del navegador, actualiza la página e inténtalo de nuevo",
+      "trialFailed": "Error al iniciar prueba por lotes, inténtalo de nuevo",
+      "allProcessingFailed": "Recursos de prueba gratuita insuficientes, por favor inicia sesión para obtener el servicio completo"
+    },
+    "trialUsedDevice": "Este dispositivo ya ha usado la prueba gratuita",
+    "pleaseLogin": "Por favor",
+    "loginText": "inicia sesión",
+    "useFullFeatures": "usa las características completas",
+    "trialCompletedTitle": "¡Prueba gratuita completada!",
+    "trialCompletedDescription": "Procesamiento exitoso de {count} imágenes de múltiples factores. ¿Quieres más servicios de mejora de imágenes de alta calidad? Inicia sesión para desbloquear todas las funciones:",
+    "unlimitedProcessing": "• Procesamiento ilimitado de imágenes",
+    "professionalModes": "• Modos de optimización profesional para retratos, paisajes, arte",
+    "customPrompts": "• Prompts personalizados y ajuste de parámetros avanzados",
+    "fasterProcessing": "• Velocidad de procesamiento más rápida y soporte prioritario",
+    "loginNowButton": "Inicia sesión ahora para experimentar características completas",
+    "modalScaleLabel": "Mejora {scale}",
+    "modalDownloadButton": "Descargar {scale}",
+    "modalCloseHint": "Presiona ESC o haz clic en el fondo para cerrar",
+    "canUseTrial": "Puede usar prueba gratuita",
+    "demoImage": "Imagen de ejemplo",
+    "demoImageHint": "Imagen de ejemplo cargada, haz clic para subir tu propia imagen",
+    "uploadHint": "Haz clic para subir tu imagen o arrastra y suelta aquí"
+  },
+  "Security": {
+    "title": "Verificación de seguridad",
+    "detectionReason": "Se detectaron las siguientes situaciones:",
+    "suspiciousScore": "Puntuación sospechosa: {score}/100",
+    "verificationDescription": "Por favor completa la verificación de seguridad para confirmar que eres un usuario real. Esto solo toma unos segundos.",
+    "defaultDescription": "Para asegurar la calidad del servicio, por favor completa la verificación de seguridad.",
+    "verificationSuccess": "¡Verificación exitosa! Procesando...",
+    "loading": "Cargando componente de verificación...",
+    "errorMessage": "Verificación fallida: {error}",
+    "retry": "Actualizar y reintentar",
+    "privacyNotice": "Esta verificación es proporcionada por Cloudflare, protege tu privacidad y seguridad",
+    "securityInfo": "Usamos algoritmos inteligentes para identificar comportamiento malicioso, los usuarios normales generalmente pueden pasar la verificación rápidamente"
+  }
+}

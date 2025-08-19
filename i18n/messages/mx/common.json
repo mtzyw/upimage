@@ -1,0 +1,545 @@
+{
+  "Shared": {
+    "promoCode": {
+      "copy": "Copiar",
+      "copied": "¡Copiado!",
+      "limitedTimeOffer": "Oferta por tiempo limitado",
+      "save": "Ahorra {discount}",
+      "validUntil": "Válido hasta",
+      "copyAndScroll": "Copiar código y ver precios"
+    }
+  },
+  "LanguageDetection": {
+    "title": "Sugerencia de idioma",
+    "description": "Detectamos que el idioma de tu navegador es diferente al idioma actual. Puedes cambiar el idioma cuando guste 👉",
+    "countdown": "Se cerrará en {countdown} segundos"
+  },
+  "Header": {
+    "links": [
+      {
+        "name": "Características",
+        "href": "/#features"
+      },
+      {
+        "id": "pricing",
+        "name": "Precios",
+        "href": "/#pricing"
+      },
+      {
+        "name": "Blog",
+        "href": "/blogs"
+      }
+    ]
+  },
+  "Footer": {
+    "Copyright": "Derechos de autor © {year} {name} Todos los derechos reservados.",
+    "PrivacyPolicy": "Aviso de privacidad",
+    "TermsOfService": "Términos y condiciones",
+    "Newsletter": {
+      "title": "Suscríbete a nuestro boletín",
+      "description": "Recibe las últimas actualizaciones y tutoriales",
+      "subscribe": {
+        "invalidEmail": "Por favor ingresa un correo electrónico válido",
+        "defaultErrorMessage": "La suscripción falló, inténtalo de nuevo",
+        "successMessage": "¡Suscripción exitosa!",
+        "emailSubject": "Te has suscrito exitosamente a las notificaciones de ImgEnhancer.ai",
+        "multipleSubmissions": "Has enviado varias veces, inténtalo mañana"
+      },
+      "unsubscribe": {
+        "title": "Cancelar suscripción al boletín",
+        "success": "Te has dado de baja exitosamente de las notificaciones de ImgEnhancer.ai.",
+        "emailPrefix": "Correo:",
+        "regretMessage": "Te puedes volver a suscribir cuando gustes para recibir las últimas actualizaciones y tutoriales de ImgEnhancer.ai.",
+        "errorGeneric": "Ocurrió un error al procesar tu solicitud de baja",
+        "errorNoToken": "No se proporcionó token de baja",
+        "errorMessage": "Por favor asegúrate de usar el enlace de baja correcto. Si el problema persiste, contacta a nuestro equipo de soporte.",
+        "contactPrefix": "Envía un correo a:",
+        "contactPrefixSuccess": "Si tienes alguna pregunta, contáctanos en:",
+        "backToHome": "Regresar al inicio",
+        "invalidEmail": "Correo electrónico inválido",
+        "notInNewsletter": "Este correo no está en nuestra lista de suscriptores",
+        "confirmTitle": "Confirmar baja",
+        "confirmMessage": "¿Estás seguro de que quieres darte de baja de nuestro boletín? Ya no recibirás actualizaciones sobre nuevas funciones y contenido.",
+        "confirmButton": "Sí, darme de baja",
+        "cancelButton": "Cancelar",
+        "processing": "Procesando...",
+        "retryButton": "Intentar de nuevo",
+        "finalWarning": "Esta acción no se puede deshacer. Te puedes volver a suscribir cuando gustes.",
+        "errorInvalidToken": "Enlace de baja inválido. El enlace puede estar dañado o haber expirado."
+      }
+    },
+    "Links": {
+      "groups": [
+        {
+          "title": "Producto",
+          "links": [
+            {
+              "href": "/#features",
+              "name": "Características"
+            },
+            {
+              "id": "pricing",
+              "href": "/#pricing",
+              "name": "Precios"
+            },
+            {
+              "href": "/blogs",
+              "name": "Blog"
+            }
+          ]
+        },
+        {
+          "title": "Soporte",
+          "links": [
+            {
+              "name": "Ayuda",
+              "href": "/help",
+              "target": "_blank"
+            },
+            {
+              "name": "Mapa de funciones",
+              "href": "/roadmap"
+            },
+            {
+              "href": "mailto:hi@imgenhancer.ai",
+              "name": "Contáctanos"
+            }
+          ]
+        },
+        {
+          "title": "Idioma",
+          "links": [
+            {
+              "href": "/en",
+              "name": "English",
+              "useA": true
+            },
+            {
+              "href": "/zh",
+              "name": "中文",
+              "useA": true
+            },
+            {
+              "href": "/ja",
+              "name": "日本語",
+              "useA": true
+            },
+            {
+              "href": "/es",
+              "name": "Español",
+              "useA": true
+            },
+            {
+              "href": "/mx",
+              "name": "Español (México)",
+              "useA": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Home": {
+    "title": "ImgEnhancer.ai",
+    "tagLine": "Plataforma de Mejora de Imágenes con IA",
+    "description": "Transforma tus imágenes con tecnología avanzada de IA. Mejora la calidad, aumenta la resolución y crea visuales impresionantes con herramientas profesionales de mejora de imágenes."
+  },
+  "Login": {
+    "title": "Bienvenido de vuelta",
+    "description": "Puedes iniciar sesión con los siguientes métodos",
+    "Toast": {
+      "Email": {
+        "successTitle": "Correo enviado",
+        "successDescription": "Por favor revisa tu correo para obtener el enlace de inicio de sesión.",
+        "errorTitle": "Error",
+        "errorDescription": "Error al enviar el correo, inténtalo de nuevo."
+      },
+      "Google": {
+        "errorTitle": "Error",
+        "errorDescription": "Error al iniciar sesión con Google, inténtalo de nuevo."
+      },
+      "Github": {
+        "errorTitle": "Error",
+        "errorDescription": "Error al iniciar sesión con GitHub, inténtalo de nuevo."
+      }
+    },
+    "signInMethods": {
+      "or": "o",
+      "signInWithGoogle": "Continuar con Google",
+      "signInWithGithub": "Continuar con GitHub",
+      "signInWithEmail": "Continuar con correo electrónico"
+    },
+    "Button": {
+      "signIn": "Iniciar sesión",
+      "signOut": "Cerrar sesión"
+    },
+    "UserMenus": [
+      {
+        "name": "Configuración personal",
+        "href": "/dashboard/settings"
+      },
+      {
+        "name": "Administrar suscripción",
+        "href": "/dashboard/subscription"
+      },
+      {
+        "name": "Historial de créditos",
+        "href": "/dashboard/credit-history"
+      }
+    ],
+    "AdminMenus": [
+      {
+        "name": "Administración de usuarios",
+        "href": "/dashboard/users"
+      },
+      {
+        "name": "Administración de precios",
+        "href": "/dashboard/prices"
+      },
+      {
+        "name": "Administración de blog",
+        "href": "/dashboard/blogs"
+      },
+      {
+        "name": "Administración de recursos R2",
+        "href": "/dashboard/r2-resources"
+      },
+      {
+        "name": "Claves API de Freepik",
+        "href": "/dashboard/freepik-keys"
+      }
+    ]
+  },
+  "Blogs": {
+    "title": "Lista de blogs",
+    "description": "Conocimientos sobre técnicas de mejora de imágenes con IA y actualizaciones de ImgEnhancer.ai.",
+    "emptyState": {
+      "title": "Sin artículos de blog",
+      "description": "¡Estamos creando contenido emocionante, mantente al pendiente!"
+    },
+    "loadMorePostsFailed": "Error al cargar más blogs",
+    "loadMorePosts": "Cargando más blogs...",
+    "filterPostsFailed": "Error al cargar blogs",
+    "noPostsFoundForThisTag": "Sin artículos de blog para esta etiqueta",
+    "reachedTheEnd": "Se han cargado todos los artículos de blog",
+    "BlogDetail": {
+      "featured": "Artículo destacado",
+      "accessRestricted": "Acceso restringido",
+      "unauthorized": "Este artículo solo está disponible para usuarios registrados",
+      "premium": "Contenido premium",
+      "premiumContent": "Este artículo solo está disponible para usuarios suscritos",
+      "signIn": "Iniciar sesión",
+      "upgrade": "Actualizar",
+      "backToBlogs": "Regresar a la lista de blogs",
+      "notFound": "Artículo no encontrado"
+    }
+  },
+  "About": {
+    "title": "Acerca de",
+    "description": "Acerca del sitio web"
+  },
+  "TermsOfService": {
+    "title": "Términos de servicio",
+    "description": "Términos de servicio"
+  },
+  "PrivacyPolicy": {
+    "title": "Aviso de privacidad",
+    "description": "Aviso de privacidad"
+  },
+  "AIDemo": {
+    "title": "Demostración de capacidades de IA",
+    "description": "Esta página no es una función pública, solo para usuarios que compraron la plantilla para aprender y probar el proceso de llamadas al modelo de IA. Después de iniciar la plantilla localmente, llena tu propia clave API en las variables de entorno para usarla. La demo de IA incluye conversación de una vuelta, conversación de varias vueltas, conversiones de texto a imagen, imagen a imagen, texto/imagen a video. A través de la demo puedes entender rápidamente el proceso de llamadas de IA para acelerar tu proceso de construcción de aplicaciones de IA.",
+    "metaDescription": "Esta página proporciona demostraciones de llamadas de capacidades de IA incluyendo conversación de una vuelta, conversación de varias vueltas, texto a imagen, imagen a imagen, texto/imagen a video."
+  },
+  "Sidebar": {
+    "aiImageEnhancement": "Mejora de imágenes con IA",
+    "removeBackground": "Quitar fondo"
+  },
+  "Enhance": {
+    "title": "Mejora de imágenes con IA",
+    "description": "Usa tecnología avanzada de IA para ampliar y mejorar tus imágenes",
+    "upload": {
+      "title": "Imagen",
+      "description": "Selecciona la imagen a mejorar, acepta formatos JPG, PNG, WebP",
+      "dragDrop": "Arrastra la imagen aquí",
+      "clickSelect": "Haz clic para subir o arrastra la imagen aquí",
+      "supportedFormats": "Acepta formatos JPG, PNG, WebP, máximo {size}MB",
+      "selectImage": "Seleccionar imagen",
+      "dropToUpload": "Suelta para subir imagen",
+      "invalidFormat": "Solo se aceptan imágenes en formato JPG, PNG, WebP",
+      "fileTooLarge": "El tamaño del archivo no puede exceder {size}MB",
+      "uploading": "Subiendo...",
+      "pleaseWait": "Por favor espera",
+      "uploadedImage": "Imagen subida",
+      "uploadSuccess": "Subida exitosa",
+      "uploadFailed": "Subida falló, inténtalo de nuevo"
+    },
+    "settings": {
+      "scaleFactor": "Factor de escala",
+      "scaleDescription": "Elige el factor de ampliación de la imagen, mayor escala da mejor calidad pero consume más créditos",
+      "optimization": "Tipo de optimización",
+      "optimizationDescription": "Elige el tipo de optimización apropiado según el contenido de la imagen para mejores resultados",
+      "prompt": "Prompt de mejora (opcional)",
+      "promptDescription": "Describe cómo quieres mejorar la imagen, puede mejorar los resultados del procesamiento",
+      "promptPlaceholder": "ej.: mejorar detalles, aumentar claridad, mantener colores naturales...",
+      "advanced": "Configuración avanzada",
+      "advancedDescription": "Ajuste fino de parámetros de mejora, requiere cierta experiencia en procesamiento de imágenes",
+      "engine": "Mejora profesional de imágenes",
+      "engineDescription": "Modelo personalizado con tecnología IA para hacer tu trabajo más adecuado",
+      "creativity": "Creatividad",
+      "creativityDescription": "Controla la creatividad de la IA, valores negativos son más conservadores, valores positivos más innovadores",
+      "hdr": "Intensidad HDR",
+      "hdrDescription": "Ajusta el nivel de detalle y claridad",
+      "resemblance": "Similitud", 
+      "resemblanceDescription": "Controla el grado de similitud con la imagen original",
+      "fractality": "Fractalidad",
+      "fractalityDescription": "Controla la intensidad del prompt y complejidad de píxeles",
+      "optimizationTypes": {
+        "standard": "Estándar",
+        "softPortraits": "Retratos suaves",
+        "hardPortraits": "Retratos nítidos",
+        "artIllustration": "Arte e ilustración",
+        "natureLandscapes": "Naturaleza y paisajes",
+        "filmsPhotography": "Cine y fotografía"
+      }
+    },
+    "status": {
+      "processing": "Procesando",
+      "completed": "Completado",
+      "failed": "Procesamiento falló",
+      "waiting": "Esperando resultados del procesamiento",
+      "progress": "Progreso del procesamiento",
+      "estimatedTime": "Tiempo restante estimado {time}",
+      "originalImage": "Original",
+      "enhancedImage": "Comparación de mejora con IA",
+      "downloadImage": "Descargar imagen",
+      "viewOriginal": "Vista previa",
+      "copyLink": "Copiar enlace",
+      "retry": "Reintentar procesamiento",
+      "refresh": "Actualizar estado",
+      "status": "Estado"
+    },
+    "credits": {
+      "required": "Requiere {credits} créditos",
+      "insufficient": "Créditos insuficientes",
+      "consumed": "Consume {credits} créditos"
+    },
+    "history": {
+      "title": "Historial de mejoras",
+      "description": "Ve tu historial de mejoras de imágenes",
+      "empty": "Sin historial",
+      "emptyDescription": "Aún no has usado la función de mejora de imágenes",
+      "startUsing": "Comenzar a usar",
+      "totalTasks": "Total de tareas",
+      "totalCreditsUsed": "Total de créditos usados",
+      "processingTime": "Tiempo de procesamiento: {time} segundos",
+      "download": "Descargar",
+      "filter": "Filtrar",
+      "all": "Todo"
+    },
+    "messages": {
+      "loginRequired": "Inicio de sesión requerido",
+      "loginDescription": "Por favor inicia sesión primero para usar la función de mejora de imágenes",
+      "selectImageFirst": "Por favor selecciona una imagen primero",
+      "processingStarted": "Comenzar mejora",
+      "processingComplete": "¡Mejora de imagen completada!",
+      "downloadSuccess": "Comenzar descarga de imagen",
+      "downloadFailed": "Descarga falló, inténtalo de nuevo",
+      "copySuccess": "Enlace copiado al portapapeles",
+      "copyFailed": "Copia falló",
+      "networkError": "Error de red, inténtalo de nuevo",
+      "developing": "Función en desarrollo",
+      "comingSoon": "Esta función está en desarrollo, mantente al pendiente",
+      "processingFailed": "Procesamiento de imagen falló",
+      "taskIdMissing": "ID de tarea faltante, no se puede descargar",
+      "downloadServiceNotConfigured": "Servicio de descarga no configurado, contacta al administrador",
+      "selectImageAndStart": "Selecciona una imagen y haz clic en el botón crear para comenzar la mejora",
+      "aiProcessing": "La IA está mejorando tu imagen, por favor espera",
+      "dragToCompare": "Arrastra la línea divisoria para ver la comparación entre imagen original y mejorada",
+      "shareText": "Mira mi imagen mejorada con IA",
+      "share": "Compartir",
+      "taskDetails": "Detalles de la tarea",
+      "completedAt": "Completado en"
+    }
+  },
+  "RemoveBackground": {
+    "title": "IA quitar fondo",
+    "description": "Quita automáticamente el fondo de la imagen para obtener imágenes con fondo transparente",
+    "features": {
+      "title": "Características",
+      "aiRecognition": {
+        "title": "Reconocimiento inteligente de IA",
+        "description": "Identifica con precisión personas y bordes de objetos"
+      },
+      "highQuality": {
+        "title": "Salida de alta calidad",
+        "description": "Mantiene detalles y claridad de la imagen original"
+      },
+      "oneClick": {
+        "title": "Procesamiento de un clic",
+        "description": "No requiere ajuste manual, completado automáticamente"
+      }
+    },
+    "upload": {
+      "selectImage": "Por favor sube una imagen primero",
+      "processing": "Procesando..."
+    },
+    "button": {
+      "startProcessing": "Comenzar procesamiento"
+    },
+    "result": {
+      "title": "Eliminación de fondo completada",
+      "description": "Fondo eliminado exitosamente, acepta fondo transparente",
+      "downloadImage": "Descargar imagen",
+      "viewOriginal": "Ver original",
+      "copyLink": "Copiar enlace",
+      "share": "Compartir"
+    },
+    "status": {
+      "processing": "Procesando...",
+      "completed": "Completado",
+      "failed": "Procesamiento falló",
+      "waiting": "Selecciona imagen y comienza a quitar fondo"
+    },
+    "messages": {
+      "processingDescription": "La IA está quitando el fondo, por favor espera",
+      "backgroundRemovalFailed": "Eliminación de fondo falló, inténtalo más tarde",
+      "backgroundRemovalSuccess": "¡Eliminación de fondo exitosa!",
+      "networkError": "Error de red, inténtalo de nuevo",
+      "shareText": "Eliminación de fondo con IA completada"
+    },
+    "credits": {
+      "consumed": "Consume {credits} créditos"
+    },
+    "taskDetails": {
+      "title": "Detalles de la tarea",
+      "status": "Estado",
+      "creditsConsumed": "Créditos consumidos",
+      "completedTime": "Tiempo completado"
+    }
+  },
+  "Pricing": {
+    "buttons": {
+      "subscribed": "Suscrito",
+      "upgradeToThis": "Actualizar a este plan",
+      "downgradeToThis": "Cambiar a este plan",
+      "switchToThis": "Cambiar a este plan",
+      "cannotDowngrade": "No se puede cambiar",
+      "alreadySubscribed": "Ya estás suscrito a este plan"
+    }
+  },
+  "ErrorPage": {
+    "403": {
+      "title": "403 - Acceso denegado",
+      "description": "No tienes permiso para acceder a esta página.",
+      "button": {
+        "name": "Regresar al inicio",
+        "href": "/"
+      }
+    },
+    "RedirectError": {
+      "title": "Error de redirección",
+      "description": "Ocurrió un error durante el proceso de autenticación.",
+      "goToHome": "Ir al inicio",
+      "goToLogin": "Regresar a la página de inicio de sesión",
+      "invalid_params": {
+        "title": "Error de parámetros",
+        "description": "La solicitud carece de parámetros necesarios."
+      },
+      "invalid_redirect": {
+        "title": "Error de redirección",
+        "description": "La URL de redirección es inválida."
+      },
+      "token_expired": {
+        "title": "Token expirado",
+        "description": "Tu token de verificación ha expirado. Por favor inicia sesión de nuevo."
+      },
+      "invalid_token": {
+        "title": "Error de token",
+        "description": "El token de verificación proporcionado es inválido."
+      },
+      "invalid_link_or_expired": {
+        "title": "Error de enlace",
+        "description": "El enlace de verificación de correo es inválido o ha expirado."
+      },
+      "server_error": {
+        "title": "Error del servidor",
+        "description": "Ocurrió un error inesperado en el servidor durante la autenticación."
+      },
+      "unknown": {
+        "title": "Error de autenticación",
+        "description": "Ocurrió un error desconocido durante el proceso de autenticación."
+      }
+    },
+    "StripeError": {
+      "goToHome": "Ir al inicio",
+      "goToDashboard": "Regresar al panel",
+      "title": "Error del portal de pagos",
+      "description": "Ocurrió un error con la información de pago."
+    }
+  },
+  "History": {
+    "title": "Historial",
+    "description": "Ve tu historial de mejoras de imágenes y resultados de procesamiento",
+    "selectRecord": "Seleccionar historial",
+    "selectRecordDescription": "Selecciona un historial de la lista izquierda para ver detalles",
+    "processingDetails": "Detalles del procesamiento",
+    "createTime": "Tiempo de creación",
+    "completeTime": "Tiempo de completado",
+    "creditsConsumed": "Créditos consumidos",
+    "scaleFactor": "Factor de escala",
+    "optimizationType": "Tipo de optimización",
+    "creativity": "Creatividad",
+    "hdrIntensity": "Intensidad HDR",
+    "enhancePrompt": "Prompt de mejora",
+    "clickToViewFullPrompt": "Haz clic para ver el prompt completo",
+    "errorMessage": "Mensaje de error",
+    "downloadImage": "Descargar imagen",
+    "preview": "Vista previa",
+    "copyLink": "Copiar enlace",
+    "share": "Compartir",
+    "processing": "Procesando...",
+    "processingDescription": "Esta tarea está siendo procesada, por favor espera para ver los resultados",
+    "processingFailed": "Procesamiento falló",
+    "processingFailedDescription": "Esta tarea falló en el procesamiento, por favor revisa el mensaje de error arriba",
+    "refresh": "Actualizar",
+    "deleteConfirm": "Confirmar eliminación",
+    "deleteWarning": "Esta acción no se puede deshacer",
+    "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar este historial? Los archivos de imagen relacionados también serán eliminados permanentemente.",
+    "allRecordsShown": "Se muestran todos los historiales",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "deleteSuccess": "Eliminación exitosa",
+    "deleteError": "Eliminación falló, inténtalo de nuevo",
+    "noRecords": "Sin historial",
+    "noRecordsDescription": "Aún no tienes ningún historial de procesamiento de imágenes",
+    "loadMore": "Cargar más",
+    "total": "Total {count} historiales",
+    "downloadStart": "Comenzar descarga de imagen",
+    "downloadError": "Descarga falló, inténtalo de nuevo",
+    "downloadServiceNotConfigured": "Servicio de descarga no configurado, contacta al administrador",
+    "linkCopied": "Enlace copiado al portapapeles",
+    "copyError": "Copia falló, inténtalo de nuevo",
+    "shareText": "Mira mi imagen mejorada con IA",
+    "promptCopied": "Prompt copiado al portapapeles",
+    "close": "Cerrar",
+    "copy": "Copiar",
+    "beforeImage": "Original",
+    "afterImage": "Después del procesamiento",
+    "removeBackgroundResult": "Imagen con fondo removido",
+    "optimizationTypes": {
+      "standard": "Estándar",
+      "soft_portraits": "Retratos suaves",
+      "hard_portraits": "Retratos nítidos",
+      "art_n_illustration": "Arte e ilustración",
+      "nature_n_landscapes": "Naturaleza y paisajes",
+      "films_n_photography": "Cine y fotografía",
+      "remove_background": "Quitar fondo"
+    },
+    "status": {
+      "completed": "Completado",
+      "failed": "Falló",
+      "processing": "Procesando"
+    }
+  }
+}

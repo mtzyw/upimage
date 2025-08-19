@@ -1,0 +1,31 @@
+{
+  "title": "Configuración personal",
+  "description": "Administra la configuración de tu cuenta e información personal.",
+  "form": {
+    "emailLabel": "Correo electrónico",
+    "fullNameLabel": "Nombre completo",
+    "fullNamePlaceholder": "Ingresa tu nombre completo",
+    "avatarLabel": "Avatar",
+    "avatarHint": "Tamaño máximo de archivo: {maxSizeInMB} MB. Tipos de archivo permitidos: {allowedTypes}.",
+    "updateButton": "Enviar actualización",
+    "updatingButton": "Actualizando..."
+  },
+  "toast": {
+    "fullNameLengthError": "El nombre completo debe tener menos de {maxLength} caracteres",
+    "fullNameInvalidCharactersError": "El nombre completo contiene caracteres no válidos",
+    "errorInvalidFileType": "Tipo de archivo de avatar inválido. Solo se permiten los siguientes tipos: {allowedTypes}.",
+    "errorInvalidFileTypeDescription": "Por favor sube un archivo menor a {maxSizeInMB} MB.",
+    "errorFileSizeExceeded": "El tamaño del archivo de avatar excede el límite de {maxSizeInMB}MB.",
+    "errorFileSizeExceededDescription": "Por favor sube un archivo menor a {maxSizeInMB} MB.",
+    "errorInvalidFullName": "El nombre completo ingresado es inválido.",
+    "errorFullNameRequired": "El nombre completo es obligatorio.",
+    "updateSuccessTitle": "Actualización exitosa",
+    "updateSuccessDescription": "Tu perfil ha sido actualizado exitosamente.",
+    "updateErrorTitle": "Error en actualización",
+    "updateErrorDescription": "Error al actualizar configuración. Inténtalo de nuevo más tarde.",
+    "errorDeleteOldAvatar": "Error al eliminar avatar anterior.",
+    "errorUploadAvatar": "Error al subir avatar.",
+    "errorUpdateAuthUser": "Error al actualizar información de usuario.",
+    "errorUpdateUserProfile": "Error al actualizar perfil de usuario."
+  }
+}
