@@ -353,6 +353,66 @@
       "completedAt": "Completed At"
     }
   },
+  "Sidebar": {
+    "aiImageEnhancement": "AI Image Enhancement",
+    "removeBackground": "Remove Background"
+  },
+  "RemoveBackground": {
+    "title": "AI Remove Background",
+    "description": "Automatically remove image background for transparent background images",
+    "features": {
+      "title": "Features",
+      "aiRecognition": {
+        "title": "AI Smart Recognition",
+        "description": "Precisely identify people and object edges"
+      },
+      "highQuality": {
+        "title": "High Quality Output",
+        "description": "Maintain original image details and clarity"
+      },
+      "oneClick": {
+        "title": "One-Click Processing",
+        "description": "No manual adjustment needed, automatic completion"
+      }
+    },
+    "upload": {
+      "selectImage": "Please upload an image first",
+      "processing": "Processing..."
+    },
+    "button": {
+      "startProcessing": "Start Processing"
+    },
+    "result": {
+      "title": "Background Removal Complete",
+      "description": "Background successfully removed with transparent support",
+      "downloadImage": "Download Image",
+      "viewOriginal": "View Original",
+      "copyLink": "Copy Link",
+      "share": "Share"
+    },
+    "status": {
+      "processing": "Processing...",
+      "completed": "Completed",
+      "failed": "Processing Failed",
+      "waiting": "Select image and start background removal"
+    },
+    "messages": {
+      "processingDescription": "AI is removing background, please wait",
+      "backgroundRemovalFailed": "Background removal failed, please try again later",
+      "backgroundRemovalSuccess": "Background removal successful!",
+      "networkError": "Network error, please retry",
+      "shareText": "AI background removal complete"
+    },
+    "credits": {
+      "consumed": "Consumed {credits} credits"
+    },
+    "taskDetails": {
+      "title": "Task Details",
+      "status": "Status",
+      "creditsConsumed": "Credits Consumed",
+      "completedTime": "Completed Time"
+    }
+  },
   "AIDemo": {
     "title": "AI Capabilities Demo",
     "description": "This page showcases non-public features and is exclusively for users who have purchased the template. It's designed for learning and testing the AI model invocation process. To use it, simply launch the template locally and input your API key in the environment variables. The AI demo includes functionalities like single-turn and multi-turn conversations, text-to-image, image-to-image, and text/image-to-video conversions. Through this demo, you can quickly grasp the AI invocation workflow, accelerating your journey in building AI applications.",
@@ -406,6 +466,70 @@
       "description": "An error occurred with your payment information.",
       "goToHome": "Go to Home",
       "goToDashboard": "Go to Dashboard"
+    }
+  },
+  "History": {
+    "title": "History",
+    "description": "View your image enhancement history and processing results",
+    "selectRecord": "Select History Record",
+    "selectRecordDescription": "Select a record from the left list to view details",
+    "processingDetails": "Processing Details",
+    "createTime": "Created",
+    "completeTime": "Completed",
+    "creditsConsumed": "Credits Used",
+    "scaleFactor": "Scale Factor",
+    "optimizationType": "Optimization Type",
+    "creativity": "Creativity",
+    "hdrIntensity": "HDR Intensity",
+    "enhancePrompt": "Enhancement Prompt",
+    "clickToViewFullPrompt": "Click to view full prompt",
+    "errorMessage": "Error Message",
+    "downloadImage": "Download Image",
+    "preview": "Preview",
+    "copyLink": "Copy Link",
+    "share": "Share",
+    "processing": "Processing...",
+    "processingDescription": "This task is being processed, please wait for results",
+    "processingFailed": "Processing Failed",
+    "processingFailedDescription": "This task failed to process, please check error message above",
+    "refresh": "Refresh",
+    "deleteConfirm": "Confirm Delete",
+    "deleteWarning": "This action cannot be undone",
+    "deleteConfirmMessage": "Are you sure you want to delete this history record? Related image files will also be permanently deleted.",
+    "allRecordsShown": "All records shown",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "deleteSuccess": "Delete successful",
+    "deleteError": "Delete failed, please try again",
+    "noRecords": "No History Records",
+    "noRecordsDescription": "You don't have any image processing records yet",
+    "loadMore": "Load More",
+    "total": "{count} total records",
+    "downloadStart": "Starting image download",
+    "downloadError": "Download failed, please try again",
+    "downloadServiceNotConfigured": "Download service not configured, please contact administrator",
+    "linkCopied": "Link copied to clipboard",
+    "copyError": "Copy failed, please try again",
+    "shareText": "Check out my AI enhanced image: {url}",
+    "promptCopied": "Prompt copied to clipboard",
+    "close": "Close",
+    "copy": "Copy",
+    "beforeImage": "Before",
+    "afterImage": "After",
+    "removeBackgroundResult": "Background removed image",
+    "optimizationTypes": {
+      "standard": "Standard",
+      "soft_portraits": "Soft Portraits",
+      "hard_portraits": "Sharp Portraits",
+      "art_n_illustration": "Art & Illustration",
+      "nature_n_landscapes": "Nature & Landscapes",
+      "films_n_photography": "Films & Photography",
+      "remove_background": "Remove Background"
+    },
+    "status": {
+      "completed": "Completed",
+      "failed": "Failed",
+      "processing": "Processing"
     }
   }
 }

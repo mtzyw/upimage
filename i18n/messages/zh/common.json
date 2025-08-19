@@ -241,6 +241,10 @@
     "description": "本页面非公开功能，仅用于购买模板的用户学习和测试 AI 模型调用流程。在本地启动模板后，环境变量填写自己的 API Key 即可使用。AI Demo 包括单轮对话、多轮对话、文本转图像、图像转图像、文本/图像转视频的转换，通过 Demo 你可以快速理解 AI 调用流程，以加速你的AI应用构建之旅。",
     "metaDescription": "本页面提供包括单轮对话、多轮对话、文本转图像、图像转图像、文本/图像转视频等 AI 能力调用展示。"
   },
+  "Sidebar": {
+    "aiImageEnhancement": "AI 图像增强",
+    "removeBackground": "去除背景"
+  },
   "Enhance": {
     "title": "AI 图像增强",
     "description": "使用先进的 AI 技术放大并增强您的图像",
@@ -348,6 +352,62 @@
       "completedAt": "完成时间"
     }
   },
+  "RemoveBackground": {
+    "title": "AI去除背景",
+    "description": "自动去除图片背景，获得透明背景图片",
+    "features": {
+      "title": "功能特点",
+      "aiRecognition": {
+        "title": "AI智能识别",
+        "description": "精确识别人物、物体边缘"
+      },
+      "highQuality": {
+        "title": "高质量输出",
+        "description": "保持原图细节和清晰度"
+      },
+      "oneClick": {
+        "title": "一键处理",
+        "description": "无需手动调整，自动完成"
+      }
+    },
+    "upload": {
+      "selectImage": "请先上传图片",
+      "processing": "处理中..."
+    },
+    "button": {
+      "startProcessing": "开始处理"
+    },
+    "result": {
+      "title": "去除背景完成",
+      "description": "背景已成功移除，支持透明背景",
+      "downloadImage": "下载图片",
+      "viewOriginal": "查看原图",
+      "copyLink": "复制链接",
+      "share": "分享"
+    },
+    "status": {
+      "processing": "正在处理...",
+      "completed": "完成",
+      "failed": "处理失败",
+      "waiting": "选择图片并开始去除背景"
+    },
+    "messages": {
+      "processingDescription": "AI 正在去除背景，请稍候",
+      "backgroundRemovalFailed": "背景去除失败，请稍后重试",
+      "backgroundRemovalSuccess": "背景去除成功！",
+      "networkError": "网络错误，请重试",
+      "shareText": "AI去除背景完成"
+    },
+    "credits": {
+      "consumed": "消耗 {credits} 积分"
+    },
+    "taskDetails": {
+      "title": "任务详情",
+      "status": "状态",
+      "creditsConsumed": "消耗积分",
+      "completedTime": "完成时间"
+    }
+  },
   "Pricing": {
     "buttons": {
       "subscribed": "已订阅",
@@ -406,6 +466,70 @@
       "goToDashboard": "返回仪表盘",
       "title": "Payment Portal Error",
       "description": "支付信息发生错误。"
+    }
+  },
+  "History": {
+    "title": "历史记录",
+    "description": "查看您的图像增强历史记录和处理结果",
+    "selectRecord": "选择历史记录",
+    "selectRecordDescription": "从左侧列表选择一个历史记录来查看详情",
+    "processingDetails": "处理详情",
+    "createTime": "创建时间",
+    "completeTime": "完成时间",
+    "creditsConsumed": "消耗积分",
+    "scaleFactor": "放大倍数",
+    "optimizationType": "优化类型",
+    "creativity": "创意度",
+    "hdrIntensity": "HDR强度",
+    "enhancePrompt": "增强提示词",
+    "clickToViewFullPrompt": "点击查看完整提示词",
+    "errorMessage": "错误信息",
+    "downloadImage": "下载图片",
+    "preview": "预览",
+    "copyLink": "复制链接",
+    "share": "分享",
+    "processing": "正在处理中...",
+    "processingDescription": "此任务正在处理中，请稍候查看结果",
+    "processingFailed": "处理失败",
+    "processingFailedDescription": "此任务处理失败，请查看上方错误信息",
+    "refresh": "刷新",
+    "deleteConfirm": "确认删除",
+    "deleteWarning": "此操作无法撤销",
+    "deleteConfirmMessage": "确定要删除这条历史记录吗？相关的图片文件也将被永久删除。",
+    "allRecordsShown": "已显示全部记录",
+    "delete": "删除",
+    "cancel": "取消",
+    "deleteSuccess": "删除成功",
+    "deleteError": "删除失败，请重试",
+    "noRecords": "暂无历史记录",
+    "noRecordsDescription": "您还没有任何图像处理记录",
+    "loadMore": "加载更多",
+    "total": "共 {count} 条记录",
+    "downloadStart": "开始下载图片",
+    "downloadError": "下载失败，请重试",
+    "downloadServiceNotConfigured": "下载服务未配置，请联系管理员",
+    "linkCopied": "链接已复制到剪贴板",
+    "copyError": "复制失败，请重试",
+    "shareText": "查看我用 AI 增强的图片：{url}",
+    "promptCopied": "提示词已复制到剪贴板",
+    "close": "关闭",
+    "copy": "复制",
+    "beforeImage": "原图",
+    "afterImage": "处理后",
+    "removeBackgroundResult": "去除背景后的图片",
+    "optimizationTypes": {
+      "standard": "标准",
+      "soft_portraits": "柔和人像",
+      "hard_portraits": "锐化人像",
+      "art_n_illustration": "艺术插画",
+      "nature_n_landscapes": "自然风景",
+      "films_n_photography": "电影摄影",
+      "remove_background": "去除背景"
+    },
+    "status": {
+      "completed": "已完成",
+      "failed": "失败",
+      "processing": "处理中"
     }
   }
 }

@@ -187,8 +187,8 @@ export default function HistoryViewer() {
 
   const handleTabChange = (tabId: string) => {
     if (tabId === 'enhance') {
-      // 导航到首页/工作台
-      window.location.href = '/home';
+      // 导航到图片增强页面
+      window.location.href = '/upscaler';
     } else {
       setActiveTab(tabId);
     }

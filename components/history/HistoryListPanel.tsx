@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Clock, Image as ImageIcon, RefreshCw, XCircle, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface HistoryItem {
   id: string;
@@ -47,28 +48,24 @@ const StatusIcon = ({ status }: { status: string }) => {
 };
 
 const StatusText = ({ status }: { status: string }) => {
+  const t = useTranslations("History");
+  
   switch (status) {
     case 'completed':
-      return <span className="text-green-400">已完成</span>;
+      return <span className="text-green-400">{t('status.completed')}</span>;
     case 'failed':
-      return <span className="text-red-400">失败</span>;
+      return <span className="text-red-400">{t('status.failed')}</span>;
     case 'processing':
-      return <span className="text-yellow-400">处理中</span>;
+      return <span className="text-yellow-400">{t('status.processing')}</span>;
     default:
-      return <span className="text-gray-400">未知</span>;
+      return <span className="text-gray-400">{t('status.processing')}</span>;
   }
 };
 
 const OptimizationTypeText = ({ type }: { type: string }) => {
-  const typeMap: Record<string, string> = {
-    'standard': '标准',
-    'soft_portraits': '柔和人像',
-    'hard_portraits': '锐化人像',
-    'art_n_illustration': '艺术插画',
-    'nature_n_landscapes': '自然风景',
-    'films_n_photography': '电影摄影',
-  };
-  return typeMap[type] || type;
+  const t = useTranslations("History");
+  
+  return t(`optimizationTypes.${type}`) || type;
 };
 
 export default function HistoryListPanel({
@@ -85,6 +82,7 @@ export default function HistoryListPanel({
 }: HistoryListPanelProps) {
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const t = useTranslations("History");
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -116,7 +114,7 @@ export default function HistoryListPanel({
     try {
       await onDeleteItem(confirmDeleteId);
     } catch (error) {
-      console.error('删除失败:', error);
+      console.error('Delete failed:', error);
     } finally {
       setDeletingItemId(null);
       setConfirmDeleteId(null);
@@ -191,10 +189,10 @@ export default function HistoryListPanel({
       <div className="p-4 sm:p-6 border-b border-gray-700">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-base sm:text-lg font-semibold text-white">历史记录</h1>
+            <h1 className="text-base sm:text-lg font-semibold text-white">{t('title')}</h1>
             {totalCount !== null && (
               <p className="text-xs text-gray-400 mt-1">
-                共 {totalCount} 条记录
+                {t('total', { count: totalCount })}
               </p>
             )}
           </div>
@@ -209,7 +207,7 @@ export default function HistoryListPanel({
           </Button>
         </div>
         <p className="text-gray-500 text-xs">
-          查看您的图像增强历史记录和处理结果
+          {t('description')}
         </p>
       </div>
 
@@ -221,13 +219,13 @@ export default function HistoryListPanel({
         {isLoading ? (
           <div className="p-6 text-center">
             <RefreshCw className="h-6 w-6 animate-spin text-gray-400 mx-auto mb-2" />
-            <p className="text-gray-400 text-sm">加载中...</p>
+            <p className="text-gray-400 text-sm">{t('processing')}</p>
           </div>
         ) : historyItems.length === 0 ? (
           <div className="p-6 text-center">
             <ImageIcon className="h-12 w-12 text-gray-600 mx-auto mb-3" />
-            <p className="text-gray-400 text-sm mb-1">暂无历史记录</p>
-            <p className="text-gray-500 text-xs">开始使用图像增强功能来创建您的第一个作品</p>
+            <p className="text-gray-400 text-sm mb-1">{t('noRecords')}</p>
+            <p className="text-gray-500 text-xs">{t('noRecordsDescription')}</p>
           </div>
         ) : (
           <div className="p-3 space-y-2">
@@ -250,7 +248,7 @@ export default function HistoryListPanel({
                       <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-800 border border-gray-600">
                         <img
                           src={getOriginalImageUrl(item.r2_original_key)}
-                          alt="原图预览"
+                          alt={t('beforeImage')}
                           className="w-full h-full object-cover transition-opacity duration-200"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
@@ -314,16 +312,16 @@ export default function HistoryListPanel({
                     {/* 中部：主要参数 - 紧凑布局 */}
                     <div className={`grid gap-1 text-xs my-1 ${item.prompt ? 'grid-cols-2' : 'grid-cols-1'}`}>
                       <div>
-                        <span className="text-gray-400">放大倍数：</span>
+                        <span className="text-gray-400">{t('scaleFactor')}:</span>
                         <span className="text-cyan-400 font-medium">{item.scale_factor}</span>
                       </div>
                       {item.prompt && (
                         <div className="text-right">
-                          <span className="text-gray-400">增强提示词</span>
+                          <span className="text-gray-400">{t('enhancePrompt')}</span>
                         </div>
                       )}
                       <div>
-                        <span className="text-gray-400">优化类型：</span>
+                        <span className="text-gray-400">{t('optimizationType')}:</span>
                         <span className="text-white">
                           <OptimizationTypeText type={item.optimization_type} />
                         </span>
@@ -336,7 +334,7 @@ export default function HistoryListPanel({
                         </div>
                       )}
                       <div>
-                        <span className="text-gray-400">消耗积分：</span>
+                        <span className="text-gray-400">{t('creditsConsumed')}:</span>
                         <span className="text-yellow-400">{item.credits_consumed}</span>
                       </div>
                     </div>
@@ -357,7 +355,7 @@ export default function HistoryListPanel({
               <div className="p-4 text-center border-t border-gray-700/50">
                 <div className="flex items-center justify-center gap-2">
                   <RefreshCw className="h-4 w-4 animate-spin text-cyan-400" />
-                  <span className="text-sm text-gray-400">加载更多...</span>
+                  <span className="text-sm text-gray-400">{t('loadMore')}...</span>
                 </div>
               </div>
             )}
@@ -365,7 +363,7 @@ export default function HistoryListPanel({
             {/* 已加载全部提示 */}
             {!hasMore && historyItems.length > 0 && (
               <div className="p-4 text-center border-t border-gray-700/50">
-                <p className="text-xs text-gray-500">已显示全部记录</p>
+                <p className="text-xs text-gray-500">{t('allRecordsShown')}</p>
               </div>
             )}
           </div>
@@ -381,12 +379,12 @@ export default function HistoryListPanel({
                 <Trash2 className="h-5 w-5 text-red-400" />
               </div>
               <div>
-                <h3 className="text-white font-semibold">删除历史记录</h3>
-                <p className="text-gray-400 text-sm">此操作无法撤销</p>
+                <h3 className="text-white font-semibold">{t('deleteConfirm')}</h3>
+                <p className="text-gray-400 text-sm">{t('deleteWarning')}</p>
               </div>
             </div>
             <p className="text-gray-300 text-sm mb-6">
-              确定要删除这条历史记录吗？相关的图片文件也将被永久删除。
+              {t('deleteConfirmMessage')}
             </p>
             <div className="flex gap-3">
               <Button
@@ -394,7 +392,7 @@ export default function HistoryListPanel({
                 variant="outline"
                 className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700"
               >
-                取消
+                {t('cancel')}
               </Button>
               <Button
                 onClick={handleDeleteConfirm}
@@ -405,7 +403,7 @@ export default function HistoryListPanel({
                 {deletingItemId ? (
                   <RefreshCw className="h-4 w-4 animate-spin mr-2" />
                 ) : null}
-                删除
+                {t('delete')}
               </Button>
             </div>
           </div>

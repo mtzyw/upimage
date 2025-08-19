@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
           `anonymous`,
           taskId,
           getImageExtension(resultImageUrl),
-          false // 禁用回退，测试纯流式上传
+          true // 启用回退，流式上传失败时降级到本地文件方案
         );
         
         const r2Key = uploadResult.key;

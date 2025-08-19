@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    const redirectUrl = next || '/home';
+    const redirectUrl = next || '/upscaler';
     return await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -137,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGithub = async () => {
-    const redirectUrl = next || '/home';
+    const redirectUrl = next || '/upscaler';
     return await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
@@ -147,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithEmail = async (email: string, captchaToken?: string) => {
-    const redirectUrl = next || '/home';
+    const redirectUrl = next || '/upscaler';
     return await supabase.auth.signInWithOtp({
       email: normalizeEmail(email),
       options: {

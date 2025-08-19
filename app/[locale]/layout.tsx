@@ -98,8 +98,8 @@ export default async function LocaleLayout({
   // 获取当前路径
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
-  // 只在 /home 页面（包括多语言）不显示 Footer
-  const isHomePage = pathname === "/home" || pathname.match(/^\/(en|zh|ja)\/home$/);
+  // 只在 /upscaler 页面（包括多语言）不显示 Footer
+  const isHomePage = pathname === "/upscaler" || pathname.match(/^\/(en|zh|ja)\/upscaler$/);
 
   return (
     <html lang={locale || DEFAULT_LOCALE} suppressHydrationWarning>

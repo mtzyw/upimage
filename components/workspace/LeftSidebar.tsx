@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Sparkles, History } from "lucide-react";
+import { Menu, Sparkles, History, Scissors } from "lucide-react";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -16,12 +16,18 @@ export default function LeftSidebar({
 }: LeftSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const t = useTranslations("Enhance");
+  const sidebarT = useTranslations("Sidebar");
 
   const menuItems = [
     {
       id: 'enhance',
       icon: Sparkles,
-      label: t('title'),
+      label: sidebarT('aiImageEnhancement'),
+    },
+    {
+      id: 'removeBackground',
+      icon: Scissors,
+      label: sidebarT('removeBackground'),
     },
     {
       id: 'history',
@@ -60,8 +66,11 @@ export default function LeftSidebar({
               // 跳转到历史记录页面
               window.location.href = `/${locale}/history`;
             } else if (item.id === 'enhance') {
-              // 跳转到首页/工作台
-              window.location.href = `/${locale}/home`;
+              // 跳转到图片增强页面
+              window.location.href = `/${locale}/upscaler`;
+            } else if (item.id === 'removeBackground') {
+              // 跳转到去除背景页面
+              window.location.href = `/${locale}/quitarfondo`;
             } else {
               // 对于其他选项，调用onTabChange
               onTabChange?.(item.id);

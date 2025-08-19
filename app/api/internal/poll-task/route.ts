@@ -98,7 +98,7 @@ async function processCompletedTask(
       'authenticated',
       taskId,
       getImageExtension(imageUrl),
-      false // 禁用回退，测试纯流式上传
+      true // 启用回退，流式上传失败时降级到本地文件方案
     );
     
     // 记录使用的上传方式

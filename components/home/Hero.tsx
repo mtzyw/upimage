@@ -18,8 +18,8 @@ export default function Hero() {
 
   const handleGetStartedClick = () => {
     if (user) {
-      // 已登录用户直接跳转到首页
-      router.push('/home');
+      // 已登录用户直接跳转到图片增强页面
+      router.push('/upscaler');
     } else {
       // 未登录用户打开登录模态框
       setIsLoginModalOpen(true);
@@ -60,9 +60,21 @@ export default function Hero() {
               >
                 <div className="flex items-center gap-2">
                   <MousePointerClick className="w-4 h-4" />
-                  {user ? t("goToWorkspace", { default: "Go to Workspace" }) : t("getStarted", { default: "Get Started Now" })}
+                  {user ? "AI图片增强" : t("getStarted", { default: "Get Started Now" })}
                 </div>
               </Button>
+              
+              {user && (
+                <Button 
+                  className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-6 text-lg rounded-lg"
+                  onClick={() => router.push('/quitarfondo')}
+                >
+                  <div className="flex items-center gap-2">
+                    <MousePointerClick className="w-4 h-4" />
+                    去除背景
+                  </div>
+                </Button>
+              )}
             </div>
           </div>
 

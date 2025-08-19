@@ -76,7 +76,7 @@ export async function uploadOptimizedImageStreamToR2(
   userId: string, 
   taskId: string,
   originalExtension: string = 'png',
-  fallbackToLocal: boolean = false
+  fallbackToLocal: boolean = true
 ): Promise<{ key: string; url: string; uploadMethod: 'stream' | 'local' }> {
   const key = `users/${userId}/image-enhancements/optimized-${taskId}.${originalExtension}`;
   const taskIdShort = taskId.slice(0, 8);

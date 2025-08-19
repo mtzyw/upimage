@@ -7,7 +7,9 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import LeftSidebar from "./LeftSidebar";
 import LeftControlPanel from "./LeftControlPanel";
+import RemoveBackgroundPanel from "./RemoveBackgroundPanel";
 import ResultDisplayPanel from "./ResultDisplayPanel";
+import RemoveBackgroundResultPanel from "./RemoveBackgroundResultPanel";
 
 interface UserBenefits {
   totalAvailableCredits: number;
@@ -30,7 +32,11 @@ interface TaskStatus {
   estimatedTimeRemaining?: string;
 }
 
-export default function ImageProcessor() {
+interface ImageProcessorProps {
+  defaultTab?: string;
+}
+
+export default function ImageProcessor({ defaultTab }: ImageProcessorProps) {
   const { user } = useAuth();
   const router = useRouter();
   const t = useTranslations("Enhance");
@@ -53,10 +59,17 @@ export default function ImageProcessor() {
   const [prompt, setPrompt] = useState('');
   
   // 导航状态
-  const [activeTab, setActiveTab] = useState('enhance');
+  const [activeTab, setActiveTab] = useState(defaultTab || 'enhance');
   
   // 用户信息
   const [userBenefits, setUserBenefits] = useState<UserBenefits | null>(null);
+  
+  // 去除背景结果状态
+  const [removeBackgroundResult, setRemoveBackgroundResult] = useState<{
+    originalUrl: string;
+    cdnUrl: string;
+    taskId: string;
+  } | null>(null);
 
 
   // 获取用户权益信息
@@ -248,6 +261,25 @@ export default function ImageProcessor() {
     }
   };
 
+  // 处理去除背景结果
+  const handleRemoveBackgroundResult = (result: { originalUrl: string; cdnUrl: string; taskId: string }) => {
+    setRemoveBackgroundResult(result);
+    // 创建一个TaskStatus对象来兼容现有的ResultDisplayPanel
+    const fakeTaskStatus: TaskStatus = {
+      taskId: result.taskId,
+      status: 'completed',
+      message: '背景去除完成',
+      createdAt: new Date().toISOString(),
+      scaleFactor: '1x',
+      creditsConsumed: 2,
+      originalUrl: result.originalUrl,
+      cdnUrl: result.cdnUrl,
+      completedAt: new Date().toISOString()
+    };
+    setTaskStatus(fakeTaskStatus);
+    setCurrentTaskId(result.taskId);
+  };
+
   return (
     <div className="flex h-full w-full overflow-hidden bg-gray-900/95">
       {/* 最左侧导航栏 */}
@@ -278,8 +310,17 @@ export default function ImageProcessor() {
         />
       )}
       
+      {/* 去除背景控制面板 */}
+      {activeTab === 'removeBackground' && (
+        <RemoveBackgroundPanel
+          uploadedImage={uploadedImage}
+          onFileSelected={handleFileSelected}
+          onResult={handleRemoveBackgroundResult}
+        />
+      )}
+      
       {/* 其他功能的占位符 */}
-      {activeTab !== 'enhance' && (
+      {activeTab !== 'enhance' && activeTab !== 'removeBackground' && (
         <div className="w-full sm:w-[350px] lg:w-[400px] xl:w-[450px] h-full bg-gray-800/50 border-r border-gray-700 flex flex-col items-center justify-center">
           <div className="text-gray-400 text-center">
             <div className="text-lg font-medium mb-2">{t('messages.developing')}</div>
@@ -289,12 +330,21 @@ export default function ImageProcessor() {
       )}
       
       {/* 右侧结果展示区域 */}
-      <ResultDisplayPanel
-        taskStatus={taskStatus}
-        isProcessing={isProcessing}
-        onDownload={handleDownload}
-        onCopyUrl={handleCopyUrl}
-      />
+      {activeTab === 'removeBackground' ? (
+        <RemoveBackgroundResultPanel
+          taskStatus={taskStatus}
+          isProcessing={isProcessing}
+          onDownload={handleDownload}
+          onCopyUrl={handleCopyUrl}
+        />
+      ) : (
+        <ResultDisplayPanel
+          taskStatus={taskStatus}
+          isProcessing={isProcessing}
+          onDownload={handleDownload}
+          onCopyUrl={handleCopyUrl}
+        />
+      )}
     </div>
   );
 }

@@ -353,6 +353,66 @@
       "completedAt": "完了時間"
     }
   },
+  "Sidebar": {
+    "aiImageEnhancement": "AI画像強化",
+    "removeBackground": "背景除去"
+  },
+  "RemoveBackground": {
+    "title": "AI背景除去",
+    "description": "画像の背景を自動的に除去し、透明背景画像を取得",
+    "features": {
+      "title": "機能特徴",
+      "aiRecognition": {
+        "title": "AIスマート認識",
+        "description": "人物・物体のエッジを正確に識別"
+      },
+      "highQuality": {
+        "title": "高品質出力",
+        "description": "原画の詳細と鮮明度を保持"
+      },
+      "oneClick": {
+        "title": "ワンクリック処理",
+        "description": "手動調整不要、自動完成"
+      }
+    },
+    "upload": {
+      "selectImage": "まず画像をアップロードしてください",
+      "processing": "処理中..."
+    },
+    "button": {
+      "startProcessing": "処理開始"
+    },
+    "result": {
+      "title": "背景除去完了",
+      "description": "背景が正常に除去され、透明背景をサポート",
+      "downloadImage": "画像をダウンロード",
+      "viewOriginal": "元画像を見る",
+      "copyLink": "リンクをコピー",
+      "share": "共有"
+    },
+    "status": {
+      "processing": "処理中...",
+      "completed": "完了",
+      "failed": "処理失敗",
+      "waiting": "画像を選択して背景除去を開始"
+    },
+    "messages": {
+      "processingDescription": "AIが背景を除去中、お待ちください",
+      "backgroundRemovalFailed": "背景除去に失敗しました。後でもう一度お試しください",
+      "backgroundRemovalSuccess": "背景除去に成功しました！",
+      "networkError": "ネットワークエラー、再試行してください",
+      "shareText": "AI背景除去完了"
+    },
+    "credits": {
+      "consumed": "{credits}クレジットを消費"
+    },
+    "taskDetails": {
+      "title": "タスク詳細",
+      "status": "ステータス",
+      "creditsConsumed": "消費クレジット",
+      "completedTime": "完了時間"
+    }
+  },
   "AIDemo": {
     "title": "AI機能デモ",
     "description": "このページは非公開の機能を紹介しており、テンプレートをご購入いただいたユーザー様のみがご利用いただけます。AIモデルの呼び出しプロセスを学習し、テストするためのものです。ご利用には、ローカルでテンプレートを起動し、環境変数に自身のAPIキーを入力してください。AIデモには、シングルターンとマルチターンの会話、テキストから画像への変換、画像から画像への変換、テキスト/画像から動画への変換などの機能が含まれています。このデモを通じて、AI呼び出しのワークフローを迅速に理解し、AIアプリケーション構築への道のりを加速させることができます。",
@@ -406,6 +466,70 @@
       "goToDashboard": "ダッシュボードに戻る",
       "title": "Payment Portal Error",
       "description": "支払い情報にエラーが発生しました。"
+    }
+  },
+  "History": {
+    "title": "履歴",
+    "description": "画像拡張履歴と処理結果を表示",
+    "selectRecord": "履歴記録を選択",
+    "selectRecordDescription": "左のリストから記録を選択して詳細を表示",
+    "processingDetails": "処理詳細",
+    "createTime": "作成時間",
+    "completeTime": "完了時間",
+    "creditsConsumed": "消費クレジット",
+    "scaleFactor": "拡大倍率",
+    "optimizationType": "最適化タイプ",
+    "creativity": "創造性",
+    "hdrIntensity": "HDR強度",
+    "enhancePrompt": "拡張プロンプト",
+    "clickToViewFullPrompt": "クリックして完全なプロンプトを表示",
+    "errorMessage": "エラーメッセージ",
+    "downloadImage": "画像をダウンロード",
+    "preview": "プレビュー",
+    "copyLink": "リンクをコピー",
+    "share": "シェア",
+    "processing": "処理中...",
+    "processingDescription": "このタスクは処理中です。結果をお待ちください",
+    "processingFailed": "処理失敗",
+    "processingFailedDescription": "このタスクの処理が失敗しました。上記のエラーメッセージを確認してください",
+    "refresh": "更新",
+    "deleteConfirm": "削除確認",
+    "deleteWarning": "この操作は元に戻せません",
+    "deleteConfirmMessage": "この履歴記録を削除してもよろしいですか？関連する画像ファイルも永久に削除されます。",
+    "allRecordsShown": "すべての記録を表示",
+    "delete": "削除",
+    "cancel": "キャンセル",
+    "deleteSuccess": "削除成功",
+    "deleteError": "削除失敗、再試行してください",
+    "noRecords": "履歴記録なし",
+    "noRecordsDescription": "まだ画像処理記録がありません",
+    "loadMore": "さらに読み込む",
+    "total": "合計 {count} 件の記録",
+    "downloadStart": "画像ダウンロード開始",
+    "downloadError": "ダウンロード失敗、再試行してください",
+    "downloadServiceNotConfigured": "ダウンロードサービスが設定されていません。管理者にお問い合わせください",
+    "linkCopied": "リンクをクリップボードにコピーしました",
+    "copyError": "コピー失敗、再試行してください",
+    "shareText": "私のAI拡張画像をご覧ください：{url}",
+    "promptCopied": "プロンプトをクリップボードにコピーしました",
+    "close": "閉じる",
+    "copy": "コピー",
+    "beforeImage": "処理前",
+    "afterImage": "処理後",
+    "removeBackgroundResult": "背景除去後の画像",
+    "optimizationTypes": {
+      "standard": "標準",
+      "soft_portraits": "ソフトポートレート",
+      "hard_portraits": "シャープポートレート",
+      "art_n_illustration": "アート＆イラスト",
+      "nature_n_landscapes": "自然＆風景",
+      "films_n_photography": "映画＆写真",
+      "remove_background": "背景除去"
+    },
+    "status": {
+      "completed": "完了",
+      "failed": "失敗",
+      "processing": "処理中"
     }
   }
 }
