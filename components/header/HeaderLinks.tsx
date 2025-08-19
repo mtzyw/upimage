@@ -16,8 +16,8 @@ const HeaderLinks = () => {
     pricingLink.href = process.env.NEXT_PUBLIC_PRICING_PATH!;
   }
 
-  // 在 /upscaler 或 /history 页面时只显示 pricing 链接
-  const isHomePage = pathname === "/upscaler";
+  // 在 /app 或 /history 页面时只显示 pricing 链接
+  const isHomePage = pathname === "/app";
   const isHistoryPage = pathname === "/history";
   const filteredLinks = (isHomePage || isHistoryPage)
     ? headerLinks.filter(link => link.id === 'pricing')

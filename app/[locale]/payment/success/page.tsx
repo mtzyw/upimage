@@ -183,7 +183,7 @@ function SuccessContent() {
           asChild
           size="lg"
         >
-          <I18nLink href="/upscaler" title="Back to Home" prefetch={true}>
+          <I18nLink href="/app?target=upscaler" title="Back to Home" prefetch={true}>
             <Home className="w-4 h-4" />
             Back to Home <ArrowRight className="w-4 h-4" />
           </I18nLink>

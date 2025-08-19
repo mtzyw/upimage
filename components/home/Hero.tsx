@@ -13,25 +13,14 @@ import { useRouter } from "next/navigation";
 
 export default function Hero() {
   const t = useTranslations("Landing.Hero");
-  const tSidebar = useTranslations("Sidebar");
   const { user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const router = useRouter();
 
-  const handleGetStartedClick = () => {
+  const handleGoToWorkspace = () => {
     if (user) {
-      // 已登录用户直接跳转到图片增强页面
-      router.push('/upscaler');
-    } else {
-      // 未登录用户打开登录模态框
-      setIsLoginModalOpen(true);
-    }
-  };
-
-  const handleRemoveBackgroundClick = () => {
-    if (user) {
-      // 已登录用户直接跳转到去除背景页面
-      router.push('/quitarfondo');
+      // 已登录用户直接跳转到工作台
+      router.push('/app?target=upscaler');
     } else {
       // 未登录用户打开登录模态框
       setIsLoginModalOpen(true);
@@ -67,22 +56,12 @@ export default function Hero() {
 
             <div className="flex flex-row gap-4">
               <Button 
-                className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-6 text-lg rounded-lg"
-                onClick={handleGetStartedClick}
+                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                onClick={handleGoToWorkspace}
               >
                 <div className="flex items-center gap-2">
-                  <MousePointerClick className="w-4 h-4" />
-                  {user ? "AI图片增强" : t("getStarted", { default: "Get Started Now" })}
-                </div>
-              </Button>
-              
-              <Button 
-                className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-6 text-lg rounded-lg"
-                onClick={handleRemoveBackgroundClick}
-              >
-                <div className="flex items-center gap-2">
-                  <MousePointerClick className="w-4 h-4" />
-                  {tSidebar("removeBackground")}
+                  <MousePointerClick className="w-5 h-5" />
+                  {t("goToWorkspace", { default: "前往工作台" })}
                 </div>
               </Button>
             </div>

@@ -67,10 +67,10 @@ export default function LeftSidebar({
               window.location.href = `/${locale}/history`;
             } else if (item.id === 'enhance') {
               // 跳转到图片增强页面
-              window.location.href = `/${locale}/upscaler`;
+              window.location.href = `/${locale}/app?target=upscaler`;
             } else if (item.id === 'removeBackground') {
               // 跳转到去除背景页面
-              window.location.href = `/${locale}/quitarfondo`;
+              window.location.href = `/${locale}/app?target=background-remover`;
             } else {
               // 对于其他选项，调用onTabChange
               onTabChange?.(item.id);

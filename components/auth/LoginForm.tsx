@@ -25,7 +25,7 @@ export default function LoginForm({
     onSuccess?.();
     // 对于某些登录方式（如邮箱登录），可能需要客户端跳转
     setTimeout(() => {
-      router.push('/upscaler');
+      router.push('/app?target=upscaler');
     }, 1000);
   };
 

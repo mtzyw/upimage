@@ -22,7 +22,7 @@ export default function DashboardPage() {
       title: "图像增强",
       description: "AI 驱动的图像放大和增强",
       icon: Zap,
-      href: "/upscaler",
+      href: "/app?target=upscaler",
       color: "text-pink-400",
       bgColor: "bg-pink-400/10 border-pink-400/20"
     },
@@ -30,7 +30,7 @@ export default function DashboardPage() {
       title: "去除背景",
       description: "AI 自动去除图片背景",
       icon: Zap,
-      href: "/quitarfondo",
+      href: "/app?target=background-remover",
       color: "text-purple-400",
       bgColor: "bg-purple-400/10 border-purple-400/20"
     },

@@ -24,7 +24,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?redirect_to=/upscaler`
+          redirectTo: `${window.location.origin}/auth/callback?redirect_to=/app?target=upscaler`
         }
       })
       if (error) throw error
