@@ -5,13 +5,15 @@ import { MousePointerClick } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { useAuth } from "@/components/providers/AuthProvider";
-import ImageProcessingDemo from "./ImageProcessingDemo";
+// 临时注释试用组件导入
+// import ImageProcessingDemo from "./ImageProcessingDemo";
 import ImageComparisonSlider from "@/components/workspace/ImageComparisonSlider";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Hero() {
   const t = useTranslations("Landing.Hero");
+  const tSidebar = useTranslations("Sidebar");
   const { user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const router = useRouter();
@@ -20,6 +22,16 @@ export default function Hero() {
     if (user) {
       // 已登录用户直接跳转到图片增强页面
       router.push('/upscaler');
+    } else {
+      // 未登录用户打开登录模态框
+      setIsLoginModalOpen(true);
+    }
+  };
+
+  const handleRemoveBackgroundClick = () => {
+    if (user) {
+      // 已登录用户直接跳转到去除背景页面
+      router.push('/quitarfondo');
     } else {
       // 未登录用户打开登录模态框
       setIsLoginModalOpen(true);
@@ -64,17 +76,15 @@ export default function Hero() {
                 </div>
               </Button>
               
-              {user && (
-                <Button 
-                  className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-6 text-lg rounded-lg"
-                  onClick={() => router.push('/quitarfondo')}
-                >
-                  <div className="flex items-center gap-2">
-                    <MousePointerClick className="w-4 h-4" />
-                    去除背景
-                  </div>
-                </Button>
-              )}
+              <Button 
+                className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-6 text-lg rounded-lg"
+                onClick={handleRemoveBackgroundClick}
+              >
+                <div className="flex items-center gap-2">
+                  <MousePointerClick className="w-4 h-4" />
+                  {tSidebar("removeBackground")}
+                </div>
+              </Button>
             </div>
           </div>
 
@@ -95,7 +105,8 @@ export default function Hero() {
       </div>
 
       {/* Image Processing Demo Section - 仅对匿名用户显示 */}
-      {!user && <ImageProcessingDemo />}
+      {/* 临时注释试用组件 */}
+      {/* {!user && <ImageProcessingDemo />} */}
 
       {/* Login Modal */}
       <LoginModal 
