@@ -536,5 +536,208 @@
       "failed": "Fallido",
       "processing": "Procesando"
     }
+  },
+  "QuitarFondo": {
+    "page": {
+      "title": "Quitar Fondo Inteligente",
+      "titleColorful": {
+        "intelligent": "Quitar ",
+        "cutout": "Fondo",
+        "ai": "Inteligente",
+        "instant": " Instantáneo ",
+        "processing": "Procesamiento",
+        "sparkle": " ✨"
+      },
+      "description": "Usa nuestra tecnología IA avanzada para eliminar fondos de cualquier imagen con precisión profesional. Perfecto para fotografía de productos, retratos y contenido comercial.",
+      "uploadTitle": "Subir Imagen",
+      "uploadDescription": "Sube tu imagen para eliminar el fondo",
+      "processButton": {
+        "idle": "Quitar Fondo",
+        "processing": "Procesando..."
+      },
+      "alerts": {
+        "pleaseUploadFirst": "Por favor, sube una imagen primero",
+        "backgroundRemovalFailed": "La eliminación del fondo falló, por favor inténtalo de nuevo más tarde",
+        "processingError": "Ocurrió un error durante el procesamiento, por favor inténtalo de nuevo más tarde"
+      },
+      "console": {
+        "executingRemoval": "Ejecutando eliminación de fondo...",
+        "removalSuccess": "Eliminación de fondo exitosa:",
+        "removalFailed": "Eliminación de fondo falló:",
+        "processingError": "Error durante la eliminación de fondo:"
+      },
+      "task": {
+        "processing": "Procesando",
+        "completed": "Completado",
+        "failed": "Falló",
+        "statusMessage": {
+          "processing": "Procesando",
+          "completed": "Completado",
+          "failed": "Falló"
+        }
+      }
+    },
+    "uploadArea": {
+      "chooseImage": "Elegir Imagen",
+      "supportedFormats": "Aceptamos formatos .jpeg, .jpg, .png, .webp hasta 24MB.",
+      "clickToUpload": "Haz clic para subir o arrastra y suelta",
+      "replaceImage": "Reemplazar Imagen",
+      "uploadedImageAlt": "Imagen subida",
+      "clearImageTitle": "Eliminar imagen"
+    },
+    "history": {
+      "title": "Tareas Recientes",
+      "viewAll": "Ver Todo",
+      "loading": "Cargando...",
+      "empty": "Aún no hay registros de eliminación de fondo",
+      "retry": "Reintentar",
+      "actions": {
+        "maximize": "Agrandar Vista",
+        "download": "Descargar Imagen",
+        "delete": "Eliminar Registro",
+        "confirmDelete": "Confirmar Eliminación"
+      },
+      "status": {
+        "processing": "Procesando...",
+        "completed": "✓ Completado",
+        "failed": "✗ Falló"
+      },
+      "previewModal": {
+        "title": "Resultado de Eliminación de Fondo",
+        "clickToView": "Haz clic para ver tamaño completo"
+      },
+      "errors": {
+        "fetchFailed": "Error al obtener el historial",
+        "deleteFailed": "Error al eliminar",
+        "deleteError": "Error durante la eliminación:",
+        "noImage": "Sin imagen"
+      },
+      "tooltips": {
+        "processing": "Procesando...",
+        "confirmDelete": "Haz clic de nuevo para confirmar eliminación",
+        "deleting": "Eliminando..."
+      }
+    },
+    "previewModal": {
+      "title": "Vista Previa",
+      "previewImage": "Imagen de vista previa",
+      "download": "Descargar",
+      "close": "Cerrar",
+      "zoomIn": "Acercar",
+      "zoomOut": "Alejar"
+    },
+    "featuresShowcase": {
+      "title": "Resultados",
+      "titleColorful": "Increíbles",
+      "description": "Mira cómo nuestra tecnología IA ofrece eliminación de fondo perfecta para diferentes escenarios",
+      "examples": [
+        {
+          "title": "Fotos de Productos E-commerce",
+          "description": "Crea imágenes limpias de productos para tiendas online, catálogos y materiales de marketing con fondos transparentes perfectos."
+        },
+        {
+          "title": "Fotografía de Retratos",
+          "description": "Elimina fondos que distraen de fotos de retratos para crear headshots profesionales e imágenes de perfil."
+        },
+        {
+          "title": "Contenido de Redes Sociales",
+          "description": "Crea publicaciones llamativas en redes sociales eliminando fondos y agregando diseños o colores personalizados."
+        },
+        {
+          "title": "Materiales de Marketing",
+          "description": "Obtén imágenes flexibles para folletos, presentaciones y anuncios eliminando fondos no deseados."
+        }
+      ]
+    },
+    "howItWorks": {
+      "title": "¿Cómo",
+      "titleColorful": "Funciona",
+      "titleQuestion": "?",
+      "description": "Obtén resultados profesionales en solo tres simples pasos",
+      "steps": [
+        {
+          "title": "Subir Imagen",
+          "description": "Arrastra y suelta o selecciona cualquier imagen en formato JPG, PNG o WEBP"
+        },
+        {
+          "title": "Procesamiento IA Automático",
+          "description": "Nuestra IA avanzada analiza y elimina el fondo en segundos"
+        },
+        {
+          "title": "Descargar Resultado",
+          "description": "Obtén imágenes de alta calidad con fondos transparentes"
+        }
+      ],
+      "tips": {
+        "title": "💡 Consejos para Mejores Resultados",
+        "items": [
+          "✓ Use imágenes bien iluminadas y con alto contraste",
+          "✓ Evite fondos muy similares a los colores del sujeto",
+          "✓ Las imágenes de alta resolución producen mejores resultados"
+        ]
+      }
+    },
+    "callToAction": {
+      "stats": [
+        {
+          "number": "100K+",
+          "label": "Usuarios Satisfechos"
+        },
+        {
+          "number": "1M+",
+          "label": "Imágenes Procesadas"
+        },
+        {
+          "number": "4.9/5",
+          "label": "Calificación Promedio"
+        }
+      ],
+      "testimonialsTitle": "Reseñas de",
+      "testimonialsColorful": "Usuarios",
+      "testimonials": [
+        {
+          "name": "María García",
+          "role": "Diseñadora Gráfica",
+          "content": "Precisión y velocidad increíbles. Ahora puedo crear contenido profesional en minutos."
+        },
+        {
+          "name": "Carlos Rodríguez",
+          "role": "Gerente de E-commerce",
+          "content": "Perfecto para fotografía de productos. Excelentes resultados y fácil de usar."
+        },
+        {
+          "name": "Ana López",
+          "role": "Creadora de Contenido",
+          "content": "La mejor herramienta para crear contenido de redes sociales. Siempre resultados profesionales."
+        }
+      ],
+      "mainCta": {
+        "title": "¿Listo para Crear",
+        "titleColorful": "Magia",
+        "titleEnd": "?",
+        "description": "Únete a miles de profesionales que confían en nuestra tecnología de eliminación de fondo con IA. Comienza tu experiencia gratuita ahora.",
+        "buttonLoggedIn": "Comenzar Procesamiento",
+        "buttonGuest": "Comenzar Gratis"
+      },
+      "bottomFeatures": "✓ Gratuito, sin registro • ✓ Resultados instantáneos • ✓ 100% seguro y privado",
+      "features": [
+        {
+          "title": "🚀 Súper Rápido",
+          "description": "Resultados en 3-5 segundos"
+        },
+        {
+          "title": "🎯 Precisión IA",
+          "description": "Tecnología de última generación"
+        },
+        {
+          "title": "🔒 100% Privacidad",
+          "description": "Tus imágenes se eliminan automáticamente"
+        },
+        {
+          "title": "📱 Todas las Plataformas",
+          "description": "Web, móvil, tablet"
+        }
+      ]
+    }
   }
 }

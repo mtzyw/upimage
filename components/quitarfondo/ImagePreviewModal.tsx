@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, Download, ZoomIn, ZoomOut, RotateCw, Maximize2 } from 'lucide-react';
+import { X, Download, ZoomIn, ZoomOut } from 'lucide-react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 interface ImagePreviewModalProps {
   isOpen: boolean;
@@ -19,12 +20,11 @@ export default function ImagePreviewModal({
   onClose, 
   imageUrl, 
   originalUrl, 
-  title = "预览",
+  title = "Preview",
   onDownload 
 }: ImagePreviewModalProps) {
-  const [currentView, setCurrentView] = useState<'processed' | 'original'>('processed');
+  const t = useTranslations('QuitarFondo');
   const [zoom, setZoom] = useState(1);
-  const [rotation, setRotation] = useState(0);
 
   if (!isOpen) return null;
 
@@ -36,60 +36,20 @@ export default function ImagePreviewModal({
     setZoom(prev => Math.max(prev - 0.25, 0.25));
   };
 
-  const handleRotate = () => {
-    setRotation(prev => (prev + 90) % 360);
-  };
-
-  const handleReset = () => {
-    setZoom(1);
-    setRotation(0);
-  };
-
-  const currentImageUrl = currentView === 'processed' ? imageUrl : (originalUrl || imageUrl);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ top: 0, left: 0, right: 0, bottom: 0, width: '100vw', height: '100vh' }}>
       {/* 背景遮罩 */}
       <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute bg-black/80 backdrop-blur-sm"
+        style={{ top: 0, left: 0, right: 0, bottom: 0, width: '100vw', height: '100vh' }}
         onClick={onClose}
       />
       
       {/* 弹窗内容 */}
-      <div className="relative w-full h-full max-w-6xl max-h-screen p-4">
+      <div className="relative w-[90vw] h-[90vh] max-w-4xl max-h-[800px] bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden">
         {/* 顶部工具栏 */}
-        <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
-          {/* 左侧标题 */}
-          <div className="flex items-center gap-4">
-            <h2 className="text-white text-lg font-semibold">{title}</h2>
-            {originalUrl && (
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  onClick={() => setCurrentView('processed')}
-                  className={`text-xs px-3 py-1 ${
-                    currentView === 'processed' 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                      : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
-                  }`}
-                >
-                  处理后
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => setCurrentView('original')}
-                  className={`text-xs px-3 py-1 ${
-                    currentView === 'original' 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                      : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
-                  }`}
-                >
-                  原图
-                </Button>
-              </div>
-            )}
-          </div>
-
+        <div className="absolute top-4 right-4 z-10">
           {/* 右侧操作按钮 */}
           <div className="flex items-center gap-2">
             {onDownload && (
@@ -97,7 +57,7 @@ export default function ImagePreviewModal({
                 size="sm"
                 onClick={onDownload}
                 className="bg-gray-800/80 hover:bg-gray-700 text-white p-2"
-                title="下载"
+                title={t('previewModal.download')}
               >
                 <Download className="w-4 h-4" />
               </Button>
@@ -106,7 +66,7 @@ export default function ImagePreviewModal({
               size="sm"
               onClick={onClose}
               className="bg-gray-800/80 hover:bg-gray-700 text-white p-2"
-              title="关闭"
+              title={t('previewModal.close')}
             >
               <X className="w-4 h-4" />
             </Button>
@@ -121,7 +81,7 @@ export default function ImagePreviewModal({
               onClick={handleZoomOut}
               disabled={zoom <= 0.25}
               className="bg-gray-700 hover:bg-gray-600 text-white p-2"
-              title="缩小"
+              title={t('previewModal.zoomOut')}
             >
               <ZoomOut className="w-4 h-4" />
             </Button>
@@ -135,54 +95,32 @@ export default function ImagePreviewModal({
               onClick={handleZoomIn}
               disabled={zoom >= 3}
               className="bg-gray-700 hover:bg-gray-600 text-white p-2"
-              title="放大"
+              title={t('previewModal.zoomIn')}
             >
               <ZoomIn className="w-4 h-4" />
-            </Button>
-            
-            <div className="w-px h-6 bg-gray-600 mx-1" />
-            
-            <Button
-              size="sm"
-              onClick={handleRotate}
-              className="bg-gray-700 hover:bg-gray-600 text-white p-2"
-              title="旋转"
-            >
-              <RotateCw className="w-4 h-4" />
-            </Button>
-            
-            <Button
-              size="sm"
-              onClick={handleReset}
-              className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 text-xs"
-              title="重置"
-            >
-              重置
             </Button>
           </div>
         </div>
 
         {/* 图片显示区域 */}
-        <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-lg">
+        <div className="w-full h-full flex items-center justify-center overflow-hidden p-4 pt-16 pb-16">
           <div 
             className="relative transition-transform duration-200 ease-in-out"
             style={{ 
-              transform: `scale(${zoom}) rotate(${rotation}deg)`,
-              maxWidth: '90%',
-              maxHeight: '90%'
+              transform: `scale(${zoom})`,
             }}
           >
             <Image
-              src={currentImageUrl}
-              alt="预览图片"
-              width={800}
-              height={600}
-              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              src={imageUrl}
+              alt={t('previewModal.previewImage')}
+              width={600}
+              height={400}
+              className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
               style={{
                 width: 'auto',
                 height: 'auto',
-                maxWidth: '80vw',
-                maxHeight: '80vh'
+                maxWidth: '70vw',
+                maxHeight: '60vh'
               }}
             />
           </div>

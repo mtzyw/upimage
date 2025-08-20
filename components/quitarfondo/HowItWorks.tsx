@@ -1,25 +1,28 @@
 'use client'
 
 import { Upload, Zap, Download, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function HowItWorks() {
+  const t = useTranslations('QuitarFondo');
+  
   const steps = [
     {
       icon: <Upload className="w-8 h-8" />,
-      title: "上传图片",
-      description: "拖拽放置或选择任何JPG、PNG或WEBP格式的图片",
+      titleKey: 'howItWorks.steps.0.title',
+      descriptionKey: 'howItWorks.steps.0.description',
       color: "from-pink-500 to-purple-600"
     },
     {
       icon: <Zap className="w-8 h-8" />,
-      title: "AI自动处理",
-      description: "我们的先进AI在几秒内分析并移除背景",
+      titleKey: 'howItWorks.steps.1.title',
+      descriptionKey: 'howItWorks.steps.1.description',
       color: "from-cyan-500 to-blue-600"
     },
     {
       icon: <Download className="w-8 h-8" />,
-      title: "下载结果",
-      description: "获取高质量的透明背景图片",
+      titleKey: 'howItWorks.steps.2.title',
+      descriptionKey: 'howItWorks.steps.2.description',
       color: "from-green-500 to-emerald-600"
     }
   ];
@@ -30,10 +33,10 @@ export default function HowItWorks() {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
-            如何<span className="text-yellow-400">使用</span>？
+            {t('howItWorks.title')}<span className="text-yellow-400">{t('howItWorks.titleColorful')}</span>{t('howItWorks.titleQuestion')}
           </h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            仅三个简单步骤，即可获得专业结果
+            {t('howItWorks.description')}
           </p>
         </div>
 
@@ -58,8 +61,8 @@ export default function HowItWorks() {
 
                   {/* Content */}
                   <div className="space-y-2 flex-grow flex flex-col justify-center">
-                    <h3 className="text-xl font-semibold text-white">{step.title}</h3>
-                    <p className="text-gray-400 text-base leading-relaxed">{step.description}</p>
+                    <h3 className="text-xl font-semibold text-white">{t(step.titleKey)}</h3>
+                    <p className="text-gray-400 text-base leading-relaxed">{t(step.descriptionKey)}</p>
                   </div>
                 </div>
 
@@ -80,12 +83,12 @@ export default function HowItWorks() {
         <div className="mt-12 text-center">
           <div className="inline-block bg-gray-800/50 border border-gray-700 rounded-lg p-4 max-w-xl">
             <h4 className="text-lg font-semibold text-white mb-2">
-              💡 <span className="text-cyan-400">获得更佳效果的小贴士</span>
+              {t('howItWorks.tips.title')}
             </h4>
             <div className="text-gray-300 space-y-2">
-              <p>✓ 使用光线良好、对比度高的图片</p>
-              <p>✓ 避免背景与主体颜色过于相似</p>
-              <p>✓ 高分辨率图片能产生更好的效果</p>
+              <p>{t('howItWorks.tips.items.0')}</p>
+              <p>{t('howItWorks.tips.items.1')}</p>
+              <p>{t('howItWorks.tips.items.2')}</p>
             </div>
           </div>
         </div>

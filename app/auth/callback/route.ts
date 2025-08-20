@@ -7,7 +7,7 @@ export async function GET(request: Request) {
 
   const code = searchParams.get('code')
 
-  let next = searchParams.get('next') ?? '/app?target=upscaler'
+  let next = searchParams.get('redirect_to') ?? searchParams.get('next') ?? '/app?target=upscaler'
   next = next == 'null' ? '/app?target=upscaler' : next
 
   if (!isValidRedirectUrl(next)) {

@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Maximize2, Download, RotateCcw, Trash2, Clock, Loader2 } from 'lucide-react';
+import { Clock, Download, Loader2, Maximize2, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import ImagePreviewModal from './ImagePreviewModal';
+import { useTranslations } from 'next-intl';
 
 interface HistoryItem {
   id: string;
@@ -21,26 +23,21 @@ interface HistoryItem {
   processingTime?: number;
 }
 
-interface HistoryResponse {
-  items: HistoryItem[];
-  count: number;
-  offset: number;
-  limit: number;
-  total: number;
-  hasMore: boolean;
-  stats: {
-    total: number;
-    completed: number;
-    processing: number;
-    failed: number;
-    totalCreditsUsed: number;
-  };
+interface BackgroundRemovalHistoryProps {
+  historyItems: HistoryItem[]; // 直接传递历史数据
+  pendingTask?: HistoryItem | null; // 待处理的临时任务
+  loading?: boolean; // 加载状态
+  error?: string | null; // 错误状态
+  onRefresh?: () => void; // 刷新回调
+  onDeleteSuccess?: (deletedTaskId: string) => void; // 删除成功回调
 }
 
-export default function BackgroundRemovalHistory() {
-  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function BackgroundRemovalHistory({ historyItems, pendingTask, loading = false, error = null, onRefresh, onDeleteSuccess }: BackgroundRemovalHistoryProps) {
+  const t = useTranslations('QuitarFondo');
+  const [deletingItems, setDeletingItems] = useState<Set<string>>(new Set());
+  const [confirmingDelete, setConfirmingDelete] = useState<Set<string>>(new Set());
+  const [localTasks, setLocalTasks] = useState<HistoryItem[]>([]); // Local temporary tasks
+  const router = useRouter();
   const [previewModal, setPreviewModal] = useState<{
     isOpen: boolean;
     imageUrl: string;
@@ -53,47 +50,59 @@ export default function BackgroundRemovalHistory() {
     title: ''
   });
 
-  // 获取历史记录数据
+  // 管理临时处理中的任务
   useEffect(() => {
-    fetchHistory();
-  }, []);
-
-  const fetchHistory = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await fetch('/api/remove-background/history?limit=10');
-      
-      if (!response.ok) {
-        throw new Error('获取历史记录失败');
-      }
-      
-      const result = await response.json();
-      
-      if (result.success && result.data) {
-        setHistoryItems(result.data.items || []);
-      } else {
-        throw new Error(result.message || '获取历史记录失败');
-      }
-    } catch (err) {
-      console.error('Error fetching history:', err);
-      setError(err instanceof Error ? err.message : '获取历史记录失败');
-    } finally {
-      setLoading(false);
+    if (pendingTask) {
+      setLocalTasks([pendingTask]); // 只显示当前的处理中任务
+    } else {
+      setLocalTasks([]); // 清空本地任务
     }
-  };
+  }, [pendingTask]);
 
   const handleRegenerate = async (itemId: string) => {
-    console.log('重新处理:', itemId);
+    console.log('Regenerating:', itemId);
     // TODO: 实现重新处理逻辑
     // 可以调用去除背景API重新处理图片
   };
 
-  const handleDelete = async (itemId: string) => {
+  const handleDeleteClick = (itemId: string) => {
+    if (confirmingDelete.has(itemId)) {
+      // 第二次点击，执行真正的删除
+      performDelete(itemId);
+    } else {
+      // 第一次点击，进入确认状态
+      setConfirmingDelete(prev => new Set(prev).add(itemId));
+      
+      // 3秒后自动取消确认状态
+      setTimeout(() => {
+        setConfirmingDelete(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(itemId);
+          return newSet;
+        });
+      }, 3000);
+    }
+  };
+
+  const performDelete = async (itemId: string) => {
+    // 检查是否正在删除
+    if (deletingItems.has(itemId)) {
+      return;
+    }
+
     try {
+      // 清除确认状态
+      setConfirmingDelete(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
+
+      // 添加到删除中的列表
+      setDeletingItems(prev => new Set(prev).add(itemId));
+
       const response = await fetch('/api/history/delete', {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -101,12 +110,25 @@ export default function BackgroundRemovalHistory() {
       });
 
       if (response.ok) {
-        setHistoryItems(items => items.filter(item => item.id !== itemId));
+        // 优先使用本地状态更新，避免重新获取整个列表
+        if (onDeleteSuccess) {
+          onDeleteSuccess(itemId);
+        } else if (onRefresh) {
+          // 降级处理：如果没有本地更新函数，则重新获取列表
+          onRefresh();
+        }
       } else {
-        console.error('删除失败');
+        console.error(t('history.errors.deleteFailed'));
       }
     } catch (error) {
-      console.error('删除过程中出错:', error);
+      console.error(t('history.errors.deleteError'), error);
+    } finally {
+      // 从删除中的列表移除
+      setDeletingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
     }
   };
 
@@ -127,7 +149,7 @@ export default function BackgroundRemovalHistory() {
         isOpen: true,
         imageUrl: item.cdnUrl || item.originalUrl || '',
         originalUrl: item.originalUrl,
-        title: `去除背景结果 - ${item.timestamp}`
+        title: `${t('history.previewModal.title')} - ${item.timestamp}`
       });
     }
   };
@@ -138,7 +160,7 @@ export default function BackgroundRemovalHistory() {
         isOpen: true,
         imageUrl: item.cdnUrl || item.originalUrl || '',
         originalUrl: item.originalUrl,
-        title: `去除背景结果 - ${item.timestamp}`
+        title: `${t('history.previewModal.title')} - ${item.timestamp}`
       });
     }
   };
@@ -183,11 +205,11 @@ export default function BackgroundRemovalHistory() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-white">最近任务</h3>
+          <h3 className="text-lg font-bold text-white">{t('history.title')}</h3>
         </div>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-          <span className="ml-2 text-gray-400 text-sm">加载中...</span>
+          <span className="ml-2 text-gray-400 text-sm">{t('history.loading')}</span>
         </div>
       </div>
     );
@@ -197,16 +219,16 @@ export default function BackgroundRemovalHistory() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-white">最近任务</h3>
+          <h3 className="text-lg font-bold text-white">{t('history.title')}</h3>
         </div>
         <div className="text-center py-8">
           <p className="text-red-400 text-sm">{error}</p>
           <Button
-            onClick={fetchHistory}
+            onClick={onRefresh}
             className="mt-2 text-xs"
             variant="outline"
           >
-            重试
+            {t('history.retry')}
           </Button>
         </div>
       </div>
@@ -221,22 +243,31 @@ export default function BackgroundRemovalHistory() {
         <Button
           variant="ghost"
           className="text-gray-400 hover:text-gray-300 hover:bg-transparent text-xs"
+          onClick={() => router.push('/zh/myhistory?tool=remove_background')}
         >
           <div className="flex items-center gap-1">
-            查看全部
+            {t('history.viewAll')}
             <Clock className="w-3 h-3" />
           </div>
         </Button>
       </div>
 
-      {/* History Items - Compact Row Layout */}
-      <div className="space-y-3">
-        {historyItems.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-400 text-sm">暂无去除背景记录</p>
-          </div>
-        ) : (
-          historyItems.map((item) => (
+      {/* History Items - Compact Row Layout with scroll */}
+      <div className="max-h-[450px] overflow-y-auto space-y-3 pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-900/50 [&::-webkit-scrollbar-thumb]:bg-gray-700/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-600/80">
+        {(() => {
+          // 如果有本地处理中的任务，显示它和历史记录
+          // 如果没有本地任务，只显示历史记录
+          const displayTasks = localTasks.length > 0 ? [...localTasks, ...historyItems] : historyItems;
+          
+          if (displayTasks.length === 0) {
+            return (
+              <div className="text-center py-8">
+                <p className="text-gray-400 text-sm">{t('history.empty')}</p>
+              </div>
+            );
+          }
+
+          return displayTasks.map((item) => (
             <div
               key={item.id}
               className="border border-gray-600/40 rounded-lg bg-gray-800/20 p-4 backdrop-blur-sm"
@@ -252,21 +283,27 @@ export default function BackgroundRemovalHistory() {
               {/* Main Row: Image + Content + Actions */}
               <div className="flex items-center gap-4">
                 {/* Large Image Preview - 可点击 */}
-                <div 
-                  className="relative w-24 h-16 rounded-lg overflow-hidden bg-gray-700/50 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                  onClick={() => handleImageClick(item)}
-                  title="点击查看大图"
+                <div
+                  className={`relative w-24 h-16 rounded-lg overflow-hidden bg-gray-700/50 flex-shrink-0 ${
+                    item.status === 'processing' ? 'cursor-default' : 'cursor-pointer hover:opacity-80'
+                  } transition-opacity`}
+                  onClick={item.status === 'processing' ? undefined : () => handleImageClick(item)}
+                  title={item.status === 'processing' ? t('history.tooltips.processing') : t('history.previewModal.clickToView')}
                 >
-                  {(item.cdnUrl || item.originalUrl) ? (
+                  {item.status === 'processing' ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+                    </div>
+                  ) : (item.cdnUrl || item.originalUrl) ? (
                     <Image
                       src={item.cdnUrl || item.originalUrl || ''}
-                      alt="历史记录图片"
+                      alt={t('history.previewModal.title')}
                       fill
                       className="object-cover"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-gray-500 text-xs">无图片</span>
+                      <span className="text-gray-500 text-xs">{t('history.errors.noImage')}</span>
                     </div>
                   )}
                 </div>
@@ -286,39 +323,63 @@ export default function BackgroundRemovalHistory() {
                       <Button
                         onClick={() => handleMaximize(item)}
                         className="bg-gray-700/60 hover:bg-gray-600/80 text-white px-4 py-2 text-sm rounded-lg border border-gray-600/50 transition-all duration-200"
-                        title="放大查看"
+                        title={t('history.actions.maximize')}
                       >
                         <div className="flex items-center gap-2">
                           <Maximize2 className="w-4 h-4" />
-                          放大查看
+                          {t('history.actions.maximize')}
                         </div>
                       </Button>
                       <Button
                         onClick={() => handleDownload(item)}
                         className="bg-gray-700/60 hover:bg-gray-600/80 text-white px-4 py-2 text-sm rounded-lg border border-gray-600/50 transition-all duration-200"
-                        title="下载图片"
+                        title={t('history.actions.download')}
                       >
                         <div className="flex items-center gap-2">
                           <Download className="w-4 h-4" />
-                          下载图片
+                          {t('history.actions.download')}
                         </div>
                       </Button>
                     </>
                   ) : (
                     <div className="text-gray-500 text-sm">
-                      {item.status === 'processing' ? '处理中...' : ''}
+                      {item.status === 'processing' ? t('history.status.processing') : ''}
                     </div>
                   )}
                 </div>
-                
+
                 {/* 右侧：删除按钮 */}
                 <Button
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDeleteClick(item.id)}
+                  disabled={deletingItems.has(item.id)}
                   variant="ghost"
-                  className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-2 rounded-md"
-                  title="删除记录"
+                  className={`px-3 py-2 rounded-md transition-all duration-200 text-xs ${
+                    deletingItems.has(item.id)
+                      ? 'text-gray-500 cursor-not-allowed opacity-50'
+                      : confirmingDelete.has(item.id)
+                      ? 'text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 border border-orange-500/30'
+                      : 'text-red-400 hover:text-red-300 hover:bg-red-500/10'
+                  }`}
+                  title={
+                    deletingItems.has(item.id) 
+                      ? t('history.tooltips.deleting')
+                      : confirmingDelete.has(item.id)
+                      ? t('history.tooltips.confirmDelete')
+                      : t('history.actions.delete')
+                  }
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <div className="flex items-center gap-1.5">
+                    {deletingItems.has(item.id) ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : confirmingDelete.has(item.id) ? (
+                      <>
+                        <Trash2 className="w-3 h-3" />
+                        <span>{t('history.actions.confirmDelete')}</span>
+                      </>
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                  </div>
                 </Button>
               </div>
 
@@ -330,7 +391,7 @@ export default function BackgroundRemovalHistory() {
               )}
             </div>
           ))
-        )}
+        })()}
       </div>
 
       {/* 图片预览弹窗 */}
@@ -341,7 +402,7 @@ export default function BackgroundRemovalHistory() {
         originalUrl={previewModal.originalUrl}
         title={previewModal.title}
         onDownload={() => {
-          const item = historyItems.find(item => 
+          const item = historyItems.find(item =>
             item.cdnUrl === previewModal.imageUrl || item.originalUrl === previewModal.imageUrl
           );
           if (item) {

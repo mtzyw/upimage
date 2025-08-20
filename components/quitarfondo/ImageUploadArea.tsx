@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { Upload, Image as ImageIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface ImageUploadAreaProps {
   onImageUpload: (image: string) => void;
@@ -11,6 +12,7 @@ interface ImageUploadAreaProps {
 }
 
 export default function ImageUploadArea({ onImageUpload, uploadedImage }: ImageUploadAreaProps) {
+  const t = useTranslations('QuitarFondo');
   const [isDragging, setIsDragging] = useState(false);
 
   const triggerFileInput = () => {
@@ -65,15 +67,16 @@ export default function ImageUploadArea({ onImageUpload, uploadedImage }: ImageU
   return (
     <div className="w-full max-w-md mx-auto">
       {uploadedImage ? (
-        // 显示已上传的图片 - 圆角矩形，类似参考图
+        // 显示已上传的图片 - 自适应尺寸显示
         <div className="relative">
-          <div className="relative border border-gray-300/20 rounded-3xl bg-gray-800/50 overflow-hidden aspect-[4/3]">
-            <Image
-              src={uploadedImage}
-              alt="上传的图片"
-              fill
-              className="object-cover"
-            />
+          <div className="relative border border-gray-300/20 rounded-3xl bg-gray-800/50 p-4">
+            <div className="flex items-center justify-center min-h-[300px] max-h-[500px]">
+              <img
+                src={uploadedImage}
+                alt={t('uploadArea.uploadedImageAlt')}
+                className="max-w-full max-h-[450px] w-auto h-auto object-contain rounded-2xl shadow-lg"
+              />
+            </div>
           </div>
           
           {/* 清除按钮 */}
@@ -93,7 +96,7 @@ export default function ImageUploadArea({ onImageUpload, uploadedImage }: ImageU
             >
               <div className="flex items-center gap-2">
                 <Upload className="w-4 h-4" />
-                Replace Image
+                {t('uploadArea.replaceImage')}
               </div>
             </Button>
           </div>
@@ -121,25 +124,25 @@ export default function ImageUploadArea({ onImageUpload, uploadedImage }: ImageU
           />
           
           <div className="space-y-8">
-            {/* 大图标 */}
+            {/* Large icon */}
             <div className="w-16 h-16 mx-auto rounded-full bg-gray-700/40 flex items-center justify-center">
               <Upload className="w-8 h-8 text-gray-300" />
             </div>
             
-            {/* 标题和描述 */}
+            {/* Title and description */}
             <div className="space-y-3">
               <h3 className="text-2xl font-medium text-white">
-                Choose Image
+                {t('uploadArea.chooseImage')}
               </h3>
               <p className="text-gray-400 text-base max-w-sm mx-auto leading-relaxed">
-                We accept .jpeg, .jpg, .png, .webp formats up to 24MB.
+                {t('uploadArea.supportedFormats')}
               </p>
             </div>
           </div>
           
-          {/* 点击区域提示 */}
+          {/* Click area hint */}
           <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 cursor-pointer" onClick={triggerFileInput}>
-            <div className="text-gray-400 text-sm">Click to upload or drag and drop</div>
+            <div className="text-gray-400 text-sm">{t('uploadArea.clickToUpload')}</div>
           </div>
         </div>
       )}

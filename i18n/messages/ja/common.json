@@ -531,5 +531,208 @@
       "failed": "失敗",
       "processing": "処理中"
     }
+  },
+  "QuitarFondo": {
+    "page": {
+      "title": "スマート背景を除去",
+      "titleColorful": {
+        "intelligent": "スマート ",
+        "cutout": "背景を",
+        "ai": "除去",
+        "instant": " 瞬時 ",
+        "processing": "処理",
+        "sparkle": " ✨"
+      },
+      "description": "高度なAI技術を使用して、プロ品質の精度でどんな画像からでも背景を除去します。商品撮影、ポートレート、商用コンテンツに最適です。",
+      "uploadTitle": "画像アップロード",
+      "uploadDescription": "背景を除去するために画像をアップロードしてください",
+      "processButton": {
+        "idle": "背景を除去",
+        "processing": "処理中..."
+      },
+      "alerts": {
+        "pleaseUploadFirst": "まず画像をアップロードしてください",
+        "backgroundRemovalFailed": "背景除去に失敗しました。後でもう一度お試しください",
+        "processingError": "処理中にエラーが発生しました。後でもう一度お試しください"
+      },
+      "console": {
+        "executingRemoval": "背景除去を実行中...",
+        "removalSuccess": "背景除去成功:",
+        "removalFailed": "背景除去失敗:",
+        "processingError": "背景除去中にエラー:"
+      },
+      "task": {
+        "processing": "処理中",
+        "completed": "完了",
+        "failed": "失敗",
+        "statusMessage": {
+          "processing": "処理中",
+          "completed": "完了",
+          "failed": "失敗"
+        }
+      }
+    },
+    "uploadArea": {
+      "chooseImage": "画像を選択",
+      "supportedFormats": ".jpeg、.jpg、.png、.webp形式で最大24MBまで対応しています。",
+      "clickToUpload": "クリックしてアップロードまたはドラッグ＆ドロップ",
+      "replaceImage": "画像を置換",
+      "uploadedImageAlt": "アップロードされた画像",
+      "clearImageTitle": "画像を削除"
+    },
+    "history": {
+      "title": "最近のタスク",
+      "viewAll": "すべて表示",
+      "loading": "読み込み中...",
+      "empty": "背景除去記録がまだありません",
+      "retry": "再試行",
+      "actions": {
+        "maximize": "拡大表示",
+        "download": "画像をダウンロード",
+        "delete": "記録を削除",
+        "confirmDelete": "削除を確認"
+      },
+      "status": {
+        "processing": "処理中...",
+        "completed": "✓ 完了",
+        "failed": "✗ 失敗"
+      },
+      "previewModal": {
+        "title": "背景除去結果",
+        "clickToView": "クリックして拡大表示"
+      },
+      "errors": {
+        "fetchFailed": "履歴の取得に失敗しました",
+        "deleteFailed": "削除に失敗しました",
+        "deleteError": "削除中にエラー:",
+        "noImage": "画像なし"
+      },
+      "tooltips": {
+        "processing": "処理中...",
+        "confirmDelete": "再度クリックして削除を確認",
+        "deleting": "削除中..."
+      }
+    },
+    "previewModal": {
+      "title": "プレビュー",
+      "previewImage": "プレビュー画像",
+      "download": "ダウンロード",
+      "close": "閉じる",
+      "zoomIn": "拡大",
+      "zoomOut": "縮小"
+    },
+    "featuresShowcase": {
+      "title": "驚異的な",
+      "titleColorful": "結果",
+      "description": "当社のAI技術がさまざまなシナリオで完璧な背景除去を実現する様子をご覧ください",
+      "examples": [
+        {
+          "title": "Eコマース商品写真",
+          "description": "完璧な透明背景でオンラインストア、カタログ、マーケティング資料のためのクリーンな商品画像を作成します。"
+        },
+        {
+          "title": "ポートレート撮影",
+          "description": "ポートレート写真から気を散らす背景を除去し、プロフェッショナルなヘッドショットやプロフィール写真を作成します。"
+        },
+        {
+          "title": "ソーシャルメディアコンテンツ",
+          "description": "背景を除去し、カスタムデザインや色を追加して、目を引くソーシャルメディア投稿を作成します。"
+        },
+        {
+          "title": "マーケティング資料",
+          "description": "不要な背景を除去することで、パンフレット、プレゼンテーション、広告のための柔軟な画像を取得します。"
+        }
+      ]
+    },
+    "howItWorks": {
+      "title": "どのように",
+      "titleColorful": "機能",
+      "titleQuestion": "しますか？",
+      "description": "たった3つの簡単なステップでプロフェッショナルな結果を得られます",
+      "steps": [
+        {
+          "title": "画像をアップロード",
+          "description": "JPG、PNG、またはWEBP形式の画像をドラッグ＆ドロップまたは選択"
+        },
+        {
+          "title": "AI自動処理",
+          "description": "高度なAIが数秒で分析し、背景を除去します"
+        },
+        {
+          "title": "結果をダウンロード",
+          "description": "透明背景の高品質画像を取得"
+        }
+      ],
+      "tips": {
+        "title": "💡 より良い結果のためのヒント",
+        "items": [
+          "✓ 明るくコントラストの高い画像を使用",
+          "✓ 被写体の色と似すぎた背景は避ける",
+          "✓ 高解像度画像の方が良い結果が得られます"
+        ]
+      }
+    },
+    "callToAction": {
+      "stats": [
+        {
+          "number": "100K+",
+          "label": "満足ユーザー"
+        },
+        {
+          "number": "1M+",
+          "label": "処理済み画像"
+        },
+        {
+          "number": "4.9/5",
+          "label": "平均評価"
+        }
+      ],
+      "testimonialsTitle": "ユーザー",
+      "testimonialsColorful": "レビュー",
+      "testimonials": [
+        {
+          "name": "佐藤花子",
+          "role": "グラフィックデザイナー",
+          "content": "驚くべき精度と速度。今では数分でプロフェッショナルなコンテンツを作成できます。"
+        },
+        {
+          "name": "田中太郎",
+          "role": "Eコマースマネージャー",
+          "content": "商品撮影に最適。素晴らしい結果で使いやすい。"
+        },
+        {
+          "name": "山田美咲",
+          "role": "コンテンツクリエイター",
+          "content": "ソーシャルメディアコンテンツ作成に最適なツール。常にプロフェッショナルな結果。"
+        }
+      ],
+      "mainCta": {
+        "title": "準備はできましたか",
+        "titleColorful": "魔法",
+        "titleEnd": "を作る？",
+        "description": "当社のAI背景除去技術を信頼する何千ものプロフェッショナルに参加しましょう。今すぐ無料体験を開始してください。",
+        "buttonLoggedIn": "処理を開始",
+        "buttonGuest": "無料で開始"
+      },
+      "bottomFeatures": "✓ 無料で使用、登録不要 • ✓ 即座に結果 • ✓ 100%安全でプライベート",
+      "features": [
+        {
+          "title": "🚀 超高速",
+          "description": "3-5秒で結果"
+        },
+        {
+          "title": "🎯 AI精度",
+          "description": "最新世代技術"
+        },
+        {
+          "title": "🔒 100%プライバシー",
+          "description": "あなたの画像は自動的に削除されます"
+        },
+        {
+          "title": "📱 全プラットフォーム対応",
+          "description": "Web、モバイル、タブレット"
+        }
+      ]
+    }
   }
 }

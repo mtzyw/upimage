@@ -531,5 +531,208 @@
       "failed": "Failed",
       "processing": "Processing"
     }
+  },
+  "QuitarFondo": {
+    "page": {
+      "title": "Smart Remove Background",
+      "titleColorful": {
+        "intelligent": "Smart ",
+        "cutout": "Remove",
+        "ai": "Background",
+        "instant": " Instant ",
+        "processing": "Processing",
+        "sparkle": " ✨"
+      },
+      "description": "Use our advanced AI technology to remove backgrounds from any image with professional-grade precision. Perfect for product photography, portraits, and commercial content.",
+      "uploadTitle": "Upload Image",
+      "uploadDescription": "Upload your image to remove the background",
+      "processButton": {
+        "idle": "Remove Background",
+        "processing": "Processing..."
+      },
+      "alerts": {
+        "pleaseUploadFirst": "Please upload an image first",
+        "backgroundRemovalFailed": "Background removal failed, please try again later",
+        "processingError": "An error occurred during processing, please try again later"
+      },
+      "console": {
+        "executingRemoval": "Executing background removal...",
+        "removalSuccess": "Background removal successful:",
+        "removalFailed": "Background removal failed:",
+        "processingError": "Error during background removal:"
+      },
+      "task": {
+        "processing": "Processing",
+        "completed": "Completed", 
+        "failed": "Failed",
+        "statusMessage": {
+          "processing": "Processing",
+          "completed": "Completed",
+          "failed": "Failed"
+        }
+      }
+    },
+    "uploadArea": {
+      "chooseImage": "Choose Image",
+      "supportedFormats": "We accept .jpeg, .jpg, .png, .webp formats up to 24MB.",
+      "clickToUpload": "Click to upload or drag and drop",
+      "replaceImage": "Replace Image",
+      "uploadedImageAlt": "Uploaded image",
+      "clearImageTitle": "Remove image"
+    },
+    "history": {
+      "title": "Recent Tasks",
+      "viewAll": "View All",
+      "loading": "Loading...",
+      "empty": "No background removal records yet",
+      "retry": "Retry",
+      "actions": {
+        "maximize": "Enlarge View",
+        "download": "Download Image",
+        "delete": "Delete Record",
+        "confirmDelete": "Confirm Delete"
+      },
+      "status": {
+        "processing": "Processing...",
+        "completed": "✓ Completed",
+        "failed": "✗ Failed"
+      },
+      "previewModal": {
+        "title": "Background Removal Result",
+        "clickToView": "Click to view full size"
+      },
+      "errors": {
+        "fetchFailed": "Failed to fetch history",
+        "deleteFailed": "Delete failed",
+        "deleteError": "Error during deletion:",
+        "noImage": "No image"
+      },
+      "tooltips": {
+        "processing": "Processing...",
+        "confirmDelete": "Click again to confirm deletion",
+        "deleting": "Deleting..."
+      }
+    },
+    "previewModal": {
+      "title": "Preview",
+      "previewImage": "Preview image",
+      "download": "Download",
+      "close": "Close",
+      "zoomIn": "Zoom In",
+      "zoomOut": "Zoom Out"
+    },
+    "featuresShowcase": {
+      "title": "Amazing",
+      "titleColorful": "Results",
+      "description": "See how our AI technology delivers perfect background removal for different scenarios",
+      "examples": [
+        {
+          "title": "E-commerce Product Photos",
+          "description": "Create clean product images for online stores, catalogs, and marketing materials with perfect transparent backgrounds."
+        },
+        {
+          "title": "Portrait Photography",
+          "description": "Remove distracting backgrounds from portrait photos to create professional headshots and profile pictures."
+        },
+        {
+          "title": "Social Media Content",
+          "description": "Create eye-catching social media posts by removing backgrounds and adding custom designs or colors."
+        },
+        {
+          "title": "Marketing Materials",
+          "description": "Get flexible images for brochures, presentations, and advertisements by removing unwanted backgrounds."
+        }
+      ]
+    },
+    "howItWorks": {
+      "title": "How Does It",
+      "titleColorful": "Work",
+      "titleQuestion": "?",
+      "description": "Get professional results in just three simple steps",
+      "steps": [
+        {
+          "title": "Upload Image",
+          "description": "Drag and drop or select any JPG, PNG, or WEBP format image"
+        },
+        {
+          "title": "AI Auto Processing",
+          "description": "Our advanced AI analyzes and removes the background in seconds"
+        },
+        {
+          "title": "Download Result",
+          "description": "Get high-quality images with transparent backgrounds"
+        }
+      ],
+      "tips": {
+        "title": "💡 Tips for Better Results",
+        "items": [
+          "✓ Use well-lit, high-contrast images",
+          "✓ Avoid backgrounds too similar to subject colors",
+          "✓ High-resolution images produce better results"
+        ]
+      }
+    },
+    "callToAction": {
+      "stats": [
+        {
+          "number": "100K+",
+          "label": "Happy Users"
+        },
+        {
+          "number": "1M+",
+          "label": "Images Processed"
+        },
+        {
+          "number": "4.9/5",
+          "label": "Average Rating"
+        }
+      ],
+      "testimonialsTitle": "User",
+      "testimonialsColorful": "Reviews",
+      "testimonials": [
+        {
+          "name": "Sarah Chen",
+          "role": "Graphic Designer",
+          "content": "Amazing precision and speed. I can now create professional content in minutes."
+        },
+        {
+          "name": "Michael Li",
+          "role": "E-commerce Manager",
+          "content": "Perfect for product photography. Great results and easy to use."
+        },
+        {
+          "name": "Emma Zhang",
+          "role": "Content Creator",
+          "content": "The best tool for creating social media content. Always professional results."
+        }
+      ],
+      "mainCta": {
+        "title": "Ready to Create",
+        "titleColorful": "Magic",
+        "titleEnd": "?",
+        "description": "Join thousands of professionals who trust our AI background removal technology. Start your free experience now.",
+        "buttonLoggedIn": "Start Processing",
+        "buttonGuest": "Start Free"
+      },
+      "bottomFeatures": "✓ Free to use, no registration • ✓ Instant results • ✓ 100% secure and private",
+      "features": [
+        {
+          "title": "🚀 Lightning Fast",
+          "description": "3-5 second results"
+        },
+        {
+          "title": "🎯 AI Precision",
+          "description": "Latest generation technology"
+        },
+        {
+          "title": "🔒 100% Privacy",
+          "description": "Your images are automatically deleted"
+        },
+        {
+          "title": "📱 All Platforms",
+          "description": "Web, mobile, tablet"
+        }
+      ]
+    }
   }
 }
