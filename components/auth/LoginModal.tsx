@@ -9,9 +9,10 @@ import { FcGoogle } from "react-icons/fc"
 interface LoginModalProps {
   isOpen: boolean
   onClose: () => void
+  redirectTo?: string // 可选的重定向地址
 }
 
-export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export function LoginModal({ isOpen, onClose, redirectTo }: LoginModalProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const supabase = createClient()
@@ -24,7 +25,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?redirect_to=/app?target=upscaler`
+          redirectTo: `${window.location.origin}/auth/callback?redirect_to=${redirectTo || window.location.pathname + window.location.search}`
         }
       })
       if (error) throw error

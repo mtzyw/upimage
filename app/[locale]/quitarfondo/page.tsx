@@ -1,5 +1,5 @@
-import WorkspaceComponent from "@/components/workspace";
+import QuitarFondoPage from "@/components/quitarfondo/QuitarFondoPage";
 
-export default function QuitarFondoPage() {
-  return <WorkspaceComponent defaultTab="removeBackground" />;
+export default function QuitarFondoRoute() {
+  return <QuitarFondoPage />;
 }
