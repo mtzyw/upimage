@@ -76,8 +76,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 4. 获取API密钥
-    console.log('🔑 [REMOVE_BG_START] 步骤4: 获取可用的API密钥...');
+    // 4. 检查并发任务限制
+    console.log('📊 [REMOVE_BG_START] 步骤4: 检查并发任务限制...');
+    const { count: processingCount } = await supabaseAdmin
+      .from('image_enhancement_tasks')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('status', 'processing');
+
+    if (processingCount && processingCount >= 4) {
+      console.log(`❌ [REMOVE_BG_START] 用户 ${user.id} 当前有 ${processingCount} 个任务正在进行中，已达到限制`);
+      return apiResponse.badRequest('当前任务队列已满，请等待之前的任务完成后再试');
+    }
+
+    console.log(`✅ [REMOVE_BG_START] 并发检查通过，用户当前有 ${processingCount || 0} 个任务正在进行中`);
+
+    // 5. 获取API密钥
+    console.log('🔑 [REMOVE_BG_START] 步骤5: 获取可用的API密钥...');
     const apiKey = await getAvailableFreepikApiKey();
     if (!apiKey) {
       console.log('❌ [REMOVE_BG_START] 没有可用的API密钥');
@@ -87,8 +102,8 @@ export async function POST(req: NextRequest) {
     console.log(`✅ [REMOVE_BG_START] 使用API密钥: ${apiKey.name}`);
     apiKeyToRelease = apiKey.id;
 
-    // 5. 扣减积分
-    console.log('💰 [REMOVE_BG_START] 步骤5: 扣减用户积分...');
+    // 6. 扣减积分
+    console.log('💰 [REMOVE_BG_START] 步骤6: 扣减用户积分...');
     tempTaskId = generateTaskIdentifier(user.id, '');
     const deductResult = await deductCredits(
       REMOVE_BACKGROUND_CREDITS, 
@@ -102,8 +117,8 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ [REMOVE_BG_START] 积分扣减成功，用户: ${user.id}`);
 
-    // 6. 上传原图到R2获取公开URL
-    console.log('📤 [REMOVE_BG_START] 步骤6: 上传原图到R2...');
+    // 7. 上传原图到R2获取公开URL
+    console.log('📤 [REMOVE_BG_START] 步骤7: 上传原图到R2...');
     const imageData = getDataFromDataUrl(base64Image);
     if (!imageData) {
       throw new Error('Invalid base64 format');
@@ -119,8 +134,8 @@ export async function POST(req: NextRequest) {
     const originalImageUrl = `${process.env.R2_PUBLIC_URL}/${originalKey}`;
     console.log(`✅ [REMOVE_BG_START] 原图上传完成: ${originalImageUrl}`);
 
-    // 7. 调用Freepik去除背景API
-    console.log('🎨 [REMOVE_BG_START] 步骤7: 调用Freepik去除背景API...');
+    // 8. 调用Freepik去除背景API
+    console.log('🎨 [REMOVE_BG_START] 步骤8: 调用Freepik去除背景API...');
     
     const freepikResponse = await fetch('https://api.freepik.com/v1/ai/beta/remove-background', {
       method: 'POST',
@@ -154,7 +169,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 8. 生成任务ID并创建数据库记录
-    console.log('💾 [REMOVE_BG_START] 步骤8: 创建任务记录...');
+    console.log('💾 [REMOVE_BG_START] 步骤9: 创建任务记录...');
     const taskId = `rbg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     const { error: insertError } = await supabaseAdmin
@@ -184,7 +199,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 9. 流式下载并上传处理结果
-    console.log('📥 [REMOVE_BG_START] 步骤9: 流式下载并上传处理结果...');
+    console.log('📥 [REMOVE_BG_START] 步骤10: 流式下载并上传处理结果...');
     
     const resultImageResponse = await fetch(freepikData.high_resolution);
     if (!resultImageResponse.ok) {
@@ -202,7 +217,7 @@ export async function POST(req: NextRequest) {
     console.log(`✅ [REMOVE_BG_START] 结果图片流式上传完成: ${resultUpload.url}`);
 
     // 10. 更新任务为完成状态
-    console.log('✅ [REMOVE_BG_START] 步骤10: 更新任务状态为完成...');
+    console.log('✅ [REMOVE_BG_START] 步骤11: 更新任务状态为完成...');
     await supabaseAdmin
       .from('image_enhancement_tasks')
       .update({

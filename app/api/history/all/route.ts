@@ -16,12 +16,25 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = parseInt(searchParams.get('offset') || '0');
+    const tool = searchParams.get('tool'); // 新增工具类型筛选
 
-    // 3. 查询所有类型的历史记录
-    const { data: tasks, error: queryError, count } = await supabase
+    // 3. 查询历史记录（支持按工具类型筛选）
+    let query = supabase
       .from('image_enhancement_tasks')
       .select('*', { count: 'exact' })
-      .eq('user_id', user.id)
+      .eq('user_id', user.id);
+
+    // 根据工具类型筛选
+    if (tool === 'remove_background') {
+      query = query.eq('engine', 'remove_background');
+    } else if (tool === 'qwen_image_edit') {
+      query = query.eq('engine', 'qwen_image_edit');
+    } else if (tool === 'image_enhancement') {
+      query = query.in('engine', ['image_upscaler', 'enhance']); // 兼容旧数据
+    }
+    // 如果没有指定tool或tool不匹配，查询所有类型
+
+    const { data: tasks, error: queryError, count } = await query
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -48,7 +61,15 @@ export async function GET(req: NextRequest) {
       processingTime: task.completed_at && task.created_at ? 
         Math.round((new Date(task.completed_at).getTime() - new Date(task.created_at).getTime()) / 1000) : 
         undefined,
-      engine: task.engine || 'unknown'
+      engine: task.engine || 'unknown',
+      
+      // Qwen 图像编辑特有字段
+      ...(task.engine === 'qwen_image_edit' && {
+        editPrompt: task.prompt,
+        guidanceScale: task.creativity,
+        numInferenceSteps: task.hdr,
+        numImages: task.resemblance
+      })
     }));
 
     // 5. 计算统计信息

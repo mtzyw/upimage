@@ -133,8 +133,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 5. 检查 API Key 可用性
-    console.log('🔑 [ENHANCE START] 步骤5: 获取可用的API密钥...');
+    // 5. 检查并发任务限制
+    console.log('📊 [ENHANCE START] 步骤5: 检查并发任务限制...');
+    const { count: processingCount } = await supabaseAdmin
+      .from('image_enhancement_tasks')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('status', 'processing');
+
+    if (processingCount && processingCount >= 4) {
+      console.log(`❌ [ENHANCE START] 用户 ${user.id} 当前有 ${processingCount} 个任务正在进行中，已达到限制`);
+      return apiResponse.badRequest('当前任务队列已满，请等待之前的任务完成后再试');
+    }
+
+    console.log(`✅ [ENHANCE START] 并发检查通过，用户当前有 ${processingCount || 0} 个任务正在进行中`);
+
+    // 6. 检查 API Key 可用性
+    console.log('🔑 [ENHANCE START] 步骤6: 获取可用的API密钥...');
     const apiKey = await getAvailableFreepikApiKey();
     console.log('🔑 [ENHANCE START] API密钥获取结果:', { hasApiKey: !!apiKey, keyId: apiKey?.id });
     if (!apiKey) {
@@ -145,8 +160,8 @@ export async function POST(req: NextRequest) {
     console.log(`✅ [ENHANCE START] 使用API密钥: ${apiKey.name} (剩余 ${apiKey.remaining} 次)`);
     apiKeyToRelease = apiKey.id;
 
-    // 6. 扣减积分（使用临时ID用于记录）
-    console.log('💰 [ENHANCE START] 步骤6: 扣减用户积分...');
+    // 7. 扣减积分（使用临时ID用于记录）
+    console.log('💰 [ENHANCE START] 步骤7: 扣减用户积分...');
     const tempTaskId = generateTaskIdentifier(user.id, ''); // 仅用于积分扣减记录
     const deductResult = await deductUserCredits(user.id, validatedParams.scaleFactor, tempTaskId);
     console.log('💰 [ENHANCE START] 积分扣减结果:', deductResult);
@@ -159,7 +174,7 @@ export async function POST(req: NextRequest) {
     console.log(`✅ [ENHANCE START] 积分扣减成功，用户: ${user.id}`);
 
     // 7. 调用 Freepik API
-    console.log('🚀 [ENHANCE START] 步骤7: 调用Freepik API...');
+    console.log('🚀 [ENHANCE START] 步骤8: 调用Freepik API...');
     
     // 确保 webhook URL 是公开可访问的
     const siteUrl = process.env.WEBHOOK_URL || process.env.NEXT_PUBLIC_SITE_URL;
@@ -278,7 +293,7 @@ export async function POST(req: NextRequest) {
     apiKeyToRelease = undefined;
 
     // 8. 直接创建任务记录（使用Freepik task_id）
-    console.log('💾 [ENHANCE START] 步骤8: 创建任务记录...');
+    console.log('💾 [ENHANCE START] 步骤9: 创建任务记录...');
     
     const { error: insertError } = await supabaseAdmin
       .from('image_enhancement_tasks')
@@ -325,7 +340,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 11. 设置初始状态
-    console.log('📊 [ENHANCE START] 步骤11: 设置任务初始状态...');
+    console.log('📊 [ENHANCE START] 步骤10: 设置任务初始状态...');
     await setTaskStatus(freepikTaskId, 'processing');
     console.log('✅ [ENHANCE START] 任务状态设置完成');
 
@@ -387,7 +402,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 12. 返回成功响应
-    console.log('🎉 [ENHANCE START] 步骤12: 准备返回成功响应...');
+    console.log('🎉 [ENHANCE START] 步骤11: 准备返回成功响应...');
     const updatedBenefits = await import('@/actions/usage/benefits')
       .then(m => m.getUserBenefits(user.id));
     

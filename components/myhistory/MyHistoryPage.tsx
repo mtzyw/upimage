@@ -65,7 +65,7 @@ export default function MyHistoryPage() {
   // 读取 URL 参数设置默认筛选
   useEffect(() => {
     const toolParam = searchParams.get('tool');
-    if (toolParam && ['all', 'remove_background', 'upscaler'].includes(toolParam)) {
+    if (toolParam && ['all', 'remove_background', 'upscaler', 'image-edit'].includes(toolParam)) {
       setSelectedTool(toolParam);
     }
   }, [searchParams]);
@@ -136,7 +136,8 @@ export default function MyHistoryPage() {
     
     const matchesTool = selectedTool === "all" || 
       (selectedTool === "remove_background" && item.engine === "remove_background") ||
-      (selectedTool === "upscaler" && item.engine !== "remove_background");
+      (selectedTool === "upscaler" && item.engine !== "remove_background" && item.engine !== "qwen_image_edit") ||
+      (selectedTool === "image-edit" && item.engine === "qwen_image_edit");
     
     return matchesSearch && matchesTool;
   });

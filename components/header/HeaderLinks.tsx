@@ -13,7 +13,7 @@ const HeaderLinks = () => {
   const headerLinks: HeaderLink[] = tHeader.raw("links");
   const pricingLink = headerLinks.find((link) => link.id === "pricing");
   if (pricingLink) {
-    pricingLink.href = process.env.NEXT_PUBLIC_PRICING_PATH!;
+    pricingLink.href = "/pricing"; // 使用新的独立定价页面
   }
 
   // 在 /app 或 /history 页面时只显示 pricing 链接

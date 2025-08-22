@@ -33,6 +33,7 @@ export default function HistoryHeader({
     { value: "all", label: "所有工具", icon: "🔧" },
     { value: "remove_background", label: "去除背景", icon: "🎨" },
     { value: "upscaler", label: "图片增强", icon: "✨" },
+    { value: "image-edit", label: "图片编辑", icon: "🖼️" },
   ];
 
   const selectedToolOption = toolOptions.find(tool => tool.value === selectedTool) || toolOptions[0];

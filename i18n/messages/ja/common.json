@@ -23,7 +23,7 @@
       {
         "id": "pricing",
         "name": "料金プラン",
-        "href": "/#pricing"
+        "href": "/pricing"
       },
       {
         "name": "ブログ",
@@ -79,7 +79,7 @@
             },
             {
               "id": "pricing",
-              "href": "/#pricing",
+              "href": "/pricing",
               "name": "料金プラン"
             },
             {

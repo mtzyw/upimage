@@ -477,5 +477,42 @@
     "retry": "Refresh and retry",
     "privacyNotice": "This verification is provided by Cloudflare to protect your privacy",
     "securityInfo": "We use intelligent algorithms to identify malicious behavior, normal users can usually pass verification quickly"
+  },
+  "PricingFAQ": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "Do credits expire?",
+        "answer": "One-time purchased credits never expire and can be used permanently. Subscription credits are valid during the subscription period. If you cancel your subscription, unused credits will expire at the end of the next billing cycle."
+      },
+      {
+        "question": "Can I request a refund?",
+        "answer": "Due to the actual costs of our AI services, refunds are generally not supported. If you encounter technical issues or service quality problems, please contact customer service, and we will handle it based on specific circumstances."
+      },
+      {
+        "question": "How do I cancel my subscription?",
+        "answer": "You can cancel your subscription at any time in your account settings. After cancellation, you can still use your remaining credits until the current billing cycle ends."
+      },
+      {
+        "question": "Do you support NSFW content?",
+        "answer": "To comply with relevant laws and terms of service, we do not support processing NSFW (Not Safe For Work) content, including pornographic, violent, or other inappropriate content."
+      },
+      {
+        "question": "What payment methods are supported?",
+        "answer": "We support major credit card payments, including Visa, MasterCard, American Express, and others. Payments are securely processed by Stripe to ensure your payment information is safe."
+      },
+      {
+        "question": "Can processed images be used commercially?",
+        "answer": "Yes, images processed through our service can be used for commercial purposes. However, please ensure that the original images have legal usage rights."
+      },
+      {
+        "question": "What happens if image processing fails?",
+        "answer": "If image processing fails, credits will be automatically refunded to your account. You can try processing again or contact customer service for assistance."
+      },
+      {
+        "question": "Are there processing time limits?",
+        "answer": "Most image processing completes within 1-3 minutes. If processing time exceeds 10 minutes, the system will automatically cancel the task and refund credits."
+      }
+    ]
   }
 }

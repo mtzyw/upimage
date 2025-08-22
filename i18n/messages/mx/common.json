@@ -23,7 +23,7 @@
       {
         "id": "pricing",
         "name": "Precios",
-        "href": "/#pricing"
+        "href": "/pricing"
       },
       {
         "name": "Blog",
@@ -79,7 +79,7 @@
             },
             {
               "id": "pricing",
-              "href": "/#pricing",
+              "href": "/pricing",
               "name": "Precios"
             },
             {

@@ -23,7 +23,7 @@
       {
         "id": "pricing",
         "name": "定价",
-        "href": "/#pricing"
+        "href": "/pricing"
       },
       {
         "name": "博客",
@@ -79,7 +79,7 @@
             },
             {
               "id": "pricing",
-              "href": "/#pricing",
+              "href": "/pricing",
               "name": "定价"
             },
             {
