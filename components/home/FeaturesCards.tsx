@@ -1,30 +1,48 @@
 "use client";
 
 import { ArrowUpCircle, Scissors, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const FeaturesCards = () => {
+  const t = useTranslations("Landing.NewComponents.FeaturesCards");
+  
   const aiTools = [
     {
       icon: Sparkles,
-      title: "AI图片生成",
-      description: "输入文字描述，AI自动生成高质量图片，支持多种风格和主题",
-      features: ["文字转图片", "多种艺术风格", "高清输出", "批量生成"],
+      title: t("tools.aiGeneration.title"),
+      description: t("tools.aiGeneration.description"),
+      features: [
+        t("tools.aiGeneration.features.0"),
+        t("tools.aiGeneration.features.1"),
+        t("tools.aiGeneration.features.2"),
+        t("tools.aiGeneration.features.3")
+      ],
       gradient: "from-blue-500 to-purple-600",
       link: "#"
     },
     {
       icon: Scissors,
-      title: "AI背景去除",
-      description: "智能识别主体，一键移除背景，支持复杂场景和精细边缘处理",
-      features: ["智能识别", "精准抠图", "批量处理", "透明背景", "ai处理"],
+      title: t("tools.backgroundRemoval.title"),
+      description: t("tools.backgroundRemoval.description"),
+      features: [
+        t("tools.backgroundRemoval.features.0"),
+        t("tools.backgroundRemoval.features.1"),
+        t("tools.backgroundRemoval.features.2"),
+        t("tools.backgroundRemoval.features.3")
+      ],
       gradient: "from-green-500 to-teal-600",
       link: "/quitarfondo"
     },
     {
       icon: ArrowUpCircle,
-      title: "AI图片升级",
-      description: "将低分辨率图片提升至8K高清，增强细节和清晰度",
-      features: ["8K超清", "细节增强", "降噪处理", "色彩优化", "ai修复"],
+      title: t("tools.imageUpscaling.title"),
+      description: t("tools.imageUpscaling.description"),
+      features: [
+        t("tools.imageUpscaling.features.0"),
+        t("tools.imageUpscaling.features.1"),
+        t("tools.imageUpscaling.features.2"),
+        t("tools.imageUpscaling.features.3")
+      ],
       gradient: "from-pink-500 to-red-600",
       link: "/upscaler"
     }
@@ -35,10 +53,10 @@ const FeaturesCards = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            其他AI工具
+            {t("title")}
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            探索更多强大的AI图像处理工具，满足您的各种创作需求
+            {t("description")}
           </p>
         </div>
 
@@ -83,7 +101,7 @@ const FeaturesCards = () => {
                   href={tool.link}
                   className={`inline-flex items-center justify-center w-full bg-gradient-to-r ${tool.gradient} text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300 group-hover:scale-105`}
                 >
-                  立即使用
+                  {t("useNow")}
                 </a>
 
                 {/* 装饰性光晕 */}
@@ -96,13 +114,13 @@ const FeaturesCards = () => {
         {/* 底部提示 */}
         <div className="text-center mt-12">
           <p className="text-gray-400 mb-4">
-            所有工具都支持高质量输出，为您的创作提供无限可能
+            {t("footerDescription")}
           </p>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-8 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg"
           >
-            探索主要功能
+            {t("footerButton")}
           </button>
         </div>
       </div>

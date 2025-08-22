@@ -936,7 +936,7 @@ export default function Hero() {
           </div>
 
           {/* Right Side - History or Demo */}
-          <div className="space-y-6 mt-16 lg:mt-8">
+          <div className="space-y-6 mt-28 lg:mt-20">
             {user ? (
               // 已登录用户显示历史记录
               <QwenImageEditHistory 

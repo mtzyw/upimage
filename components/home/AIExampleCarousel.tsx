@@ -1,33 +1,35 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 const AIExampleCarousel = () => {
+  const t = useTranslations("Landing.NewComponents.AIExampleCarousel");
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // 示例数据，后期可以替换为真实图片
   const examples = [
     {
       id: 1,
-      title: "风格转换",
-      description: "将普通照片转换为艺术风格",
+      title: t("examples.0.title"),
+      description: t("examples.0.description"),
       image: "https://cdn.imgenhancer.ai/image.png",
-      prompt: "转换为水彩画风格"
+      prompt: t("examples.0.prompt")
     },
     {
       id: 2,
-      title: "图像增强",
-      description: "提升图片清晰度和细节",
+      title: t("examples.1.title"),
+      description: t("examples.1.description"),
       image: "https://cdn.imgenhancer.ai/image2.png",
-      prompt: "增强图像细节和清晰度"
+      prompt: t("examples.1.prompt")
     },
     {
       id: 3,
-      title: "背景移除",
-      description: "智能识别并移除背景",
+      title: t("examples.2.title"),
+      description: t("examples.2.description"),
       image: "https://cdn.imgenhancer.ai/image4.png",
-      prompt: "移除背景，保留主体"
+      prompt: t("examples.2.prompt")
     }
   ];
 
@@ -51,9 +53,9 @@ const AIExampleCarousel = () => {
   const currentExample = examples[currentIndex];
 
   return (
-    <div className="rounded-xl overflow-hidden bg-gray-800/50 backdrop-blur-sm border border-gray-600 shadow-lg mt-12">
+    <div className="rounded-xl overflow-hidden bg-gray-800/50 backdrop-blur-sm border border-gray-600 shadow-lg mt-15">
       <div className="p-6">
-        <h3 className="text-xl font-bold text-white mb-4">AI 处理示例</h3>
+        <h3 className="text-xl font-bold text-white mb-4">{t("title")}</h3>
 
         {/* 主要展示区域 */}
         <div className="relative mb-6">
@@ -83,20 +85,8 @@ const AIExampleCarousel = () => {
           </div>
         </div>
 
-
-        {/* 处理指令 */}
-        <div className="bg-gray-700/50 rounded-lg p-3 border border-gray-600">
-          <div className="flex items-center mb-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-            <span className="text-gray-400 text-sm">处理指令</span>
-          </div>
-          <p className="text-white text-sm">
-            "{currentExample.prompt}"
-          </p>
-        </div>
-
         {/* 页面指示器 */}
-        <div className="flex justify-center mt-4 space-x-2">
+        <div className="flex justify-center mt-6 space-x-2">
           {examples.map((_, index) => (
             <button
               key={index}

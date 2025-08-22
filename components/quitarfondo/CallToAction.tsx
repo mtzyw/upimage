@@ -85,7 +85,7 @@ export default function CallToAction({ isLoggedIn, onGetStarted }: CallToActionP
                 </div>
                 
                 {/* Content */}
-                <p className="text-gray-300 italic">"{t(testimonial.contentKey)}"</p>
+                <p className="text-gray-300 italic">&ldquo;{t(testimonial.contentKey)}&rdquo;</p>
                 
                 {/* Author */}
                 <div className="space-y-1">

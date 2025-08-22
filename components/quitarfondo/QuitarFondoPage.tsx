@@ -268,7 +268,7 @@ export default function QuitarFondoPage() {
       </div>
 
       {/* Features Showcase */}
-      <FeaturesShowcase />
+      {/* <FeaturesShowcase /> */}
 
       {/* How It Works */}
       <HowItWorks />

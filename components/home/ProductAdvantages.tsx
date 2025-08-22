@@ -1,38 +1,40 @@
 "use client";
 
 import { CheckCircle, Clock, Shield, Star, Users, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const ProductAdvantages = () => {
+  const t = useTranslations("Landing.NewComponents.ProductAdvantages");
   const advantages = [
     {
       icon: CheckCircle,
-      title: "行业领先的AI技术",
-      description: "采用最新的深度学习算法，处理效果达到专业级标准，让您的图片质量显著提升。"
+      title: t("advantages.aiTechnology.title"),
+      description: t("advantages.aiTechnology.description")
     },
     {
       icon: Clock,
-      title: "极速处理体验",
-      description: "云端GPU加速，1-3分钟快速完成处理，告别漫长等待，提升工作效率。"
+      title: t("advantages.fastProcessing.title"),
+      description: t("advantages.fastProcessing.description")
     },
     {
       icon: Shield,
-      title: "数据安全保障",
-      description: "图片传输加密保护，处理完成后自动删除，确保您的隐私和数据安全。"
+      title: t("advantages.dataSecurity.title"),
+      description: t("advantages.dataSecurity.description")
     },
     {
       icon: Star,
-      title: "专业级输出质量",
-      description: "支持8K超高清输出，细节丰富清晰，满足商业印刷、社交媒体等各种使用场景。"
+      title: t("advantages.professionalQuality.title"),
+      description: t("advantages.professionalQuality.description")
     },
     {
       icon: Users,
-      title: "适用多种场景",
-      description: "无论是个人创作、商业设计还是内容制作，都能提供最适合的AI处理方案。"
+      title: t("advantages.multipleScenarios.title"),
+      description: t("advantages.multipleScenarios.description")
     },
     {
       icon: Zap,
-      title: "一站式AI工具",
-      description: "图像增强、背景移除、智能编辑，多种AI功能集成，一个平台解决所有需求。"
+      title: t("advantages.oneStopTool.title"),
+      description: t("advantages.oneStopTool.description")
     }
   ];
 
@@ -43,10 +45,10 @@ const ProductAdvantages = () => {
           {/* 标题部分 */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              为什么选择我们的AI图像处理平台？
+              {t("title")}
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              集成前沿AI技术，为个人用户和企业客户提供专业级图像处理服务，让每张图片都达到完美效果
+              {t("description")}
             </p>
           </div>
 
@@ -86,23 +88,23 @@ const ProductAdvantages = () => {
             <div className="space-y-8">
               {/* 数据统计 */}
               <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold text-white mb-8 text-center">平台数据</h3>
+                <h3 className="text-2xl font-bold text-white mb-8 text-center">{t("statsTitle")}</h3>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-purple-400 mb-2">99.9%</div>
-                    <div className="text-gray-300 text-sm">处理成功率</div>
+                    <div className="text-gray-300 text-sm">{t("successRate")}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-pink-400 mb-2">50万+</div>
-                    <div className="text-gray-300 text-sm">处理图片数量</div>
+                    <div className="text-gray-300 text-sm">{t("processed")}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-blue-400 mb-2">2分钟</div>
-                    <div className="text-gray-300 text-sm">平均处理时间</div>
+                    <div className="text-gray-300 text-sm">{t("avgTime")}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-green-400 mb-2">10万+</div>
-                    <div className="text-gray-300 text-sm">活跃用户</div>
+                    <div className="text-gray-300 text-sm">{t("users")}</div>
                   </div>
                 </div>
               </div>
@@ -110,12 +112,12 @@ const ProductAdvantages = () => {
               {/* 特色标签 */}
               <div className="flex flex-wrap gap-3">
                 {[
-                  "🚀 GPU加速",
-                  "🔒 隐私保护", 
-                  "🎯 精准识别",
-                  "💎 专业级质量",
-                  "⚡ 极速处理",
-                  "🌟 用户好评"
+                  t("tags.0"),
+                  t("tags.1"), 
+                  t("tags.2"),
+                  t("tags.3"),
+                  t("tags.4"),
+                  t("tags.5")
                 ].map((tag, index) => (
                   <span
                     key={index}
@@ -129,16 +131,16 @@ const ProductAdvantages = () => {
               {/* CTA 按钮 */}
               <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-center">
                 <h4 className="text-xl font-bold text-white mb-3">
-                  立即体验AI图像处理
+                  {t("ctaTitle")}
                 </h4>
                 <p className="text-purple-100 mb-4 text-sm">
-                  新用户免费试用，无需注册即可开始
+                  {t("ctaDescription")}
                 </p>
                 <button 
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   className="bg-white text-purple-600 font-bold py-3 px-8 rounded-xl hover:bg-gray-100 transition-colors duration-300 shadow-lg"
                 >
-                  免费试用
+                  {t("ctaButton")}
                 </button>
               </div>
             </div>

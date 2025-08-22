@@ -1,13 +1,15 @@
 "use client";
 
 import { Sparkles, ArrowRight, CheckCircle, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const FinalCTA = () => {
+  const t = useTranslations("Landing.NewComponents.FinalCTA");
   const benefits = [
-    "🎯 无需注册，立即开始",
-    "⚡ 2分钟快速处理", 
-    "🔒 隐私安全保护",
-    "💎 专业级输出质量"
+    t("benefits.0"),
+    t("benefits.1"),
+    t("benefits.2"),
+    t("benefits.3")
   ];
 
   return (
@@ -30,15 +32,12 @@ const FinalCTA = () => {
 
                 {/* 标题 */}
                 <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
-                  开启您的
-                  <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent"> AI图像处理 </span>
-                  之旅
+                  {t("title")}
                 </h2>
 
                 {/* 描述 */}
                 <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-                  体验最前沿的AI图像处理技术，让每张图片都展现出令人惊艳的效果。
-                  无需注册，无需等待，现在就开始您的创作之旅！
+                  {t("description")}
                 </p>
 
                 {/* 特色标签 */}
@@ -62,7 +61,7 @@ const FinalCTA = () => {
                     className="group bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-8 rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25 hover:scale-105 flex items-center"
                   >
                     <Zap className="w-5 h-5 mr-2 group-hover:animate-pulse" />
-                    立即免费试用
+                    {t("button")}
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                   </button>
                 </div>
@@ -71,15 +70,15 @@ const FinalCTA = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-gray-400 text-sm">
                   <div className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
-                    无需信用卡
+                    {t("noCard")}
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
-                    即时开始使用
+                    {t("instant")}
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
-                    支持中文界面
+                    {t("chinese")}
                   </div>
                 </div>
               </div>
@@ -93,12 +92,12 @@ const FinalCTA = () => {
           {/* 底部统计信息 */}
           <div className="mt-16 text-center">
             <p className="text-gray-400 mb-4">
-              已有 <span className="text-white font-bold">150,000+</span> 用户选择我们的AI图像处理服务
+              {t("footerDescription", { count: "150,000+" })}
             </p>
             <div className="flex justify-center items-center space-x-8 text-sm text-gray-500">
-              <span>✨ 2,000,000+ 图片已处理</span>
-              <span>🌟 4.9/5 用户评分</span>
-              <span>⚡ 98.5% 处理成功率</span>
+              <span>✨ {t("footerStats.imagesProcessed")}</span>
+              <span>🌟 {t("footerStats.userRating")}</span>
+              <span>⚡ {t("footerStats.successRate")}</span>
             </div>
           </div>
         </div>

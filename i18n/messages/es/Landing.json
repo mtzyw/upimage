@@ -514,5 +514,197 @@
         "answer": "La mayoría del procesamiento de imágenes se completa en 1-3 minutos. Si el tiempo de procesamiento excede los 10 minutos, el sistema cancelará automáticamente la tarea y reembolsará los créditos."
       }
     ]
+  },
+  "NewComponents": {
+    "FeaturesCards": {
+      "title": "Otras herramientas de IA",
+      "description": "Explora más herramientas poderosas de procesamiento de imágenes con IA para satisfacer todas tus necesidades creativas",
+      "useNow": "Usar ahora",
+      "footerDescription": "Todas las herramientas admiten salida de alta calidad para posibilidades creativas ilimitadas",
+      "footerButton": "Explorar funciones principales",
+      "tools": {
+        "aiGeneration": {
+          "title": "Generación de imágenes con IA",
+          "description": "Ingresa descripciones de texto y la IA genera automáticamente imágenes de alta calidad con varios estilos y temas",
+          "features": {
+            "0": "Texto a imagen",
+            "1": "Múltiples estilos artísticos",
+            "2": "Salida HD",
+            "3": "Generación por lotes"
+          }
+        },
+        "backgroundRemoval": {
+          "title": "Eliminación de fondo con IA",
+          "description": "Reconoce inteligentemente el sujeto y elimina el fondo con un clic, soporta escenas complejas y procesamiento de bordes finos",
+          "features": {
+            "0": "Reconocimiento inteligente",
+            "1": "Recorte preciso",
+            "2": "Procesamiento por lotes",
+            "3": "Fondo transparente"
+          }
+        },
+        "imageUpscaling": {
+          "title": "Escalado de imágenes con IA",
+          "description": "Mejora imágenes de baja resolución a 8K de alta calidad, potenciando detalles y claridad",
+          "features": {
+            "0": "8K Ultra HD",
+            "1": "Mejora de detalles",
+            "2": "Reducción de ruido",
+            "3": "Optimización de color"
+          }
+        }
+      }
+    },
+    "ProductAdvantages": {
+      "title": "¿Por qué elegir nuestra plataforma de procesamiento de imágenes con IA?",
+      "description": "Integrando tecnología de IA de vanguardia para proporcionar servicios de procesamiento de imágenes de nivel profesional para usuarios individuales y empresas, haciendo que cada imagen sea perfecta",
+      "statsTitle": "Estadísticas de la plataforma",
+      "successRate": "Tasa de éxito",
+      "processed": "Imágenes procesadas", 
+      "avgTime": "Tiempo promedio de procesamiento",
+      "users": "Usuarios activos",
+      "ctaTitle": "Experimenta el procesamiento de imágenes con IA ahora",
+      "ctaDescription": "Prueba gratuita para nuevos usuarios, no se requiere registro para comenzar",
+      "ctaButton": "Prueba gratuita",
+      "advantages": {
+        "aiTechnology": {
+          "title": "Tecnología de IA líder en la industria",
+          "description": "Adoptando los últimos algoritmos de aprendizaje profundo, alcanzando efectos de procesamiento de nivel profesional, mejorando significativamente la calidad de la imagen."
+        },
+        "fastProcessing": {
+          "title": "Experiencia de procesamiento ultra rápido",
+          "description": "Aceleración GPU en la nube, procesamiento completado en 1-3 minutos, sin largas esperas, mejorando la eficiencia del trabajo."
+        },
+        "dataSecurity": {
+          "title": "Garantía de seguridad de datos",
+          "description": "Transmisión de imágenes con protección encriptada, eliminación automática después del procesamiento, asegurando tu privacidad y seguridad de datos."
+        },
+        "professionalQuality": {
+          "title": "Calidad de salida de nivel profesional",
+          "description": "Soporta salida 8K ultra alta definición, detalles ricos y claros, satisfaciendo varios escenarios de uso como impresión comercial y redes sociales."
+        },
+        "multipleScenarios": {
+          "title": "Adecuado para múltiples escenarios",
+          "description": "Ya sea para creación personal, diseño comercial o producción de contenido, proporcionamos las soluciones de procesamiento con IA más adecuadas."
+        },
+        "oneStopTool": {
+          "title": "Herramienta de IA integral",
+          "description": "Mejora de imágenes, eliminación de fondo, edición inteligente, múltiples funciones de IA integradas, una plataforma resuelve todas las necesidades."
+        }
+      },
+      "tags": {
+        "0": "🚀 Aceleración GPU",
+        "1": "🔒 Protección de privacidad",
+        "2": "🎯 Reconocimiento preciso",
+        "3": "💎 Calidad profesional",
+        "4": "⚡ Procesamiento ultra rápido",
+        "5": "🌟 Reseñas de usuarios"
+      }
+    },
+    "HowItWorks": {
+      "title": "Crear transformaciones de imágenes impresionantes es rápido e intuitivo", 
+      "description": "Solo cuatro pasos simples para lograr efectos de procesamiento de imágenes con IA de nivel profesional, rápido y conveniente durante todo el proceso",
+      "ctaTitle": "¿Listo para experimentar el procesamiento de imágenes con IA?",
+      "ctaDescription": "No se requiere registro, comienza tu prueba gratuita ahora. Sube tu primera imagen y siente la magia de la tecnología de IA.",
+      "ctaButton": "Comenzar prueba gratuita ahora",
+      "steps": {
+        "upload": {
+          "title": "Sube tu foto",
+          "description": "Selecciona una imagen clara y de alta calidad desde tu dispositivo como punto de partida."
+        },
+        "describe": {
+          "title": "Describe tus cambios",
+          "description": "Escribe un prompt específico describiendo el estilo, colores o efectos artísticos que deseas aplicar."
+        },
+        "adjust": {
+          "title": "Ajustar configuraciones",
+          "description": "Ajusta finamente parámetros como relación de aspecto, cantidad de salida y fuerza de transformación."
+        },
+        "generate": {
+          "title": "Generar y descargar",
+          "description": "Haz clic en \"Generar\" para procesar. Revisa resultados y descarga tu favorito."
+        }
+      }
+    },
+    "UserStats": {
+      "title": "Plataforma de IA confiada por usuarios",
+      "description": "La elección de cientos de miles de usuarios, millones de procesos exitosos, testimoniando las posibilidades infinitas de la tecnología de imágenes con IA",
+      "ratingTitle": "Reseñas de usuarios",
+      "ratingDescription": "Basado en {count} reseñas reales de usuarios",
+      "stars": "estrellas",
+      "stats": {
+        "activeUsers": {
+          "label": "Usuarios activos",
+          "description": "Creadores de todo el mundo confían en nosotros"
+        },
+        "imagesProcessed": {
+          "label": "Imágenes procesadas",
+          "description": "El número acumulado de imágenes procesadas sigue creciendo"
+        },
+        "userRating": {
+          "label": "Calificación de usuarios",
+          "description": "Basado en comentarios reales de usuarios"
+        },
+        "satisfaction": {
+          "label": "Tasa de satisfacción",
+          "description": "Los usuarios están satisfechos con los resultados del procesamiento"
+        }
+      },
+      "highlights": {
+        "security": {
+          "title": "Seguro y confiable",
+          "description": "Garantía de seguridad de nivel empresarial, protección estricta de datos de privacidad"
+        },
+        "leading": {
+          "title": "Líder en la industria",
+          "description": "La tecnología de procesamiento de imágenes con IA ha ganado múltiples premios de innovación tecnológica"
+        },
+        "efficient": {
+          "title": "Eficiente y conveniente",
+          "description": "Procesamiento completado en promedio en 2 minutos, mejorando la eficiencia del trabajo"
+        }
+      }
+    },
+    "FinalCTA": {
+      "title": "Comienza tu viaje de procesamiento de imágenes con IA",
+      "description": "Experimenta la tecnología de procesamiento de imágenes con IA más avanzada, haciendo que cada imagen muestre efectos impresionantes. Sin registro, sin espera, ¡comienza tu viaje creativo ahora!",
+      "button": "Comenzar prueba gratuita ahora",
+      "footerDescription": "{count} usuarios han elegido nuestro servicio de procesamiento de imágenes con IA",
+      "noCard": "No se requiere tarjeta de crédito",
+      "instant": "Comenzar a usar instantáneamente", 
+      "chinese": "Interfaz en chino admitida",
+      "benefits": {
+        "0": "🎯 Sin registro, comenzar instantáneamente",
+        "1": "⚡ Procesamiento rápido de 2 minutos",
+        "2": "🔒 Protección de seguridad y privacidad",
+        "3": "💎 Calidad de salida de nivel profesional"
+      },
+      "footerStats": {
+        "imagesProcessed": "2,000,000+ Imágenes procesadas",
+        "userRating": "4.9/5 Calificación de usuarios",
+        "successRate": "98.5% Tasa de éxito"
+      }
+    },
+    "AIExampleCarousel": {
+      "title": "Ejemplos de procesamiento con IA",
+      "instruction": "Instrucciones de procesamiento",
+      "examples": {
+        "0": {
+          "title": "Transferencia de estilo",
+          "description": "Transforma fotos ordinarias en estilos artísticos",
+          "prompt": "Convertir a estilo de acuarela"
+        },
+        "1": {
+          "title": "Mejora de imagen",
+          "description": "Mejora la claridad y detalles de la imagen",
+          "prompt": "Mejorar detalles y claridad de la imagen"
+        },
+        "2": {
+          "title": "Eliminación de fondo",
+          "description": "Identifica y elimina inteligentemente el fondo",
+          "prompt": "Eliminar fondo, mantener sujeto"
+        }
+      }
+    }
   }
 }

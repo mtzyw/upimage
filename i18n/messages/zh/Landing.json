@@ -514,5 +514,197 @@
         "answer": "大部分图片处理会在1-3分钟内完成。如果处理时间超过10分钟，系统会自动取消任务并退回积分。"
       }
     ]
+  },
+  "NewComponents": {
+    "FeaturesCards": {
+      "title": "其他AI工具",
+      "description": "探索更多强大的AI图像处理工具，满足您的各种创作需求",
+      "useNow": "立即使用",
+      "footerDescription": "所有工具都支持高质量输出，为您的创作提供无限可能",
+      "footerButton": "探索主要功能",
+      "tools": {
+        "aiGeneration": {
+          "title": "AI图片生成",
+          "description": "输入文字描述，AI自动生成高质量图片，支持多种风格和主题",
+          "features": {
+            "0": "文字转图片",
+            "1": "多种艺术风格",
+            "2": "高清输出",
+            "3": "批量生成"
+          }
+        },
+        "backgroundRemoval": {
+          "title": "AI背景去除",
+          "description": "智能识别主体，一键移除背景，支持复杂场景和精细边缘处理",
+          "features": {
+            "0": "智能识别",
+            "1": "精准抠图",
+            "2": "批量处理",
+            "3": "透明背景"
+          }
+        },
+        "imageUpscaling": {
+          "title": "AI图片升级",
+          "description": "将低分辨率图片提升至8K高清，增强细节和清晰度",
+          "features": {
+            "0": "8K超清",
+            "1": "细节增强",
+            "2": "降噪处理",
+            "3": "色彩优化"
+          }
+        }
+      }
+    },
+    "ProductAdvantages": {
+      "title": "为什么选择我们的AI图像处理平台？",
+      "description": "集成前沿AI技术，为个人用户和企业客户提供专业级图像处理服务，让每张图片都达到完美效果",
+      "statsTitle": "平台数据",
+      "successRate": "处理成功率",
+      "processed": "处理图片数量", 
+      "avgTime": "平均处理时间",
+      "users": "活跃用户",
+      "ctaTitle": "立即体验AI图像处理",
+      "ctaDescription": "新用户免费试用，无需注册即可开始",
+      "ctaButton": "免费试用",
+      "advantages": {
+        "aiTechnology": {
+          "title": "行业领先的AI技术",
+          "description": "采用最新的深度学习算法，处理效果达到专业级标准，让您的图片质量显著提升。"
+        },
+        "fastProcessing": {
+          "title": "极速处理体验",
+          "description": "云端GPU加速，1-3分钟快速完成处理，告别漫长等待，提升工作效率。"
+        },
+        "dataSecurity": {
+          "title": "数据安全保障",
+          "description": "图片传输加密保护，处理完成后自动删除，确保您的隐私和数据安全。"
+        },
+        "professionalQuality": {
+          "title": "专业级输出质量",
+          "description": "支持8K超高清输出，细节丰富清晰，满足商业印刷、社交媒体等各种使用场景。"
+        },
+        "multipleScenarios": {
+          "title": "适用多种场景",
+          "description": "无论是个人创作、商业设计还是内容制作，都能提供最适合的AI处理方案。"
+        },
+        "oneStopTool": {
+          "title": "一站式AI工具",
+          "description": "图像增强、背景移除、智能编辑，多种AI功能集成，一个平台解决所有需求。"
+        }
+      },
+      "tags": {
+        "0": "🚀 GPU加速",
+        "1": "🔒 隐私保护",
+        "2": "🎯 精准识别",
+        "3": "💎 专业级质量",
+        "4": "⚡ 极速处理",
+        "5": "🌟 用户好评"
+      }
+    },
+    "HowItWorks": {
+      "title": "创建令人惊叹的图像变化既快速又直观", 
+      "description": "只需四个简单步骤，即可获得专业级的AI图像处理效果，整个过程快速便捷",
+      "ctaTitle": "准备好体验AI图像处理了吗？",
+      "ctaDescription": "无需注册，立即开始免费试用。上传您的第一张图片，感受AI技术的神奇魅力。",
+      "ctaButton": "立即免费试用",
+      "steps": {
+        "upload": {
+          "title": "上传您的照片",
+          "description": "从您的设备中选择一张图片作为起点。为了获得最佳效果，请使用清晰、光线充足、分辨率符合您所需输出宽高比的图片。"
+        },
+        "describe": {
+          "title": "描述您的更改",
+          "description": "写一个提示，描述你想如何改变这幅图像。请具体说明你想要应用的风格、颜色、修改或艺术效果。"
+        },
+        "adjust": {
+          "title": "调整设置",
+          "description": "微调转换参数（如纵横比、输出数量和转换强度）以控制结果与原始图像的相似程度。"
+        },
+        "generate": {
+          "title": "生成并下载",
+          "description": "点击\"生成\"，即可观看AI图像转换。浏览结果，选择您喜欢的版本，并下载即可使用的高质量版本。"
+        }
+      }
+    },
+    "UserStats": {
+      "title": "深受用户信赖的AI平台",
+      "description": "数十万用户的选择，数百万次成功处理，见证AI图像技术的无限可能",
+      "ratingTitle": "用户评价",
+      "ratingDescription": "基于 {count} 真实用户评价",
+      "stars": "星",
+      "stats": {
+        "activeUsers": {
+          "label": "活跃用户",
+          "description": "来自全球的创作者信赖我们"
+        },
+        "imagesProcessed": {
+          "label": "图片已处理",
+          "description": "累计处理图片数量持续增长"
+        },
+        "userRating": {
+          "label": "用户评分",
+          "description": "基于真实用户反馈评价"
+        },
+        "satisfaction": {
+          "label": "满意度",
+          "description": "用户对处理结果表示满意"
+        }
+      },
+      "highlights": {
+        "security": {
+          "title": "安全可靠",
+          "description": "企业级安全保障，隐私数据严格保护"
+        },
+        "leading": {
+          "title": "行业领先",
+          "description": "AI图像处理技术获得多项技术创新奖"
+        },
+        "efficient": {
+          "title": "高效便捷",
+          "description": "平均2分钟完成处理，提升工作效率"
+        }
+      }
+    },
+    "FinalCTA": {
+      "title": "开启您的 AI图像处理 之旅",
+      "description": "体验最前沿的AI图像处理技术，让每张图片都展现出令人惊艳的效果。无需注册，无需等待，现在就开始您的创作之旅！",
+      "button": "立即免费试用",
+      "footerDescription": "已有 {count} 用户选择我们的AI图像处理服务",
+      "noCard": "无需信用卡",
+      "instant": "即时开始使用", 
+      "chinese": "支持中文界面",
+      "benefits": {
+        "0": "🎯 无需注册，立即开始",
+        "1": "⚡ 2分钟快速处理",
+        "2": "🔒 隐私安全保护",
+        "3": "💎 专业级输出质量"
+      },
+      "footerStats": {
+        "imagesProcessed": "2,000,000+ 图片已处理",
+        "userRating": "4.9/5 用户评分",
+        "successRate": "98.5% 处理成功率"
+      }
+    },
+    "AIExampleCarousel": {
+      "title": "AI 处理示例",
+      "instruction": "处理指令",
+      "examples": {
+        "0": {
+          "title": "风格转换",
+          "description": "将普通照片转换为艺术风格",
+          "prompt": "转换为水彩画风格"
+        },
+        "1": {
+          "title": "图像增强",
+          "description": "提升图片清晰度和细节",
+          "prompt": "增强图像细节和清晰度"
+        },
+        "2": {
+          "title": "背景移除",
+          "description": "智能识别并移除背景",
+          "prompt": "移除背景，保留主体"
+        }
+      }
+    }
   }
 }

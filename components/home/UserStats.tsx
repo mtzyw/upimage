@@ -1,35 +1,37 @@
 "use client";
 
 import { Star, Users, Zap, ThumbsUp, Shield, Trophy } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const UserStats = () => {
+  const t = useTranslations("Landing.NewComponents.UserStats");
   const stats = [
     {
       icon: Users,
       number: "150,000+",
-      label: "活跃用户",
-      description: "来自全球的创作者信赖我们",
+      label: t("stats.activeUsers.label"),
+      description: t("stats.activeUsers.description"),
       color: "from-blue-500 to-cyan-600"
     },
     {
       icon: Zap,
       number: "2,000,000+", 
-      label: "图片已处理",
-      description: "累计处理图片数量持续增长",
+      label: t("stats.imagesProcessed.label"),
+      description: t("stats.imagesProcessed.description"),
       color: "from-purple-500 to-pink-600"
     },
     {
       icon: Star,
       number: "4.9/5",
-      label: "用户评分",
-      description: "基于真实用户反馈评价",
+      label: t("stats.userRating.label"),
+      description: t("stats.userRating.description"),
       color: "from-yellow-500 to-orange-600"
     },
     {
       icon: ThumbsUp,
       number: "98.5%",
-      label: "满意度",
-      description: "用户对处理结果表示满意",
+      label: t("stats.satisfaction.label"),
+      description: t("stats.satisfaction.description"),
       color: "from-green-500 to-teal-600"
     }
   ];
@@ -37,18 +39,18 @@ const UserStats = () => {
   const highlights = [
     {
       icon: Shield,
-      title: "安全可靠",
-      description: "企业级安全保障，隐私数据严格保护"
+      title: t("highlights.security.title"),
+      description: t("highlights.security.description")
     },
     {
       icon: Trophy,
-      title: "行业领先",
-      description: "AI图像处理技术获得多项技术创新奖"
+      title: t("highlights.leading.title"),
+      description: t("highlights.leading.description")
     },
     {
       icon: Zap,
-      title: "高效便捷",
-      description: "平均2分钟完成处理，提升工作效率"
+      title: t("highlights.efficient.title"),
+      description: t("highlights.efficient.description")
     }
   ];
 
@@ -59,10 +61,10 @@ const UserStats = () => {
           {/* 标题部分 */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              深受用户信赖的AI平台
+              {t("title")}
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              数十万用户的选择，数百万次成功处理，见证AI图像技术的无限可能
+              {t("description")}
             </p>
           </div>
 
@@ -105,7 +107,7 @@ const UserStats = () => {
           {/* 星级评价展示 */}
           <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-2xl p-8 mb-16 backdrop-blur-sm">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-white mb-4">用户评价</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">{t("ratingTitle")}</h3>
               <div className="flex items-center justify-center mb-4">
                 <div className="flex text-yellow-400 mr-3">
                   {[...Array(5)].map((_, i) => (
@@ -116,7 +118,7 @@ const UserStats = () => {
                 <span className="text-gray-300 ml-2">/ 5</span>
               </div>
               <p className="text-gray-300">
-                基于 <strong className="text-white">15,000+</strong> 真实用户评价
+                {t("ratingDescription", { count: "15,000+" })}
               </p>
             </div>
 
@@ -130,7 +132,7 @@ const UserStats = () => {
                 { stars: 1, percentage: 0 }
               ].map((item) => (
                 <div key={item.stars} className="flex items-center space-x-2">
-                  <span className="text-white text-sm whitespace-nowrap">{item.stars}星</span>
+                  <span className="text-white text-sm whitespace-nowrap">{item.stars}{t("stars")}</span>
                   <div className="flex-1 bg-gray-700 rounded-full h-2">
                     <div 
                       className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-1000 ease-out"

@@ -514,5 +514,197 @@
         "answer": "Most image processing completes within 1-3 minutes. If processing time exceeds 10 minutes, the system will automatically cancel the task and refund credits."
       }
     ]
+  },
+  "NewComponents": {
+    "FeaturesCards": {
+      "title": "Other AI Tools",
+      "description": "Explore more powerful AI image processing tools to meet all your creative needs",
+      "useNow": "Use Now",
+      "footerDescription": "All tools support high-quality output for unlimited creative possibilities",
+      "footerButton": "Explore Main Features",
+      "tools": {
+        "aiGeneration": {
+          "title": "AI Image Generation",
+          "description": "Input text descriptions and AI automatically generates high-quality images with various styles and themes",
+          "features": {
+            "0": "Text to Image",
+            "1": "Multiple Art Styles",
+            "2": "HD Output",
+            "3": "Batch Generation"
+          }
+        },
+        "backgroundRemoval": {
+          "title": "AI Background Removal",
+          "description": "Intelligently identify subjects and remove backgrounds with one click, supporting complex scenes and fine edge processing",
+          "features": {
+            "0": "Smart Recognition",
+            "1": "Precise Cutout",
+            "2": "Batch Processing",
+            "3": "Transparent Background"
+          }
+        },
+        "imageUpscaling": {
+          "title": "AI Image Upscaling",
+          "description": "Enhance low-resolution images to 8K HD quality with enhanced details and clarity",
+          "features": {
+            "0": "8K Ultra HD",
+            "1": "Detail Enhancement",
+            "2": "Noise Reduction",
+            "3": "Color Optimization"
+          }
+        }
+      }
+    },
+    "ProductAdvantages": {
+      "title": "Why Choose Our AI Image Processing Platform?",
+      "description": "Integrating cutting-edge AI technology to provide professional-grade image processing services for individuals and businesses, making every image perfect",
+      "statsTitle": "Platform Statistics",
+      "successRate": "Success Rate",
+      "processed": "Images Processed", 
+      "avgTime": "Average Processing Time",
+      "users": "Active Users",
+      "ctaTitle": "Experience AI Image Processing Now",
+      "ctaDescription": "Free trial for new users, no registration required to start",
+      "ctaButton": "Free Trial",
+      "advantages": {
+        "aiTechnology": {
+          "title": "Industry-Leading AI Technology",
+          "description": "Using the latest deep learning algorithms, achieving professional-grade processing effects, significantly improving your image quality."
+        },
+        "fastProcessing": {
+          "title": "Ultra-Fast Processing Experience",
+          "description": "Cloud GPU acceleration, processing completed in 1-3 minutes, no more long waits, boosting work efficiency."
+        },
+        "dataSecurity": {
+          "title": "Data Security Guarantee",
+          "description": "Encrypted image transmission, automatic deletion after processing, ensuring your privacy and data security."
+        },
+        "professionalQuality": {
+          "title": "Professional-Grade Output Quality",
+          "description": "Supports 8K ultra-high definition output, rich and clear details, meeting commercial printing, social media and other usage scenarios."
+        },
+        "multipleScenarios": {
+          "title": "Suitable for Multiple Scenarios",
+          "description": "Whether for personal creation, commercial design or content production, we provide the most suitable AI processing solutions."
+        },
+        "oneStopTool": {
+          "title": "One-Stop AI Tool",
+          "description": "Image enhancement, background removal, intelligent editing, multiple AI functions integrated, one platform solves all needs."
+        }
+      },
+      "tags": {
+        "0": "🚀 GPU Acceleration",
+        "1": "🔒 Privacy Protection",
+        "2": "🎯 Precise Recognition",
+        "3": "💎 Professional Quality",
+        "4": "⚡ Ultra-Fast Processing",
+        "5": "🌟 User Reviews"
+      }
+    },
+    "HowItWorks": {
+      "title": "Creating stunning image transformations is fast and intuitive", 
+      "description": "Just four simple steps to achieve professional-grade AI image processing effects, fast and convenient throughout the process",
+      "ctaTitle": "Ready to experience AI image processing?",
+      "ctaDescription": "No registration required, start your free trial now. Upload your first image and feel the magic of AI technology.",
+      "ctaButton": "Start Free Trial Now",
+      "steps": {
+        "upload": {
+          "title": "Upload Your Photo",
+          "description": "Select a clear, high-quality image from your device as your starting point."
+        },
+        "describe": {
+          "title": "Describe Your Changes",
+          "description": "Write a specific prompt describing the style, colors, or artistic effects you want to apply."
+        },
+        "adjust": {
+          "title": "Adjust Settings",
+          "description": "Fine-tune parameters like aspect ratio, output count, and transformation strength."
+        },
+        "generate": {
+          "title": "Generate and Download",
+          "description": "Click \"Generate\" to start AI processing. Browse results, select your favorite, and download."
+        }
+      }
+    },
+    "UserStats": {
+      "title": "Trusted AI Platform by Users",
+      "description": "The choice of hundreds of thousands of users, millions of successful processes, witnessing the infinite possibilities of AI image technology",
+      "ratingTitle": "User Reviews",
+      "ratingDescription": "Based on {count} real user reviews",
+      "stars": "stars",
+      "stats": {
+        "activeUsers": {
+          "label": "Active Users",
+          "description": "Creators worldwide trust our platform"
+        },
+        "imagesProcessed": {
+          "label": "Images Processed",
+          "description": "Cumulative processed images continue to grow"
+        },
+        "userRating": {
+          "label": "User Rating",
+          "description": "Based on real user feedback"
+        },
+        "satisfaction": {
+          "label": "Satisfaction Rate",
+          "description": "Users satisfied with processing results"
+        }
+      },
+      "highlights": {
+        "security": {
+          "title": "Secure & Reliable",
+          "description": "Enterprise-grade security with strict privacy protection"
+        },
+        "leading": {
+          "title": "Industry Leading",
+          "description": "AI image processing technology awarded multiple innovation prizes"
+        },
+        "efficient": {
+          "title": "Fast & Convenient",
+          "description": "Average 2-minute processing time, boosting productivity"
+        }
+      }
+    },
+    "FinalCTA": {
+      "title": "Start Your AI Image Processing Journey",
+      "description": "Experience the most advanced AI image processing technology, making every image display stunning effects. No registration, no waiting, start your creative journey now!",
+      "button": "Start Free Trial Now",
+      "footerDescription": "{count} users have chosen our AI image processing service",
+      "noCard": "No credit card required",
+      "instant": "Start using instantly", 
+      "chinese": "Chinese interface supported",
+      "benefits": {
+        "0": "🎯 No registration required, start instantly",
+        "1": "⚡ 2-minute fast processing",
+        "2": "🔒 Privacy and security protection",
+        "3": "💎 Professional-grade output quality"
+      },
+      "footerStats": {
+        "imagesProcessed": "2,000,000+ Images Processed",
+        "userRating": "4.9/5 User Rating",
+        "successRate": "98.5% Success Rate"
+      }
+    },
+    "AIExampleCarousel": {
+      "title": "AI Processing Examples",
+      "instruction": "Processing Instructions",
+      "examples": {
+        "0": {
+          "title": "Style Transfer",
+          "description": "Transform ordinary photos into artistic styles",
+          "prompt": "Convert to watercolor painting style"
+        },
+        "1": {
+          "title": "Image Enhancement",
+          "description": "Improve image clarity and details",
+          "prompt": "Enhance image details and clarity"
+        },
+        "2": {
+          "title": "Background Removal",
+          "description": "Intelligently identify and remove backgrounds",
+          "prompt": "Remove background, keep subject"
+        }
+      }
+    }
   }
 }
