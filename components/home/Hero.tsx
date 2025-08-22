@@ -9,6 +9,7 @@ import { useState, useCallback } from "react";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
+import AIExampleCarousel from "@/components/home/AIExampleCarousel";
 
 interface TaskResult {
   taskId: string;
@@ -935,7 +936,7 @@ export default function Hero() {
           </div>
 
           {/* Right Side - History or Demo */}
-          <div className="space-y-6 mt-12 lg:mt-0">
+          <div className="space-y-6 mt-16 lg:mt-8">
             {user ? (
               // 已登录用户显示历史记录
               <QwenImageEditHistory 
@@ -946,33 +947,8 @@ export default function Hero() {
                 }}
               />
             ) : (
-              // 未登录用户显示示例图片
-              <div className="rounded-xl overflow-hidden bg-gray-800 border border-gray-600 shadow-lg">
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">AI 处理示例</h3>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-gray-400 text-sm mb-2">原图</p>
-                      <img
-                        src="https://cdn.imgenhancer.ai/enhance/aefcdaf3-2a8c-4dd7-b17e-8f008f5f376c/1754382753378-6cf9cd67-9a33-40b0-b4c7-a2940859c76c.jpg"
-                        alt="示例原图"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm mb-2">AI 处理后</p>
-                      <img
-                        src="https://cdn.imgenhancer.ai/users/anonymous/image-enhancements/optimized-0b862ff0-4512-4aca-8803-b1e81cd801c2.png"
-                        alt="示例处理结果"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-gray-300 text-sm">
-                    编辑指令：生成吉卜力风格
-                  </p>
-                </div>
-              </div>
+              // 未登录用户显示示例轮播
+              <AIExampleCarousel />
             )}
           </div>
         </div>
