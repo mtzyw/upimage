@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
       errorMessage: task.error_message,
       createdAt: task.created_at,
       completedAt: task.completed_at,
-      timestamp: new Date(task.created_at).toLocaleString('zh-CN'),
+      timestamp: task.created_at ? new Date(task.created_at).toLocaleString('zh-CN') : '',
       filename: `task-${task.created_at}`,
       processingTime: task.completed_at && task.created_at ? 
         Math.round((new Date(task.completed_at).getTime() - new Date(task.created_at).getTime()) / 1000) : 

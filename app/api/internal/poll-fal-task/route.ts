@@ -66,9 +66,11 @@ async function queryFalTaskStatus(requestId: string): Promise<{
         result: fullResult
       };
     } else if (status === 'FAILED') {
+      // 类型断言处理可能存在的错误信息
+      const errorResult = result as any;
       return {
         status: 'failed',
-        error: result.error?.message || result.error || 'Task failed on fal.ai'
+        error: errorResult.error?.message || errorResult.error || 'Task failed on fal.ai'
       };
     } else if (status === 'IN_PROGRESS' || status === 'IN_QUEUE') {
       return {

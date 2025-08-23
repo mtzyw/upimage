@@ -10,6 +10,19 @@ import { useTranslations } from 'next-intl';
 import { toast } from "sonner";
 import React from "react";
 
+// 历史记录项类型定义
+interface HistoryItem {
+  id?: string;
+  taskId?: string;
+  status: string;
+  prompt?: string;
+  cdnUrl?: string;
+  createdAt: string;
+  aspectRatio?: string;
+  scaleFactor?: string;
+  [key: string]: any; // 允许其他属性
+}
+
 // AI示例轮播组件
 function AIExampleCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -105,10 +118,10 @@ function AIExampleCarousel() {
 // 最近任务展示组件 - 连接实际API
 function RecentTasksHistory({ refreshTrigger, onSetPendingTasks }: { 
   refreshTrigger: number; 
-  onSetPendingTasks: (tasks: any[]) => void;
+  onSetPendingTasks: (operations: PendingTasksOperations) => void;
 }) {
-  const [historyItems, setHistoryItems] = useState<any[]>([]);
-  const [pendingTasks, setPendingTasks] = useState<any[]>([]); // 添加本地待处理任务状态
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [pendingTasks, setPendingTasks] = useState<HistoryItem[]>([]); // 添加本地待处理任务状态
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -167,8 +180,8 @@ function RecentTasksHistory({ refreshTrigger, onSetPendingTasks }: {
         if (isLoadMore) {
           // 追加新数据，去重处理
           setHistoryItems(prev => {
-            const existingIds = new Set(prev.map(item => item.id || item.taskId));
-            const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id || item.taskId));
+            const existingIds = new Set(prev.map((item: HistoryItem) => item.id || item.taskId));
+            const uniqueNewItems = newItems.filter((item: HistoryItem) => !existingIds.has(item.id || item.taskId));
             return [...prev, ...uniqueNewItems];
           });
         } else {
@@ -700,8 +713,16 @@ function RecentTasksHistory({ refreshTrigger, onSetPendingTasks }: {
   );
 }
 
+// 任务操作类型
+interface PendingTasksOperations {
+  addPendingTask: (task: any) => void;
+  removePendingTask: (tempTaskId: string) => void;
+  startPollingForTask: (realTaskId: string, tempTaskId: string) => void;
+  [key: string]: any; // 允许其他方法
+}
+
 // 图像生成组件
-function ImageGenerationUI({ pendingTasksOperations }: { pendingTasksOperations?: any }) {
+function ImageGenerationUI({ pendingTasksOperations }: { pendingTasksOperations?: PendingTasksOperations }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [prompt, setPrompt] = useState("");
@@ -978,10 +999,10 @@ function ImageGenerationUI({ pendingTasksOperations }: { pendingTasksOperations?
 export default function AIImageGeneratorPage() {
   const { user } = useAuth();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [pendingTasksOperations, setPendingTasksOperations] = useState<any>(null);
+  const [pendingTasksOperations, setPendingTasksOperations] = useState<PendingTasksOperations | undefined>(undefined);
   const t = useTranslations('AIImageGenerator');
 
-  const handleTaskOperationsReady = (operations: any) => {
+  const handleTaskOperationsReady = (operations: PendingTasksOperations) => {
     console.log('📋 Task operations ready');
     setPendingTasksOperations(operations);
   };

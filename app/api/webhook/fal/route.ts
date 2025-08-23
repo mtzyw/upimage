@@ -125,8 +125,8 @@ async function findTaskByRequestId(requestId: string) {
         redis.get(`task:${requestId}:credits_consumed`)
       ]);
 
-      userId = redisUserId || userId;
-      creditsConsumed = redisCredits || creditsConsumed;
+      userId = (typeof redisUserId === 'string' ? redisUserId : null) || userId;
+      creditsConsumed = (typeof redisCredits === 'number' ? redisCredits : null) || creditsConsumed;
     }
 
     return {

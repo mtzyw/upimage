@@ -73,8 +73,8 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
         if (isLoadMore) {
           // 追加新数据，去重处理
           setHistoryItems(prev => {
-            const existingIds = new Set(prev.map(item => item.id));
-            const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+            const existingIds = new Set(prev.map((item: any) => item.id));
+            const uniqueNewItems = newItems.filter((item: any) => !existingIds.has(item.id));
             return [...prev, ...uniqueNewItems];
           });
         } else {
@@ -229,7 +229,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
         <div className="text-center py-8">
           <p className="text-red-400 text-sm">{error}</p>
           <Button
-            onClick={fetchHistory}
+            onClick={() => fetchHistory()}
             className="mt-2 text-xs"
             variant="outline"
           >

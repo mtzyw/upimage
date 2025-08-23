@@ -98,8 +98,8 @@ export default function MyHistoryPage() {
           // 追加新数据，去重处理
           setHistoryItems(prev => {
             const newItems = result.data.items || [];
-            const existingIds = new Set(prev.map(item => item.id));
-            const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+            const existingIds = new Set(prev.map((item: any) => item.id));
+            const uniqueNewItems = newItems.filter((item: any) => !existingIds.has(item.id));
             return [...prev, ...uniqueNewItems];
           });
         } else {
