@@ -17,8 +17,26 @@
   "Header": {
     "links": [
       {
-        "name": "機能特性",
-        "href": "/#features"
+        "name": "AI Tools",
+        "href": "#",
+        "dropdown": [
+          {
+            "name": "AI背景除去",
+            "href": "/quitarfondo"
+          },
+          {
+            "name": "AI画像拡大",
+            "href": "/upscaler"
+          },
+          {
+            "name": "AI画像生成",
+            "href": "/ai-image-generator"
+          },
+          {
+            "name": "AI画像変換",
+            "href": "/ai-image-to-image"
+          }
+        ]
       },
       {
         "id": "pricing",
@@ -74,10 +92,6 @@
           "title": "製品",
           "links": [
             {
-              "href": "/#features",
-              "name": "機能特性"
-            },
-            {
               "id": "pricing",
               "href": "/pricing",
               "name": "料金プラン"
@@ -91,15 +105,6 @@
         {
           "title": "サポート",
           "links": [
-            {
-              "name": "ヘルプ",
-              "href": "/help",
-              "target": "_blank"
-            },
-            {
-              "name": "Roadmap",
-              "href": "/roadmap"
-            },
             {
               "href": "mailto:hi@imgenhancer.ai",
               "name": "お問い合わせ"

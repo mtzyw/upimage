@@ -1,0 +1,83 @@
+{
+  "title": {
+    "main": "AI-Powered Image Generation",
+    "sub1": "Text to Image",
+    "sub2": "Creative Expression"
+  },
+  "description": "Use cutting-edge Flux AI technology to instantly generate high-quality images from text descriptions. Supports multiple aspect ratios and style customization.",
+  "form": {
+    "promptLabel": "Prompt",
+    "promptDescription": "Describe the image content you want to generate",
+    "promptPlaceholder": "e.g., A beautiful landscape painting with morning mist, ink wash style",
+    "aspectRatioLabel": "Aspect Ratio",
+    "aspectRatioDescription": "Choose the aspect ratio for generated images",
+    "aspectRatios": {
+      "square_1_1": "Square",
+      "classic_4_3": "Classic Landscape",
+      "traditional_3_4": "Traditional Portrait",
+      "widescreen_16_9": "Widescreen",
+      "social_story_9_16": "Social Story",
+      "standard_3_2": "Standard",
+      "portrait_2_3": "Portrait",
+      "horizontal_2_1": "Ultra Wide",
+      "vertical_1_2": "Ultra Tall",
+      "social_post_4_5": "Social Post"
+    },
+    "outputCountLabel": "Output Count",
+    "outputCountDescription": "Select the number of images to generate at once",
+    "generateButton": "Generate {count} Images 🎨",
+    "generating": "Generating...",
+    "promptRequired": "Please enter a prompt",
+    "systemInitializing": "System is initializing, please try again later"
+  },
+  "history": {
+    "recentTasks": "Recent Tasks",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "noRecords": "No generation records",
+    "fetchError": "Failed to fetch history",
+    "viewLarge": "View Large",
+    "download": "Download Image",
+    "noImage": "No Image",
+    "previewTitle": "AI Text-to-Image Generation",
+    "noMoreTasks": "No more tasks",
+    "downloadServiceNotConfigured": "Download service not configured, please contact administrator",
+    "downloadStart": "Download started",
+    "downloadError": "Download failed, please try again"
+  },
+  "status": {
+    "processing": "Processing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "timeout": "Processing Timeout"
+  },
+  "demo": {
+    "title": "AI Demo Showcase",
+    "examples": {
+      "landscape": {
+        "title": "Landscape Generation",
+        "description": "Generate beautiful natural scenery",
+        "prompt": "A beautiful landscape painting with morning mist"
+      },
+      "portrait": {
+        "title": "Portrait Creation",
+        "description": "Create realistic character portraits",
+        "prompt": "An elegant female portrait in oil painting style"
+      },
+      "abstract": {
+        "title": "Abstract Art",
+        "description": "Modern abstract art creation",
+        "prompt": "Colorful abstract artwork"
+      }
+    }
+  },
+  "errors": {
+    "processingError": "Processing Error",
+    "processingFailed": "Processing Failed",
+    "tasksSubmitFailed": "{count} tasks failed to submit",
+    "taskSubmitted": "{success}/{total} tasks submitted to Freepik queue, waiting for completion...",
+    "networkError": "Network error, please check your connection and try again",
+    "taskCreationFailed": "Task creation failed, please retry"
+  }
+}

@@ -17,8 +17,26 @@
   "Header": {
     "links": [
       {
-        "name": "功能特性",
-        "href": "/#features"
+        "name": "AI Tools",
+        "href": "#",
+        "dropdown": [
+          {
+            "name": "AI去除背景",
+            "href": "/quitarfondo"
+          },
+          {
+            "name": "AI图片增强",
+            "href": "/upscaler"
+          },
+          {
+            "name": "AI图片生成器",
+            "href": "/ai-image-generator"
+          },
+          {
+            "name": "AI图片转换",
+            "href": "/ai-image-to-image"
+          }
+        ]
       },
       {
         "id": "pricing",
@@ -74,10 +92,6 @@
           "title": "产品",
           "links": [
             {
-              "href": "/#features",
-              "name": "功能特性"
-            },
-            {
               "id": "pricing",
               "href": "/pricing",
               "name": "定价"
@@ -91,15 +105,6 @@
         {
           "title": "支持",
           "links": [
-            {
-              "name": "帮助",
-              "href": "/help",
-              "target": "_blank"
-            },
-            {
-              "name": "功能路线图",
-              "href": "/roadmap"
-            },
             {
               "href": "mailto:hi@imgenhancer.ai",
               "name": "联系我们"

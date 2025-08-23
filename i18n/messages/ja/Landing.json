@@ -6,14 +6,12 @@
       "href": "https://nexty.dev/#pricing"
     },
     "title": {
-      "part1": "画像 ",
-      "part2": "アップスケーラー",
-      "part3": "トランスフォーマー",
-      "part4": "＆ジェネレーター",
-      "part5": "まるで",
-      "part6": "魔法"
+      "part1": "ワンステップ",
+      "part2": "画像変換",
+      "part3": "AI 体験",
+      "part4": "クリエイティブ再構築"
     },
-    "description": "超高解像度アップスケーリングを実現する最先端の AI 技術。単なるアップスケールだけでなく、画像の強化、変換、生成も可能！ImgEnhancer は、あなたのプロンプトとパラメータに従って、望む限りの詳細を再構築できます！",
+    "description": "画像をアップロードしてプロンプトを入力するだけで、鮮明なアップスケール、スタイル変換、クリエイティブな再構築を実現。ImgEnhancer で画像制作をシンプルかつパワフルに！",
     "getStarted": "画像をアップスケール、変換、生成",
     "getStartedLink": "https://nexty.dev/#pricing",
     "goToWorkspace": "ワークスペースへ",
@@ -704,6 +702,58 @@
           "prompt": "背景を除去し、主体を保持"
         }
       }
+    }
+  },
+  "MyHistory": {
+    "title": "マイギャラリー",
+    "loginRequired": "処理履歴を表示するにはログインしてください",
+    "stats": {
+      "summary": "合計{total}枚の画像 · {credits}クレジット使用",
+      "total": "合計",
+      "completed": "完了",
+      "processing": "処理中",
+      "failed": "失敗"
+    },
+    "search": {
+      "placeholder": "キーワードで検索",
+      "filter": "フィルター"
+    },
+    "tools": {
+      "all": "すべてのツール",
+      "removeBackground": "背景除去",
+      "upscaler": "画像強化",
+      "imageEdit": "画像編集",
+      "textToImage": "画像生成"
+    },
+    "status": {
+      "processing": "処理中...",
+      "completed": "完了",
+      "failed": "処理に失敗しました"
+    },
+    "actions": {
+      "refresh": "更新",
+      "preview": "プレビュー",
+      "download": "ダウンロード",
+      "delete": "削除",
+      "confirm": "確認",
+      "deleting": "削除中...",
+      "confirmDelete": "削除を確認するためにもう一度クリック"
+    },
+    "messages": {
+      "loading": "読み込み中...",
+      "loadingMore": "さらに読み込み中...",
+      "retry": "再試行",
+      "noRecords": "処理記録がありません",
+      "getStarted": "AIツールを使って画像処理を始めましょう！",
+      "noMatches": "一致する記録が見つかりません",
+      "endOfList": "最後まで表示しました",
+      "noImage": "画像なし",
+      "credits": "クレジット"
+    },
+    "errors": {
+      "fetchFailed": "履歴の取得に失敗しました",
+      "deleteFailed": "削除に失敗しました",
+      "deleteError": "削除中にエラーが発生しました"
     }
   }
 }

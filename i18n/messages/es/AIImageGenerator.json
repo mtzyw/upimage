@@ -1,0 +1,68 @@
+{
+  "title": {
+    "main": "Generación de Imágenes con IA",
+    "sub1": "Texto a Imagen",
+    "sub2": "Expresión Creativa"
+  },
+  "description": "Utiliza la tecnología Flux AI de vanguardia para generar instantáneamente imágenes de alta calidad a partir de descripciones de texto. Admite múltiples relaciones de aspecto y personalización de estilos.",
+  "form": {
+    "promptLabel": "Prompt",
+    "promptDescription": "Describe el contenido de la imagen que quieres generar",
+    "promptPlaceholder": "ej: Una hermosa pintura paisajística con niebla matutina, estilo tinta china",
+    "aspectRatioLabel": "Relación de Aspecto",
+    "aspectRatioDescription": "Elige la relación de aspecto para las imágenes generadas",
+    "outputCountLabel": "Cantidad de Salidas",
+    "outputCountDescription": "Selecciona el número de imágenes a generar a la vez",
+    "generateButton": "Generar {count} Imágenes 🎨",
+    "generating": "Generando...",
+    "promptRequired": "Por favor ingresa un prompt",
+    "systemInitializing": "El sistema se está inicializando, inténtalo de nuevo más tarde"
+  },
+  "history": {
+    "recentTasks": "Tareas Recientes",
+    "loading": "Cargando...",
+    "retry": "Reintentar",
+    "refresh": "Actualizar",
+    "noRecords": "No hay registros de generación",
+    "fetchError": "Error al obtener el historial",
+    "viewLarge": "Ver Grande",
+    "download": "Descargar Imagen",
+    "noImage": "Sin Imagen",
+    "previewTitle": "Generación de Imagen AI con Texto",
+    "noMoreTasks": "No hay más tareas"
+  },
+  "status": {
+    "processing": "Procesando",
+    "completed": "Completado",
+    "failed": "Fallido",
+    "timeout": "Tiempo de Espera Agotado"
+  },
+  "demo": {
+    "title": "Demostración de IA",
+    "examples": {
+      "landscape": {
+        "title": "Generación de Paisajes",
+        "description": "Generar hermosos paisajes naturales",
+        "prompt": "Una hermosa pintura paisajística con niebla matutina"
+      },
+      "portrait": {
+        "title": "Creación de Retratos",
+        "description": "Crear retratos realistas de personajes",
+        "prompt": "Un elegante retrato femenino en estilo de pintura al óleo"
+      },
+      "abstract": {
+        "title": "Arte Abstracto",
+        "description": "Creación de arte abstracto moderno",
+        "prompt": "Obra de arte abstracta colorida"
+      }
+    }
+  },
+  "errors": {
+    "processingError": "Error de Procesamiento",
+    "processingFailed": "Procesamiento Fallido",
+    "tasksSubmitFailed": "{count} tareas no se pudieron enviar",
+    "taskSubmitted": "{success}/{total} tareas enviadas a la cola de Freepik, esperando finalización...",
+    "networkError": "Error de red, verifica tu conexión e inténtalo de nuevo",
+    "taskCreationFailed": "Error al crear la tarea, inténtalo de nuevo"
+  }
+}

@@ -17,8 +17,26 @@
   "Header": {
     "links": [
       {
-        "name": "Features",
-        "href": "/#features"
+        "name": "AI Tools",
+        "href": "#",
+        "dropdown": [
+          {
+            "name": "AI Background Remover",
+            "href": "/quitarfondo"
+          },
+          {
+            "name": "AI Image Upscaler",
+            "href": "/upscaler"
+          },
+          {
+            "name": "AI Image Generator",
+            "href": "/ai-image-generator"
+          },
+          {
+            "name": "AI Image to Image",
+            "href": "/ai-image-to-image"
+          }
+        ]
       },
       {
         "id": "pricing",
@@ -74,10 +92,6 @@
           "title": "Products",
           "links": [
             {
-              "href": "/#features",
-              "name": "Features"
-            },
-            {
               "id": "pricing",
               "href": "/pricing",
               "name": "Pricing"
@@ -91,15 +105,6 @@
         {
           "title": "Support",
           "links": [
-            {
-              "name": "Help",
-              "href": "/help",
-              "target": "_blank"
-            },
-            {
-              "name": "Roadmap",
-              "href": "/roadmap"
-            },
             {
               "href": "mailto:hi@imgenhancer.ai",
               "name": "Contact Us"

@@ -6,14 +6,12 @@
       "href": "https://nexty.dev/#pricing"
     },
     "title": {
-      "part1": "The image ",
-      "part2": "Upscaler",
-      "part3": "Transformer",
-      "part4": "& Generator",
-      "part5": "that feels like ",
-      "part6": "Magic"
+      "part1": "One-Step",
+      "part2": "Image-to-Image",
+      "part3": "AI Experience",
+      "part4": "Creative Reconstruction"
     },
-    "description": "The most advanced AI tech to achieve insanely high-res upscaling. Not only upscale, enhance, transform & generate! ImgEnhancer can reimagine as many details as you wish guided by your prompt and parameters!",
+    "description": "Upload an image and input a prompt to achieve clear upscaling, style transformation, and creative reconstruction. ImgEnhancer makes your image creation simple and powerful!",
     "getStarted": "Upscale, transform or generate an image",
     "getStartedLink": "https://nexty.dev/#pricing",
     "goToWorkspace": "Go to Workspace",
@@ -705,6 +703,58 @@
           "prompt": "Remove background, keep subject"
         }
       }
+    }
+  },
+  "MyHistory": {
+    "title": "My Gallery",
+    "loginRequired": "Please log in to view your processing history",
+    "stats": {
+      "summary": "{total} images · {credits} credits used",
+      "total": "Total",
+      "completed": "Completed",
+      "processing": "Processing",
+      "failed": "Failed"
+    },
+    "search": {
+      "placeholder": "Search by keyword",
+      "filter": "Filter"
+    },
+    "tools": {
+      "all": "All Tools",
+      "removeBackground": "Background Removal",
+      "upscaler": "Image Enhancement", 
+      "imageEdit": "Image Editing",
+      "textToImage": "Image Generation"
+    },
+    "status": {
+      "processing": "Processing...",
+      "completed": "Completed",
+      "failed": "Processing Failed"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "preview": "Preview",
+      "download": "Download",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "deleting": "Deleting...",
+      "confirmDelete": "Click again to confirm deletion"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "loadingMore": "Loading more...",
+      "retry": "Retry",
+      "noRecords": "No processing records",
+      "getStarted": "Start using our AI tools to process your images!",
+      "noMatches": "No matching records found",
+      "endOfList": "You've reached the end",
+      "noImage": "No Image",
+      "credits": "credits"
+    },
+    "errors": {
+      "fetchFailed": "Failed to fetch history",
+      "deleteFailed": "Delete failed",
+      "deleteError": "Error occurred during deletion"
     }
   }
 }

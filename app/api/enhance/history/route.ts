@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
     console.log(`Getting enhancement history for user: ${user.id}, page: ${page}, limit: ${limit}`);
 
-    // 3. 构建查询
+    // 3. 构建查询 - 只查询图片增强任务
     let query = supabaseAdmin
       .from('image_enhancement_tasks')
       .select(`
@@ -44,6 +44,7 @@ export async function GET(req: NextRequest) {
         completed_at
       `)
       .eq('user_id', user.id)
+      .eq('engine', 'automatic') // 只查询图片增强任务
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -63,7 +64,8 @@ export async function GET(req: NextRequest) {
     let countQuery = supabaseAdmin
       .from('image_enhancement_tasks')
       .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id);
+      .eq('user_id', user.id)
+      .eq('engine', 'automatic'); // 只统计图片增强任务
 
     if (status && ['processing', 'completed', 'failed'].includes(status)) {
       countQuery = countQuery.eq('status', status);

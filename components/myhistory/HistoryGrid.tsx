@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Download, Trash2, Maximize2, Loader2, Clock } from "lucide-react";
 import ImagePreviewModal from "../quitarfondo/ImagePreviewModal";
+import { useTranslations } from "next-intl";
 
 interface HistoryItem {
   id: string;
@@ -28,6 +29,7 @@ interface HistoryGridProps {
 }
 
 export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
+  const t = useTranslations('Landing.MyHistory');
   const [deletingItems, setDeletingItems] = useState<Set<string>>(new Set());
   const [confirmingDelete, setConfirmingDelete] = useState<Set<string>>(new Set());
   const [previewModal, setPreviewModal] = useState<{
@@ -72,9 +74,9 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
   const getEngineLabel = (engine: string) => {
     switch (engine) {
       case 'remove_background':
-        return '去除背景';
+        return t('tools.removeBackground');
       case 'upscaler':
-        return '图片增强';
+        return t('tools.upscaler');
       default:
         return 'AI处理';
     }
@@ -131,10 +133,10 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
       if (response.ok) {
         onRefresh();
       } else {
-        console.error('删除失败');
+        console.error(t('errors.deleteFailed'));
       }
     } catch (error) {
-      console.error('删除过程中出错:', error);
+      console.error(t('errors.deleteError'), error);
     } finally {
       setDeletingItems(prev => {
         const newSet = new Set(prev);
@@ -206,14 +208,14 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
                         <Button
                           onClick={() => handlePreview(item)}
                           className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded backdrop-blur-sm"
-                          title="预览"
+                          title={t('actions.preview')}
                         >
                           <Maximize2 className="w-3 h-3" />
                         </Button>
                         <Button
                           onClick={() => handleDownload(item)}
                           className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded backdrop-blur-sm"
-                          title="下载"
+                          title={t('actions.download')}
                         >
                           <Download className="w-3 h-3" />
                         </Button>
@@ -223,7 +225,7 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
                 </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-gray-500">无图片</span>
+                  <span className="text-gray-500">{t('messages.noImage')}</span>
                 </div>
               )}
               
@@ -247,7 +249,7 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
               {/* 工具类型和积分 */}
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-400">{getEngineLabel(item.engine)}</span>
-                <span className="text-xs text-yellow-400 font-medium">{item.creditsConsumed}积分</span>
+                <span className="text-xs text-yellow-400 font-medium">{item.creditsConsumed}{t('messages.credits')}</span>
               </div>
 
               {/* 时间 */}
@@ -258,7 +260,7 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
               {/* 错误信息 */}
               {item.status === 'failed' && item.errorMessage && (
                 <div className="p-1.5 bg-red-500/10 border border-red-500/20 rounded text-xs text-red-400">
-                  处理失败
+                  {t('status.failed')}
                 </div>
               )}
 
@@ -281,7 +283,7 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
                   </div>
                 ) : (
                   <div className="text-gray-500 text-xs">
-                    {item.status === 'processing' ? '处理中...' : ''}
+                    {item.status === 'processing' ? t('status.processing') : ''}
                   </div>
                 )}
 
@@ -298,16 +300,16 @@ export default function HistoryGrid({ items, onRefresh }: HistoryGridProps) {
                   }`}
                   title={
                     deletingItems.has(item.id) 
-                      ? "删除中..." 
+                      ? t('actions.deleting')
                       : confirmingDelete.has(item.id)
-                      ? "再次点击确认删除"
-                      : "删除"
+                      ? t('actions.confirmDelete')
+                      : t('actions.delete')
                   }
                 >
                   {deletingItems.has(item.id) ? (
                     <Loader2 className="w-3 h-3 animate-spin" />
                   ) : confirmingDelete.has(item.id) ? (
-                    <span className="text-xs">确认</span>
+                    <span className="text-xs">{t('actions.confirm')}</span>
                   ) : (
                     <Trash2 className="w-3 h-3" />
                   )}

@@ -21,16 +21,33 @@ export async function GET(req: NextRequest) {
     // 3. 查询历史记录（支持按工具类型筛选）
     let query = supabase
       .from('image_enhancement_tasks')
-      .select('*', { count: 'exact' })
+      .select(`
+        id,
+        status,
+        created_at,
+        completed_at,
+        r2_original_key,
+        cdn_url,
+        credits_consumed,
+        error_message,
+        engine,
+        prompt,
+        creativity,
+        hdr,
+        resemblance,
+        scale_factor
+      `, { count: 'exact' })
       .eq('user_id', user.id);
 
     // 根据工具类型筛选
     if (tool === 'remove_background') {
       query = query.eq('engine', 'remove_background');
-    } else if (tool === 'qwen_image_edit') {
+    } else if (tool === 'image-edit') {
       query = query.eq('engine', 'qwen_image_edit');
-    } else if (tool === 'image_enhancement') {
-      query = query.in('engine', ['image_upscaler', 'enhance']); // 兼容旧数据
+    } else if (tool === 'upscaler') {
+      query = query.eq('engine', 'automatic');
+    } else if (tool === 'text-to-image') {
+      query = query.eq('engine', 'flux-dev');
     }
     // 如果没有指定tool或tool不匹配，查询所有类型
 
@@ -72,11 +89,24 @@ export async function GET(req: NextRequest) {
       })
     }));
 
-    // 5. 计算统计信息
-    const { data: allTasks } = await supabase
+    // 5. 计算统计信息 - 应用相同的工具筛选条件
+    let statsQuery = supabase
       .from('image_enhancement_tasks')
       .select('status, credits_consumed')
       .eq('user_id', user.id);
+
+    // 为统计查询应用相同的工具类型筛选
+    if (tool === 'remove_background') {
+      statsQuery = statsQuery.eq('engine', 'remove_background');
+    } else if (tool === 'image-edit') {
+      statsQuery = statsQuery.eq('engine', 'qwen_image_edit');
+    } else if (tool === 'upscaler') {
+      statsQuery = statsQuery.eq('engine', 'automatic');
+    } else if (tool === 'text-to-image') {
+      statsQuery = statsQuery.eq('engine', 'flux-dev');
+    }
+
+    const { data: allTasks } = await statsQuery;
 
     const stats = (allTasks || []).reduce((acc, task) => {
       acc.total++;

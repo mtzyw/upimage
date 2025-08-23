@@ -17,8 +17,26 @@
   "Header": {
     "links": [
       {
-        "name": "Características",
-        "href": "/#features"
+        "name": "AI Tools",
+        "href": "#",
+        "dropdown": [
+          {
+            "name": "Quitar Fondo IA",
+            "href": "/quitarfondo"
+          },
+          {
+            "name": "Escalador de Imágenes IA",
+            "href": "/upscaler"
+          },
+          {
+            "name": "Generador de Imágenes IA",
+            "href": "/ai-image-generator"
+          },
+          {
+            "name": "IA Imagen a Imagen",
+            "href": "/ai-image-to-image"
+          }
+        ]
       },
       {
         "id": "pricing",
@@ -74,10 +92,6 @@
           "title": "Producto",
           "links": [
             {
-              "href": "/#features",
-              "name": "Características"
-            },
-            {
               "id": "pricing",
               "href": "/pricing",
               "name": "Precios"
@@ -91,15 +105,6 @@
         {
           "title": "Soporte",
           "links": [
-            {
-              "name": "Ayuda",
-              "href": "/help",
-              "target": "_blank"
-            },
-            {
-              "name": "Mapa de funciones",
-              "href": "/roadmap"
-            },
             {
               "href": "mailto:hi@imgenhancer.ai",
               "name": "Contáctanos"

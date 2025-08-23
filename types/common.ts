@@ -5,6 +5,14 @@ export interface HeaderLink {
   href: string;
   target?: string;
   rel?: string;
+  dropdown?: DropdownItem[];
+}
+
+export interface DropdownItem {
+  name: string;
+  href: string;
+  target?: string;
+  rel?: string;
 };
 
 export interface FooterLink {

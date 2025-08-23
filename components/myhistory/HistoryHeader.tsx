@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Search, Filter, RefreshCw, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface HistoryHeaderProps {
   searchQuery: string;
@@ -27,13 +28,15 @@ export default function HistoryHeader({
   stats,
   onRefresh
 }: HistoryHeaderProps) {
+  const t = useTranslations('Landing.MyHistory');
   const [isToolDropdownOpen, setIsToolDropdownOpen] = useState(false);
 
   const toolOptions = [
-    { value: "all", label: "所有工具", icon: "🔧" },
-    { value: "remove_background", label: "去除背景", icon: "🎨" },
-    { value: "upscaler", label: "图片增强", icon: "✨" },
-    { value: "image-edit", label: "图片编辑", icon: "🖼️" },
+    { value: "all", label: t('tools.all'), icon: "🔧" },
+    { value: "remove_background", label: t('tools.removeBackground'), icon: "🎨" },
+    { value: "upscaler", label: t('tools.upscaler'), icon: "✨" },
+    { value: "image-edit", label: t('tools.imageEdit'), icon: "🖼️" },
+    { value: "text-to-image", label: t('tools.textToImage'), icon: "🎯" },
   ];
 
   const selectedToolOption = toolOptions.find(tool => tool.value === selectedTool) || toolOptions[0];
@@ -43,16 +46,16 @@ export default function HistoryHeader({
       {/* 页面标题 */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">我的图片库</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">{t('title')}</h1>
           <p className="text-gray-400">
-            共 {stats.total} 张图片 · 已消耗 {stats.totalCreditsUsed} 积分
+            {t('stats.summary', { total: stats.total, credits: stats.totalCreditsUsed })}
           </p>
         </div>
         
         <Button
           onClick={onRefresh}
           className="bg-gray-700/60 hover:bg-gray-600/80 text-white p-3 rounded-lg border border-gray-600/50"
-          title="刷新"
+          title={t('actions.refresh')}
         >
           <RefreshCw className="w-5 h-5" />
         </Button>
@@ -64,7 +67,7 @@ export default function HistoryHeader({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-gray-400">
             <Filter className="w-4 h-4" />
-            <span className="text-sm">筛选</span>
+            <span className="text-sm">{t('search.filter')}</span>
           </div>
           
           {/* 工具类型选择器 */}
@@ -109,7 +112,7 @@ export default function HistoryHeader({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Input key word"
+            placeholder={t('search.placeholder')}
             className="w-full pl-10 pr-4 py-3 bg-gray-800/60 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
           />
         </div>
@@ -119,19 +122,19 @@ export default function HistoryHeader({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-gray-800/40 backdrop-blur-sm border border-gray-600/30 rounded-lg p-4">
           <div className="text-2xl font-bold text-white">{stats.total}</div>
-          <div className="text-gray-400 text-sm">总计</div>
+          <div className="text-gray-400 text-sm">{t('stats.total')}</div>
         </div>
         <div className="bg-gray-800/40 backdrop-blur-sm border border-gray-600/30 rounded-lg p-4">
           <div className="text-2xl font-bold text-green-400">{stats.completed}</div>
-          <div className="text-gray-400 text-sm">已完成</div>
+          <div className="text-gray-400 text-sm">{t('stats.completed')}</div>
         </div>
         <div className="bg-gray-800/40 backdrop-blur-sm border border-gray-600/30 rounded-lg p-4">
           <div className="text-2xl font-bold text-blue-400">{stats.processing}</div>
-          <div className="text-gray-400 text-sm">处理中</div>
+          <div className="text-gray-400 text-sm">{t('stats.processing')}</div>
         </div>
         <div className="bg-gray-800/40 backdrop-blur-sm border border-gray-600/30 rounded-lg p-4">
           <div className="text-2xl font-bold text-red-400">{stats.failed}</div>
-          <div className="text-gray-400 text-sm">失败</div>
+          <div className="text-gray-400 text-sm">{t('stats.failed')}</div>
         </div>
       </div>
     </div>

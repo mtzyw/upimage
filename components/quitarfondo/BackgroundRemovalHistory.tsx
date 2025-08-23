@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ImagePreviewModal from './ImagePreviewModal';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 interface HistoryItem {
   id: string;
@@ -34,6 +35,7 @@ interface BackgroundRemovalHistoryProps {
 
 export default function BackgroundRemovalHistory({ historyItems, pendingTask, loading = false, error = null, onRefresh, onDeleteSuccess }: BackgroundRemovalHistoryProps) {
   const t = useTranslations('QuitarFondo');
+  const tHistory = useTranslations('History');
   const [deletingItems, setDeletingItems] = useState<Set<string>>(new Set());
   const [confirmingDelete, setConfirmingDelete] = useState<Set<string>>(new Set());
   const [localTasks, setLocalTasks] = useState<HistoryItem[]>([]); // Local temporary tasks
@@ -133,13 +135,30 @@ export default function BackgroundRemovalHistory({ historyItems, pendingTask, lo
   };
 
   const handleDownload = (item: HistoryItem) => {
-    if (item.cdnUrl) {
-      const link = document.createElement('a');
-      link.href = item.cdnUrl;
-      link.download = `${item.filename}-removed-bg.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    try {
+      if (!item.cdnUrl) {
+        toast.error('无图片可下载');
+        return;
+      }
+
+      // 使用 Cloudflare Worker 代理下载，避免CORS问题并提升性能
+      const workerUrl = process.env.NEXT_PUBLIC_DOWNLOAD_WORKER_URL;
+      
+      if (!workerUrl) {
+        toast.error(tHistory('downloadServiceNotConfigured'));
+        return;
+      }
+      
+      const filename = `${item.filename || 'background-removed'}-removed-bg.png`;
+      const downloadUrl = `${workerUrl}/download?url=${encodeURIComponent(item.cdnUrl)}&filename=${encodeURIComponent(filename)}&taskId=${item.id}`;
+      
+      // 直接跳转到下载链接，Worker会设置正确的响应头触发下载
+      window.open(downloadUrl, '_blank');
+      
+      toast.success(tHistory('downloadStart'));
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error(tHistory('downloadError'));
     }
   };
 

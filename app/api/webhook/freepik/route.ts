@@ -387,10 +387,19 @@ async function handleTaskFailed(payload: FreepikWebhookPayload, taskInfo: any) {
       errorMessage: payload.error || '图像处理失败'
     });
 
-    // 退回积分给用户
-    if (userId && taskInfo.scaleFactor) {
-      const refunded = await refundUserCredits(userId, taskInfo.scaleFactor, taskId);
-      console.log(`Credits refunded for failed task ${taskId}: ${refunded}`);
+    // 退回积分给用户 - 支持 Flux Dev 和 Image Upscaler 任务
+    if (userId && taskInfo.taskData) {
+      let refunded = false;
+      
+      if (taskInfo.taskData.engine === 'flux-dev') {
+        // Flux Dev 任务固定退回 1 积分 (使用 2x 来获得1积分退回)
+        refunded = await refundUserCredits(userId, '2x', taskId);
+        console.log(`Credits refunded for failed Flux Dev task ${taskId}: ${refunded}`);
+      } else if (taskInfo.scaleFactor) {
+        // Image Upscaler 任务按原有逻辑退回
+        refunded = await refundUserCredits(userId, taskInfo.scaleFactor, taskId);
+        console.log(`Credits refunded for failed Image Upscaler task ${taskId}: ${refunded}`);
+      }
     }
 
     // 不释放 API Key，因为 Freepik 配额已被消耗

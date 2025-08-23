@@ -1,0 +1,68 @@
+{
+  "title": {
+    "main": "AI駆動の画像生成",
+    "sub1": "テキストから画像へ",
+    "sub2": "クリエイティブ表現"
+  },
+  "description": "最先端のFlux AI技術を使用して、テキスト記述から瞬時に高品質な画像を生成します。複数のアスペクト比とスタイルのカスタマイズをサポートします。",
+  "form": {
+    "promptLabel": "プロンプト",
+    "promptDescription": "生成したい画像の内容を記述してください",
+    "promptPlaceholder": "例：朝霧に包まれた美しい山水画、水墨画風",
+    "aspectRatioLabel": "アスペクト比",
+    "aspectRatioDescription": "生成画像のアスペクト比を選択",
+    "outputCountLabel": "生成数",
+    "outputCountDescription": "一度に生成する画像の数を選択",
+    "generateButton": "画像 {count} 枚を生成 🎨",
+    "generating": "生成中...",
+    "promptRequired": "プロンプトを入力してください",
+    "systemInitializing": "システムが初期化中です。しばらくしてから再試行してください"
+  },
+  "history": {
+    "recentTasks": "最近のタスク",
+    "loading": "読み込み中...",
+    "retry": "再試行",
+    "refresh": "更新",
+    "noRecords": "生成記録がありません",
+    "fetchError": "履歴の取得に失敗しました",
+    "viewLarge": "拡大表示",
+    "download": "画像をダウンロード",
+    "noImage": "画像なし",
+    "previewTitle": "AI テキスト生成画像",
+    "noMoreTasks": "これ以上のタスクはありません"
+  },
+  "status": {
+    "processing": "処理中",
+    "completed": "完了",
+    "failed": "失敗",
+    "timeout": "処理タイムアウト"
+  },
+  "demo": {
+    "title": "AI デモ展示",
+    "examples": {
+      "landscape": {
+        "title": "風景画生成",
+        "description": "美しい自然の風景を生成",
+        "prompt": "朝霧に包まれた美しい山水画"
+      },
+      "portrait": {
+        "title": "人物肖像",
+        "description": "リアルな人物肖像を作成",
+        "prompt": "エレガントな女性の肖像画、油絵風"
+      },
+      "abstract": {
+        "title": "抽象芸術",
+        "description": "モダンな抽象芸術の創作",
+        "prompt": "色彩豊かな抽象芸術作品"
+      }
+    }
+  },
+  "errors": {
+    "processingError": "処理エラー",
+    "processingFailed": "処理失敗",
+    "tasksSubmitFailed": "{count}件のタスクの送信に失敗しました",
+    "taskSubmitted": "{success}/{total}件のタスクがFreepikキューに送信されました。完了をお待ちください...",
+    "networkError": "ネットワークエラーです。接続を確認して再試行してください",
+    "taskCreationFailed": "タスクの作成に失敗しました。再試行してください"
+  }
+}

@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import HistoryHeader from "./HistoryHeader";
 import HistoryGrid from "./HistoryGrid";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface HistoryItem {
   id: string;
@@ -41,6 +42,7 @@ interface HistoryResponse {
 }
 
 export default function MyHistoryPage() {
+  const t = useTranslations('Landing.MyHistory');
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -62,16 +64,8 @@ export default function MyHistoryPage() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
 
-  // 读取 URL 参数设置默认筛选
-  useEffect(() => {
-    const toolParam = searchParams.get('tool');
-    if (toolParam && ['all', 'remove_background', 'upscaler', 'image-edit'].includes(toolParam)) {
-      setSelectedTool(toolParam);
-    }
-  }, [searchParams]);
-
   // 获取历史记录数据
-  const fetchHistory = async (offset = 0, isLoadMore = false) => {
+  const fetchHistory = async (offset = 0, isLoadMore = false, tool?: string) => {
     if (!user) return;
     
     try {
@@ -82,11 +76,19 @@ export default function MyHistoryPage() {
         setError(null);
       }
 
-      // 获取所有类型的历史记录
-      const response = await fetch(`/api/history/all?limit=${ITEMS_PER_PAGE}&offset=${offset}`);
+      // 构建API请求URL，根据工具类型筛选
+      const currentTool = tool || selectedTool;
+      let apiUrl = `/api/history/all?limit=${ITEMS_PER_PAGE}&offset=${offset}`;
+      
+      // 只有当不是 "all" 时才添加 tool 参数
+      if (currentTool !== "all") {
+        apiUrl += `&tool=${encodeURIComponent(currentTool)}`;
+      }
+      
+      const response = await fetch(apiUrl);
 
       if (!response.ok) {
-        throw new Error('获取历史记录失败');
+        throw new Error(t('errors.fetchFailed'));
       }
 
       const result = await response.json();
@@ -109,11 +111,11 @@ export default function MyHistoryPage() {
         setHasMore(result.data.hasMore);
         setCurrentOffset(offset + ITEMS_PER_PAGE);
       } else {
-        throw new Error(result.message || '获取历史记录失败');
+        throw new Error(result.message || t('errors.fetchFailed'));
       }
     } catch (err) {
       console.error('Error fetching history:', err);
-      setError(err instanceof Error ? err.message : '获取历史记录失败');
+      setError(err instanceof Error ? err.message : t('errors.fetchFailed'));
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -128,32 +130,44 @@ export default function MyHistoryPage() {
     await fetchHistory(currentOffset, true);
   };
 
-  // 筛选数据
+  // 处理工具筛选变更
+  const handleToolChange = async (newTool: string) => {
+    setSelectedTool(newTool);
+    setCurrentOffset(0);
+    setHasMore(true);
+    await fetchHistory(0, false, newTool);
+  };
+
+  // 筛选数据（工具筛选已在服务端完成，这里只处理搜索筛选）
   const filteredItems = historyItems.filter(item => {
-    const matchesSearch = searchQuery === "" || 
+    return searchQuery === "" || 
       item.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.statusMessage.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesTool = selectedTool === "all" || 
-      (selectedTool === "remove_background" && item.engine === "remove_background") ||
-      (selectedTool === "upscaler" && item.engine !== "remove_background" && item.engine !== "qwen_image_edit") ||
-      (selectedTool === "image-edit" && item.engine === "qwen_image_edit");
-    
-    return matchesSearch && matchesTool;
   });
 
   // 当用户登录时获取历史记录
   useEffect(() => {
     if (user) {
+      // 检查URL参数设置初始工具筛选
+      const toolParam = searchParams.get('tool');
+      const initialTool = (toolParam && ['all', 'remove_background', 'upscaler', 'image-edit', 'text-to-image'].includes(toolParam)) 
+        ? toolParam 
+        : 'all';
+      
+      // 如果URL参数指定了工具且与当前不同，更新状态
+      if (initialTool !== selectedTool) {
+        setSelectedTool(initialTool);
+      }
+      
       setCurrentOffset(0);
       setHasMore(true);
-      fetchHistory(0, false);
+      fetchHistory(0, false, initialTool);
     } else {
       setHistoryItems([]);
       setLoading(false);
       setError(null);
     }
-  }, [user]);
+  }, [user, searchParams]);
 
   // 滚动监听
   useEffect(() => {
@@ -194,8 +208,8 @@ export default function MyHistoryPage() {
         <BG1 />
         <div className="container mx-auto px-4 py-12">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">我的图片库</h1>
-            <p className="text-gray-400 text-lg">请先登录查看您的处理历史</p>
+            <h1 className="text-4xl font-bold text-white mb-4">{t('title')}</h1>
+            <p className="text-gray-400 text-lg">{t('loginRequired')}</p>
           </div>
         </div>
       </div>
@@ -212,7 +226,7 @@ export default function MyHistoryPage() {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           selectedTool={selectedTool}
-          onToolChange={setSelectedTool}
+          onToolChange={handleToolChange}
           stats={stats}
           onRefresh={() => {
             setCurrentOffset(0);
@@ -226,7 +240,7 @@ export default function MyHistoryPage() {
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="w-8 h-8 animate-spin text-blue-400 mr-3" />
-              <span className="text-gray-400 text-lg">加载中...</span>
+              <span className="text-gray-400 text-lg">{t('messages.loading')}</span>
             </div>
           ) : error ? (
             <div className="text-center py-12">
@@ -239,7 +253,7 @@ export default function MyHistoryPage() {
                 }}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
               >
-                重试
+                {t('messages.retry')}
               </button>
             </div>
           ) : filteredItems.length === 0 ? (
@@ -247,15 +261,15 @@ export default function MyHistoryPage() {
               <div className="text-gray-400 text-lg">
                 {historyItems.length === 0 ? (
                   <>
-                    <p className="mb-2">暂无处理记录</p>
-                    <p className="text-sm">开始使用我们的AI工具来处理您的图片吧！</p>
+                    <p className="mb-2">{t('messages.noRecords')}</p>
+                    <p className="text-sm">{t('messages.getStarted')}</p>
                   </>
                 ) : (
-                  <p>没有找到匹配的记录</p>
+                  <p>{t('messages.noMatches')}</p>
                 )}
               </div>
               <div className="mt-8 text-center text-gray-500">
-                <p>你已经到了底部</p>
+                <p>{t('messages.endOfList')}</p>
               </div>
             </div>
           ) : (
@@ -273,14 +287,14 @@ export default function MyHistoryPage() {
               {loadingMore && (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 animate-spin text-blue-400 mr-2" />
-                  <span className="text-gray-400">加载更多...</span>
+                  <span className="text-gray-400">{t('messages.loadingMore')}</span>
                 </div>
               )}
               
               {/* 底部提示 */}
               {!hasMore && historyItems.length > 0 && (
                 <div className="mt-12 text-center text-gray-500">
-                  <p>你已经到了底部</p>
+                  <p>{t('messages.endOfList')}</p>
                 </div>
               )}
             </>

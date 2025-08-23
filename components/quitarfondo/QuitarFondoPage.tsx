@@ -165,16 +165,11 @@ export default function QuitarFondoPage() {
   };
 
   const handleGetStarted = () => {
-    if (user) {
-      // 用户已登录，滚动到顶部上传区域
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    } else {
-      // 用户未登录，显示登录弹窗
-      setIsLoginModalOpen(true);
-    }
+    // 无论是否登录，都滚动到顶部上传区域
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (
@@ -256,7 +251,7 @@ export default function QuitarFondoPage() {
               <div className="rounded-xl overflow-hidden bg-gray-800 border border-gray-600 shadow-lg">
                 <div className="relative aspect-[4/3]">
                   <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=400&fit=crop&crop=face"
+                    src="https://cdn.imgenhancer.ai/2222.png"
                     alt="Demo"
                     className="w-full h-full object-cover"
                   />

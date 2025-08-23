@@ -6,14 +6,12 @@
       "href": "https://nexty.dev/#pricing"
     },
     "title": {
-      "part1": "Ampliador ",
-      "part2": "de imágenes",
-      "part3": "Transformador",
-      "part4": "y generador",
-      "part5": "como",
-      "part6": "magia"
+      "part1": "Experiencia",
+      "part2": "Imagen a Imagen",
+      "part3": "AI en Un Paso",
+      "part4": "Reconstrucción Creativa"
     },
-    "description": "La tecnología de IA más avanzada para ampliación de imágenes de ultra alta resolución. No solo ampliación, ¡sino también mejora, transformación y generación! ImgEnhancer puede reimaginar cualquier detalle que desees según tus indicaciones y parámetros.",
+    "description": "Sube una imagen e ingresa un prompt para lograr ampliación clara, transformación de estilo y reconstrucción creativa. ¡ImgEnhancer hace que tu creación de imágenes sea simple y poderosa!",
     "getStarted": "Ampliar, transformar o generar imágenes",
     "getStartedLink": "https://nexty.dev/#pricing",
     "goToWorkspace": "Ir al espacio de trabajo",
@@ -705,6 +703,58 @@
           "prompt": "Eliminar fondo, mantener sujeto"
         }
       }
+    }
+  },
+  "MyHistory": {
+    "title": "Mi Galería",
+    "loginRequired": "Inicia sesión para ver tu historial de procesamiento",
+    "stats": {
+      "summary": "{total} imágenes · {credits} créditos usados",
+      "total": "Total",
+      "completed": "Completadas",
+      "processing": "Procesando",
+      "failed": "Fallidas"
+    },
+    "search": {
+      "placeholder": "Buscar por palabra clave",
+      "filter": "Filtrar"
+    },
+    "tools": {
+      "all": "Todas las Herramientas",
+      "removeBackground": "Eliminación de Fondo",
+      "upscaler": "Mejora de Imágenes",
+      "imageEdit": "Edición de Imágenes",
+      "textToImage": "Generación de Imágenes"
+    },
+    "status": {
+      "processing": "Procesando...",
+      "completed": "Completado",
+      "failed": "Procesamiento falló"
+    },
+    "actions": {
+      "refresh": "Actualizar",
+      "preview": "Vista previa",
+      "download": "Descargar",
+      "delete": "Eliminar",
+      "confirm": "Confirmar",
+      "deleting": "Eliminando...",
+      "confirmDelete": "Haz clic otra vez para confirmar"
+    },
+    "messages": {
+      "loading": "Cargando...",
+      "loadingMore": "Cargando más...",
+      "retry": "Reintentar",
+      "noRecords": "Sin registros de procesamiento",
+      "getStarted": "¡Comienza a usar nuestras herramientas de IA ahorita!",
+      "noMatches": "No se encontraron registros",
+      "endOfList": "Ya llegaste al final",
+      "noImage": "Sin Imagen",
+      "credits": "créditos"
+    },
+    "errors": {
+      "fetchFailed": "Error al obtener historial",
+      "deleteFailed": "Error al eliminar",
+      "deleteError": "Error durante la eliminación"
     }
   }
 }

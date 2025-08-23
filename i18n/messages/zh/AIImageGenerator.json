@@ -1,0 +1,83 @@
+{
+  "title": {
+    "main": "AI 驱动的图像生成",
+    "sub1": "文本转图片",
+    "sub2": "创意表达"
+  },
+  "description": "使用最先进的 Flux AI 技术，通过文本描述瞬间生成高质量图像。支持多种宽高比和风格定制。",
+  "form": {
+    "promptLabel": "提示词",
+    "promptDescription": "描述你想要生成的图像内容",
+    "promptPlaceholder": "例如：一幅美丽的山水画，晨雾缭绕，水墨风格",
+    "aspectRatioLabel": "宽高比",
+    "aspectRatioDescription": "选择生成图像的宽高比例",
+    "aspectRatios": {
+      "square_1_1": "正方形",
+      "classic_4_3": "经典横向",
+      "traditional_3_4": "传统竖向",
+      "widescreen_16_9": "宽屏横向",
+      "social_story_9_16": "社交竖屏",
+      "standard_3_2": "标准横向",
+      "portrait_2_3": "肖像竖向",
+      "horizontal_2_1": "超宽横向",
+      "vertical_1_2": "超高竖向",
+      "social_post_4_5": "社交方形"
+    },
+    "outputCountLabel": "生成数量",
+    "outputCountDescription": "选择一次性生成的图片数量",
+    "generateButton": "生成图片 {count} 张 🎨",
+    "generating": "生成中...",
+    "promptRequired": "请输入提示词",
+    "systemInitializing": "系统正在初始化，请稍后再试"
+  },
+  "history": {
+    "recentTasks": "最近任务",
+    "loading": "加载中...",
+    "retry": "重试",
+    "refresh": "刷新",
+    "noRecords": "暂无生成记录",
+    "fetchError": "获取历史记录失败",
+    "viewLarge": "放大查看",
+    "download": "下载图片",
+    "noImage": "无图片",
+    "previewTitle": "AI 文本生成图片",
+    "noMoreTasks": "没有更多任务了",
+    "downloadServiceNotConfigured": "下载服务未配置，请联系管理员",
+    "downloadStart": "开始下载图片",
+    "downloadError": "下载失败，请重试"
+  },
+  "status": {
+    "processing": "处理中",
+    "completed": "已完成",
+    "failed": "失败",
+    "timeout": "处理超时"
+  },
+  "demo": {
+    "title": "AI 示例展示",
+    "examples": {
+      "landscape": {
+        "title": "风景画生成",
+        "description": "生成美丽的自然风景",
+        "prompt": "一幅美丽的山水画，晨雾缭绕"
+      },
+      "portrait": {
+        "title": "人物肖像",
+        "description": "创造逼真的人物肖像",
+        "prompt": "一位优雅的女性肖像，油画风格"
+      },
+      "abstract": {
+        "title": "抽象艺术",
+        "description": "现代抽象艺术创作",
+        "prompt": "色彩丰富的抽象艺术作品"
+      }
+    }
+  },
+  "errors": {
+    "processingError": "处理错误",
+    "processingFailed": "处理失败",
+    "tasksSubmitFailed": "{count} 个任务提交失败",
+    "taskSubmitted": "{success}/{total} 个任务已提交到 Freepik 队列，等待处理完成...",
+    "networkError": "网络错误，请检查连接后重试",
+    "taskCreationFailed": "任务创建失败，请重试"
+  }
+}

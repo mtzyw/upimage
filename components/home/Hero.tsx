@@ -5,6 +5,7 @@ import { Upload, Sparkles, Wand2, Download, Loader2, ImageIcon, X, Clock, Maximi
 import { useTranslations } from "next-intl";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { toast } from "sonner";
 import { useState, useCallback } from "react";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ interface TaskResult {
 function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: any[]; onSelectImage: (imageUrl: string, editPrompt: string) => void }) {
   const [historyItems, setHistoryItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations();
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -177,13 +179,30 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
   };
 
   const handleDownload = (item: any) => {
-    if (item.cdnUrl) {
-      const link = document.createElement('a');
-      link.href = item.cdnUrl;
-      link.download = `qwen-image-edit-${Date.now()}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    try {
+      if (!item.cdnUrl) {
+        toast.error(t('noImage'));
+        return;
+      }
+
+      // 使用 Cloudflare Worker 代理下载，避免CORS问题并提升性能
+      const workerUrl = process.env.NEXT_PUBLIC_DOWNLOAD_WORKER_URL;
+      
+      if (!workerUrl) {
+        toast.error(t('downloadServiceNotConfigured'));
+        return;
+      }
+      
+      const filename = `qwen-image-edit-${item.taskId || Date.now()}.png`;
+      const downloadUrl = `${workerUrl}/download?url=${encodeURIComponent(item.cdnUrl)}&filename=${encodeURIComponent(filename)}&taskId=${item.taskId}`;
+      
+      // 直接跳转到下载链接，Worker会设置正确的响应头触发下载
+      window.open(downloadUrl, '_blank');
+      
+      toast.success(t('downloadStart'));
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error(t('downloadError'));
     }
   };
 
@@ -240,7 +259,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
 
       {/* History Items - Compact Row Layout with scroll */}
       <div 
-        className="max-h-[650px] overflow-y-auto space-y-3 pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-900/50 [&::-webkit-scrollbar-thumb]:bg-gray-700/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-600/80"
+        className="h-[calc(100vh-400px)] min-h-[500px] max-h-[700px] overflow-y-auto space-y-3 pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-900/50 [&::-webkit-scrollbar-thumb]:bg-gray-700/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-600/80"
         onScroll={handleScroll}
       >
         {(() => {
@@ -764,9 +783,9 @@ export default function Hero() {
         </div>
 
         {/* Upload Area with Side-by-Side Layout */}
-        <div className="grid lg:grid-cols-2 gap-8 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 lg:items-start">
           {/* Left Side - Upload Area */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:h-full flex flex-col">
             {/* 图片上传 */}
             <div className="space-y-3">
               <h3 className="text-lg font-bold text-white">Image Upload</h3>
@@ -909,11 +928,12 @@ export default function Hero() {
             </div>
 
             {/* 生成按钮 */}
-            <Button
-              onClick={handleStartProcessing}
-              disabled={!uploadedImage || !prompt.trim() || isProcessing}
-              className="w-full bg-white hover:bg-gray-100 disabled:bg-gray-600 text-black disabled:text-gray-400 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed"
-            >
+            <div className="lg:flex-1 lg:flex lg:flex-col lg:justify-end">
+              <Button
+                onClick={handleStartProcessing}
+                disabled={!uploadedImage || !prompt.trim() || isProcessing}
+                className="w-full bg-white hover:bg-gray-100 disabled:bg-gray-600 text-black disabled:text-gray-400 py-3 rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed mt-auto"
+              >
               {isProcessing ? (
                 <div className="flex items-center justify-center">
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -924,19 +944,20 @@ export default function Hero() {
                   Generate Images {outputCount} 🔥
                 </div>
               )}
-            </Button>
+              </Button>
 
-            {/* Error Display */}
-            {error && (
-              <div className="p-4 bg-red-950/50 border border-red-700 rounded-lg">
-                <p className="text-red-400 text-sm">{error}</p>
-              </div>
-            )}
+              {/* Error Display */}
+              {error && (
+                <div className="p-4 bg-red-950/50 border border-red-700 rounded-lg mt-4">
+                  <p className="text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+            </div>
 
           </div>
 
           {/* Right Side - History or Demo */}
-          <div className="space-y-6 mt-28 lg:mt-20">
+          <div className="space-y-6 mt-28 lg:mt-0 h-full">
             {user ? (
               // 已登录用户显示历史记录
               <QwenImageEditHistory 
