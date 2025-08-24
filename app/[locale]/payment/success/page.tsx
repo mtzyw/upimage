@@ -9,7 +9,6 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle,
-  CreditCard,
   Home,
   Loader2,
   RefreshCw,
@@ -183,7 +182,7 @@ function SuccessContent() {
           asChild
           size="lg"
         >
-          <I18nLink href="/app?target=upscaler" title="Back to Home" prefetch={true}>
+          <I18nLink href="/" title="Back to Home" prefetch={true}>
             <Home className="w-4 h-4" />
             Back to Home <ArrowRight className="w-4 h-4" />
           </I18nLink>
@@ -222,11 +221,11 @@ function SuccessContent() {
       >
         <Button className="flex-1 gap-2" asChild>
           <I18nLink
-            href={process.env.NEXT_PUBLIC_PRICING_PATH!}
+            href="/"
             title="Back to Home"
             prefetch={true}
           >
-            <CreditCard className="w-4 h-4" /> Back to Home
+            <Home className="w-4 h-4" /> Back to Home
           </I18nLink>
         </Button>
         <Button

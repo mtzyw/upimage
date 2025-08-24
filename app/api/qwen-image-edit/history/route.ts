@@ -124,7 +124,7 @@ export async function GET(req: NextRequest) {
           ? Math.round((new Date(task.completed_at).getTime() - new Date(task.created_at).getTime()) / 1000)
           : null,
         // Qwen 图像编辑特有字段
-        editPrompt: task.prompt || '生成吉卜力风格',
+        editPrompt: task.prompt || '',
         guidanceScale: task.creativity || 4,
         numInferenceSteps: task.hdr || 30,
         numImages: task.resemblance || 1

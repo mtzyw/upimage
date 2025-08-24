@@ -322,7 +322,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-sm font-medium truncate">
-                    {item.editPrompt || '生成吉卜力风格'}
+                    {item.editPrompt || ''}
                   </p>
                   <p className="text-gray-400 text-xs mt-1">
                     编辑指令
@@ -359,7 +359,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
                   <Button
                     onClick={() => {
                       if (item.originalUrl) {
-                        onSelectImage(item.originalUrl, item.editPrompt || "生成吉卜力风格");
+                        onSelectImage(item.originalUrl, item.editPrompt || "");
                       }
                     }}
                     variant="ghost"
@@ -437,7 +437,7 @@ export default function Hero() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState("生成吉卜力风格");
+  const [prompt, setPrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState<'1:1' | '3:2' | '2:3'>('1:1');
   const [outputCount, setOutputCount] = useState<1 | 2 | 4>(2);
   const [pendingTasks, setPendingTasks] = useState<any[]>([]); // 支持多个并发任务
@@ -964,7 +964,7 @@ export default function Hero() {
                 pendingTasks={pendingTasks}
                 onSelectImage={(imageUrl, editPrompt) => {
                   setUploadedImage(imageUrl);
-                  setPrompt(editPrompt || "生成吉卜力风格");
+                  setPrompt(editPrompt || "");
                 }}
               />
             ) : (
