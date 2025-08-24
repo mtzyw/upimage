@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { toast } from "sonner";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
@@ -442,7 +442,34 @@ export default function Hero() {
   const [outputCount, setOutputCount] = useState<1 | 2 | 4>(2);
   const [pendingTasks, setPendingTasks] = useState<any[]>([]); // 支持多个并发任务
   const [realTaskIds, setRealTaskIds] = useState<Map<string, NodeJS.Timeout>>(new Map()); // 存储真实任务ID和对应的定时器
+  const [userBenefits, setUserBenefits] = useState<{subscriptionStatus: string | null} | null>(null);
   const router = useRouter();
+
+  // 获取用户权益信息
+  useEffect(() => {
+    if (user) {
+      fetch('/api/user/benefits')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setUserBenefits(data.data);
+          }
+        })
+        .catch(error => {
+          console.error('获取用户权益失败:', error);
+        });
+    } else {
+      setUserBenefits(null);
+    }
+  }, [user]);
+
+  // 检查是否可以使用数字4
+  const canUseCount4 = useMemo(() => {
+    if (!user) return false;
+    if (!userBenefits) return false;
+    return userBenefits.subscriptionStatus === 'active' || 
+           userBenefits.subscriptionStatus === 'trialing';
+  }, [user, userBenefits]);
 
   // 检查图片尺寸是否满足要求
   const checkImageDimensions = (file: File): Promise<{ valid: boolean; width: number; height: number }> => {
@@ -912,11 +939,18 @@ export default function Hero() {
                 ].map((item) => (
                   <div
                     key={item.num}
-                    onClick={() => setOutputCount(item.num)}
-                    className={`border-2 rounded-lg p-3 cursor-pointer transition-all duration-200 text-center ${
+                    onClick={() => {
+                      if (item.num === 4 && !canUseCount4) {
+                        return; // 无权限直接返回
+                      }
+                      setOutputCount(item.num);
+                    }}
+                    className={`border-2 rounded-lg p-3 transition-all duration-200 text-center ${
                       outputCount === item.num 
                         ? 'border-white bg-gray-800/40' 
-                        : 'border-gray-600 hover:border-gray-500 bg-gray-800/20'
+                        : item.num === 4 && !canUseCount4
+                          ? 'border-gray-600 bg-gray-800/10 opacity-50 cursor-not-allowed'
+                          : 'border-gray-600 hover:border-gray-500 bg-gray-800/20 cursor-pointer'
                     }`}
                   >
                     <div className="text-lg font-bold text-white">

@@ -3,7 +3,7 @@
 import { BG1 } from "@/components/shared/BGs";
 import { Button } from "@/components/ui/button";
 import { Loader2, ChevronLeft, ChevronRight, Clock, Download, Maximize2, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { useTranslations } from 'next-intl';
@@ -729,9 +729,36 @@ function ImageGenerationUI({ pendingTasksOperations }: { pendingTasksOperations?
   const [aspectRatio, setAspectRatio] = useState<'square_1_1' | 'classic_4_3' | 'traditional_3_4' | 'widescreen_16_9' | 'social_story_9_16' | 'standard_3_2' | 'portrait_2_3' | 'horizontal_2_1' | 'vertical_1_2' | 'social_post_4_5'>('square_1_1');
   const [outputCount, setOutputCount] = useState<1 | 2 | 4>(2);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [userBenefits, setUserBenefits] = useState<{subscriptionStatus: string | null} | null>(null);
   const { user } = useAuth();
   const t = useTranslations('AIImageGenerator.form');
   const tErrors = useTranslations('AIImageGenerator.errors');
+
+  // 获取用户权益信息
+  useEffect(() => {
+    if (user) {
+      fetch('/api/user/benefits')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setUserBenefits(data.data);
+          }
+        })
+        .catch(error => {
+          console.error('获取用户权益失败:', error);
+        });
+    } else {
+      setUserBenefits(null);
+    }
+  }, [user]);
+
+  // 检查是否可以使用数字4
+  const canUseCount4 = useMemo(() => {
+    if (!user) return false;
+    if (!userBenefits) return false;
+    return userBenefits.subscriptionStatus === 'active' || 
+           userBenefits.subscriptionStatus === 'trialing';
+  }, [user, userBenefits]);
 
   // 处理宽高比映射显示
   const aspectRatioLabels = {
@@ -947,11 +974,18 @@ function ImageGenerationUI({ pendingTasksOperations }: { pendingTasksOperations?
           ].map((item) => (
             <div
               key={item.num}
-              onClick={() => setOutputCount(item.num)}
-              className={`border-2 rounded-lg p-3 cursor-pointer transition-all duration-200 text-center ${
+              onClick={() => {
+                if (item.num === 4 && !canUseCount4) {
+                  return; // 无权限直接返回
+                }
+                setOutputCount(item.num);
+              }}
+              className={`border-2 rounded-lg p-3 transition-all duration-200 text-center ${
                 outputCount === item.num 
                   ? 'border-white bg-gray-800/40' 
-                  : 'border-gray-600 hover:border-gray-500 bg-gray-800/20'
+                  : item.num === 4 && !canUseCount4
+                    ? 'border-gray-600 bg-gray-800/10 opacity-50 cursor-not-allowed'
+                    : 'border-gray-600 hover:border-gray-500 bg-gray-800/20 cursor-pointer'
               }`}
             >
               <div className="text-lg font-bold text-white">
