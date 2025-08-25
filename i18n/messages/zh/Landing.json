@@ -756,5 +756,13 @@
       "deleteFailed": "删除失败",
       "deleteError": "删除过程中出错"
     }
+  },
+  "AIImageToImage": {
+    "title": {
+      "part1": "AI 图像到图像",
+      "part2": "智能转换",
+      "part3": "风格编辑"
+    },
+    "description": "上传任意图片，通过 AI 智能编辑指令，瞬间实现风格转换、场景变换、内容修改等多种图像处理效果。"
   }
 }

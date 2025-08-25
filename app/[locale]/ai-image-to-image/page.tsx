@@ -433,6 +433,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
 
 export default function AIImageToImagePage() {
   const t = useTranslations("Landing.Hero");
+  const tPageTitle = useTranslations("Landing.AIImageToImage");
   const { user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -796,16 +797,16 @@ export default function AIImageToImagePage() {
         <div className="text-center space-y-6 mb-12">
           <div className="space-y-3">
             <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
-              <span className="text-white">AI 图像到图像</span>
+              <span className="text-white">{tPageTitle("title.part1")}</span>
               <br />
-              <span className="text-cyan-400">智能转换</span>
+              <span className="text-cyan-400">{tPageTitle("title.part2")}</span>
               <span className="text-white"> & </span>
-              <span className="text-yellow-400">风格编辑</span>
+              <span className="text-yellow-400">{tPageTitle("title.part3")}</span>
               <span className="text-white"> ✨</span>
             </h1>
 
             <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
-              上传任意图片，通过 AI 智能编辑指令，瞬间实现风格转换、场景变换、内容修改等多种图像处理效果。
+              {tPageTitle("description")}
             </p>
           </div>
         </div>

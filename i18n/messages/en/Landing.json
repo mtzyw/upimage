@@ -756,5 +756,13 @@
       "deleteFailed": "Delete failed",
       "deleteError": "Error occurred during deletion"
     }
+  },
+  "AIImageToImage": {
+    "title": {
+      "part1": "AI Image to Image",
+      "part2": "Smart Transformation",
+      "part3": "Style Editing"
+    },
+    "description": "Upload any image and use AI-powered editing commands to instantly achieve style transfer, scene transformation, content modification, and various image processing effects."
   }
 }

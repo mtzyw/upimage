@@ -756,5 +756,13 @@
       "deleteFailed": "Error al eliminar",
       "deleteError": "Error durante la eliminación"
     }
+  },
+  "AIImageToImage": {
+    "title": {
+      "part1": "IA Imagen a Imagen",
+      "part2": "Transformación Inteligente",
+      "part3": "Edición de Estilo"
+    },
+    "description": "Sube cualquier imagen y utiliza comandos de edición impulsados por IA para lograr instantáneamente transferencia de estilo, transformación de escenas, modificación de contenido y diversos efectos de procesamiento de imágenes."
   }
 }
