@@ -258,7 +258,7 @@ export default function BackgroundRemovalHistory({ historyItems, pendingTask, lo
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white">最近任务</h3>
+        <h3 className="text-lg font-bold text-white">{t('history.title')}</h3>
         <Button
           variant="ghost"
           className="text-gray-400 hover:text-gray-300 hover:bg-transparent text-xs"

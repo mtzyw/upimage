@@ -758,16 +758,16 @@ function ImageGenerationUI({ pendingTasksOperations }: { pendingTasksOperations?
 
   // 处理宽高比映射显示
   const aspectRatioLabels = {
-    'square_1_1': { ratio: '1:1', name: '正方形' },
-    'classic_4_3': { ratio: '4:3', name: '经典横向' },
-    'traditional_3_4': { ratio: '3:4', name: '传统竖向' },
-    'widescreen_16_9': { ratio: '16:9', name: '宽屏横向' },
-    'social_story_9_16': { ratio: '9:16', name: '社交竖屏' },
-    'standard_3_2': { ratio: '3:2', name: '标准横向' },
-    'portrait_2_3': { ratio: '2:3', name: '肖像竖向' },
-    'horizontal_2_1': { ratio: '2:1', name: '超宽横向' },
-    'vertical_1_2': { ratio: '1:2', name: '超高竖向' },
-    'social_post_4_5': { ratio: '4:5', name: '社交方形' }
+    'square_1_1': { ratio: '1:1', name: t('form.aspectRatios.square_1_1') },
+    'classic_4_3': { ratio: '4:3', name: t('form.aspectRatios.classic_4_3') },
+    'traditional_3_4': { ratio: '3:4', name: t('form.aspectRatios.traditional_3_4') },
+    'widescreen_16_9': { ratio: '16:9', name: t('form.aspectRatios.widescreen_16_9') },
+    'social_story_9_16': { ratio: '9:16', name: t('form.aspectRatios.social_story_9_16') },
+    'standard_3_2': { ratio: '3:2', name: t('form.aspectRatios.standard_3_2') },
+    'portrait_2_3': { ratio: '2:3', name: t('form.aspectRatios.portrait_2_3') },
+    'horizontal_2_1': { ratio: '2:1', name: t('form.aspectRatios.horizontal_2_1') },
+    'vertical_1_2': { ratio: '1:2', name: t('form.aspectRatios.vertical_1_2') },
+    'social_post_4_5': { ratio: '4:5', name: t('form.aspectRatios.social_post_4_5') }
   };
 
   const handleStartProcessing = async () => {

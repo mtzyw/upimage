@@ -763,5 +763,23 @@
       "part3": "スタイル編集"
     },
     "description": "任意の画像をアップロードし、AIスマート編集コマンドを使って、スタイル変換、シーン変更、コンテンツ修正などの多様な画像処理効果を瞬時に実現できます。"
+  },
+  "History": {
+    "recentTasks": "最近のタスク",
+    "viewAll": "すべて表示",
+    "loading": "読み込み中...",
+    "retry": "再試行",
+    "noRecords": "処理記録がありません",
+    "loadingMore": "さらに読み込み中...",
+    "noMoreTasks": "これ以上タスクはありません",
+    "noImage": "画像なし",
+    "editPrompt": "編集コマンド",
+    "viewLarge": "拡大表示",
+    "downloadImage": "画像をダウンロード",
+    "reEdit": "再編集",
+    "processing": "処理中",
+    "completed": "完了",
+    "failed": "失敗",
+    "timeout": "処理タイムアウト"
   }
 }

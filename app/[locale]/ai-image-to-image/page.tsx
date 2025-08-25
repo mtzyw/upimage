@@ -28,6 +28,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
   const [historyItems, setHistoryItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const t = useTranslations();
+  const tHistory = useTranslations("Landing.History");
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -212,11 +213,11 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-white">最近任务</h3>
+          <h3 className="text-lg font-bold text-white">{tHistory('recentTasks')}</h3>
         </div>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-          <span className="ml-2 text-gray-400 text-sm">加载中...</span>
+          <span className="ml-2 text-gray-400 text-sm">{tHistory('loading')}</span>
         </div>
       </div>
     );
@@ -226,7 +227,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-white">最近任务</h3>
+          <h3 className="text-lg font-bold text-white">{tHistory('recentTasks')}</h3>
         </div>
         <div className="text-center py-8">
           <p className="text-red-400 text-sm">{error}</p>
@@ -235,7 +236,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
             className="mt-2 text-xs"
             variant="outline"
           >
-            重试
+            {tHistory('retry')}
           </Button>
         </div>
       </div>
@@ -246,7 +247,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-white">最近任务</h3>
+        <h3 className="text-lg font-bold text-white">{tHistory('recentTasks')}</h3>
         <Button
           variant="ghost"
           className="text-gray-400 hover:text-gray-300 hover:bg-transparent text-xs"
@@ -273,7 +274,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
           if (displayTasks.length === 0) {
             return (
               <div className="text-center py-8">
-                <p className="text-gray-400 text-sm">暂无处理记录</p>
+                <p className="text-gray-400 text-sm">{tHistory('noRecords')}</p>
               </div>
             );
           }
@@ -289,8 +290,8 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
                   {new Date(item.createdAt || item.timestamp).toLocaleString('zh-CN')}
                 </span>
                 <span className={`text-xs px-3 py-1 rounded-full border ${getStatusBadge(item.status)}`}>
-                  {getStatusIcon(item.status)} {item.status === 'completed' ? '已完成' : 
-                   item.status === 'processing' ? '处理中' : '失败'}
+                  {getStatusIcon(item.status)} {item.status === 'completed' ? tHistory('completed') : 
+                   item.status === 'processing' ? tHistory('processing') : tHistory('failed')}
                 </span>
               </div>
 
@@ -316,7 +317,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-gray-500 text-xs">无图片</span>
+                      <span className="text-gray-500 text-xs">{tHistory('noImage')}</span>
                     </div>
                   )}
                 </div>
@@ -327,7 +328,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
                     {item.editPrompt || ''}
                   </p>
                   <p className="text-gray-400 text-xs mt-1">
-                    编辑指令
+                    {tHistory('editPrompt')}
                   </p>
                 </div>
               </div>
@@ -339,21 +340,21 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
                     <Button
                       onClick={() => handleImageClick(item)}
                       className="bg-gray-700/60 hover:bg-gray-600/80 text-white px-4 py-2 text-sm rounded-lg border border-gray-600/50 transition-all duration-200"
-                      title="放大查看"
+                      title="{tHistory('viewLarge')}"
                     >
                       <div className="flex items-center gap-2">
                         <Maximize2 className="w-4 h-4" />
-                        放大查看
+                        {tHistory('viewLarge')}
                       </div>
                     </Button>
                     <Button
                       onClick={() => handleDownload(item)}
                       className="bg-gray-700/60 hover:bg-gray-600/80 text-white px-4 py-2 text-sm rounded-lg border border-gray-600/50 transition-all duration-200"
-                      title="下载图片"
+                      title="{tHistory('downloadImage')}"
                     >
                       <div className="flex items-center gap-2">
                         <Download className="w-4 h-4" />
-                        下载图片
+                        {tHistory('downloadImage')}
                       </div>
                     </Button>
                   </div>
@@ -366,9 +367,9 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
                     }}
                     variant="ghost"
                     className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 text-sm"
-                    title="重新编辑"
+                    title="{tHistory('reEdit')}"
                   >
-                    重新编辑
+                    {tHistory('reEdit')}
                   </Button>
                 </div>
               )}
@@ -388,7 +389,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
           <div className="flex justify-center py-4">
             <div className="flex items-center gap-2 text-gray-400 text-sm">
               <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-              加载更多...
+              {tHistory('loadingMore')}
             </div>
           </div>
         )}
@@ -397,7 +398,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
         {!hasMore && historyItems.length > 0 && (
           <div className="flex justify-center py-4">
             <div className="text-gray-500 text-sm">
-              没有更多任务了
+              {tHistory('noMoreTasks')}
             </div>
           </div>
         )}
@@ -427,6 +428,7 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
 export default function AIImageToImagePage() {
   const t = useTranslations("Landing.Hero");
   const tPageTitle = useTranslations("Landing.AIImageToImage");
+  const tHistory = useTranslations("Landing.History");
   const { user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -680,7 +682,7 @@ export default function AIImageToImagePage() {
         const processingTask = {
           id: tempTaskId,
           status: 'processing' as const,
-          statusMessage: '处理中',
+          statusMessage: tHistory('processing'),
           creditsConsumed: 2,
           originalUrl: uploadedImage,
           cdnUrl: undefined,

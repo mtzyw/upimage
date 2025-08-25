@@ -764,5 +764,23 @@
       "part3": "Edición de Estilo"
     },
     "description": "Sube cualquier imagen y utiliza comandos de edición con IA para lograr al instante transferencia de estilo, transformación de escenas, modificación de contenido y diversos efectos de procesamiento de imágenes."
+  },
+  "History": {
+    "recentTasks": "Tareas Recientes",
+    "viewAll": "Ver Todo",
+    "loading": "Cargando...",
+    "retry": "Reintentar",
+    "noRecords": "Sin registros de procesamiento",
+    "loadingMore": "Cargando más...",
+    "noMoreTasks": "No hay más tareas",
+    "noImage": "Sin Imagen",
+    "editPrompt": "Comando de Edición",
+    "viewLarge": "Ver Grande",
+    "downloadImage": "Descargar Imagen",
+    "reEdit": "Re-editar",
+    "processing": "Procesando",
+    "completed": "Completado",
+    "failed": "Falló",
+    "timeout": "Tiempo de procesamiento agotado"
   }
 }

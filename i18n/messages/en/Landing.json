@@ -764,5 +764,23 @@
       "part3": "Style Editing"
     },
     "description": "Upload any image and use AI-powered editing commands to instantly achieve style transfer, scene transformation, content modification, and various image processing effects."
+  },
+  "History": {
+    "recentTasks": "Recent Tasks",
+    "viewAll": "View All",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "noRecords": "No processing records",
+    "loadingMore": "Loading more...",
+    "noMoreTasks": "No more tasks",
+    "noImage": "No Image",
+    "editPrompt": "Edit Command",
+    "viewLarge": "View Large",
+    "downloadImage": "Download Image",
+    "reEdit": "Re-edit",
+    "processing": "Processing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "timeout": "Processing timeout"
   }
 }

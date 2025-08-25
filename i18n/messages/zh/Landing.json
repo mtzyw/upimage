@@ -764,5 +764,23 @@
       "part3": "风格编辑"
     },
     "description": "上传任意图片，通过 AI 智能编辑指令，瞬间实现风格转换、场景变换、内容修改等多种图像处理效果。"
+  },
+  "History": {
+    "recentTasks": "最近任务",
+    "viewAll": "查看全部",
+    "loading": "加载中...",
+    "retry": "重试",
+    "noRecords": "暂无处理记录",
+    "loadingMore": "加载更多...",
+    "noMoreTasks": "没有更多任务了",
+    "noImage": "无图片",
+    "editPrompt": "编辑指令",
+    "viewLarge": "放大查看",
+    "downloadImage": "下载图片",
+    "reEdit": "重新编辑",
+    "processing": "处理中",
+    "completed": "已完成",
+    "failed": "失败",
+    "timeout": "处理超时"
   }
 }
