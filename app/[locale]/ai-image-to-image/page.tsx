@@ -410,6 +410,15 @@ function QwenImageEditHistory({ pendingTasks, onSelectImage }: { pendingTasks?: 
         imageUrl={previewModal.imageUrl}
         originalUrl={previewModal.originalUrl}
         title={previewModal.title}
+        onDownload={() => {
+          const item = [...(pendingTasks || []), ...historyItems]
+            .find(item => 
+              item.cdnUrl === previewModal.imageUrl || item.originalUrl === previewModal.imageUrl
+            );
+          if (item) {
+            handleDownload(item);
+          }
+        }}
       />
     </div>
   );
