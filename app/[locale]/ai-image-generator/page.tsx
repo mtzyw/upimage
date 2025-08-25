@@ -134,10 +134,12 @@ function RecentTasksHistory({ refreshTrigger, onSetPendingTasks }: {
   const [previewModal, setPreviewModal] = useState<{
     isOpen: boolean;
     imageUrl: string;
+    originalUrl?: string;
     title: string;
   }>({
     isOpen: false,
     imageUrl: '',
+    originalUrl: '',
     title: ''
   });
   const { user } = useAuth();
@@ -470,6 +472,7 @@ function RecentTasksHistory({ refreshTrigger, onSetPendingTasks }: {
       setPreviewModal({
         isOpen: true,
         imageUrl: item.cdnUrl,
+        originalUrl: item.originalUrl,
         title: `${t('previewTitle')} - ${new Date(item.createdAt).toLocaleString('zh-CN')}`
       });
     }
