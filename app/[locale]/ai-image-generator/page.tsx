@@ -2,6 +2,7 @@
 
 import { BG1 } from "@/components/shared/BGs";
 import { Button } from "@/components/ui/button";
+import ImagePreviewModal from "@/components/quitarfondo/ImagePreviewModal";
 import { Loader2, ChevronLeft, ChevronRight, Clock, Download, Maximize2, X } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
@@ -685,30 +686,13 @@ function RecentTasksHistory({ refreshTrigger, onSetPendingTasks }: {
       </div>
 
       {/* 图片预览弹窗 */}
-      {previewModal.isOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-white">{previewModal.title}</h3>
-              <Button
-                onClick={() => setPreviewModal(prev => ({ ...prev, isOpen: false }))}
-                variant="ghost"
-                className="text-gray-400 hover:text-white p-2"
-              >
-                <X className="w-6 h-6" />
-              </Button>
-            </div>
-            
-            <div className="flex justify-center">
-              <img
-                src={previewModal.imageUrl}
-                alt={previewModal.title}
-                className="max-w-full max-h-[60vh] object-contain rounded-lg"
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      <ImagePreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={() => setPreviewModal(prev => ({ ...prev, isOpen: false }))}
+        imageUrl={previewModal.imageUrl}
+        originalUrl={previewModal.originalUrl}
+        title={previewModal.title}
+      />
     </div>
   );
 }
